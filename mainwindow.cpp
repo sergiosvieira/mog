@@ -11,7 +11,7 @@
 static std::random_device rdev{};
 static std::mt19937 eng{rdev()};
 
-static const QRect World{0, 0, 19200000, 1920000};
+static const QRect World{0, 0, 192000, 192000};
 
 Coordinates transform
 (
@@ -76,6 +76,7 @@ void MainWindow::paintEvent(QPaintEvent *event)
     }
 }
 
+
 void MainWindow::on_btn_air_generate_clicked()
 {
     this->airplanes.clear();
@@ -93,10 +94,12 @@ void MainWindow::on_btn_air_generate_clicked()
         double maxAccelY = rndMinMax(minAccelX, this->ui->spinBoxAirMaxAccel->value());
         if (maxAccelX > this->ui->spinBoxAirMaxAccel->maximum()) maxAccelX = this->ui->spinBoxAirMaxAccel->value();
         if (maxAccelY > this->ui->spinBoxAirMaxAccel->maximum()) maxAccelY = this->ui->spinBoxAirMaxAccel->value();
+        double rndX = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
+        double rndY = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
         AirPlane airplane
         (
             Coordinates(rndMinMax(0, World.width()), rndMinMax(0, World.height())),
-            Vector(rndMinMax(minVelX, maxVelX), rndMinMax(minVelY, maxVelY)),
+            Vector(rndMinMax(minVelX, maxVelX) * rndX, rndMinMax(minVelY, maxVelY) * rndY),
             0,
             Vector(rndMinMax(minAccelX, maxAccelX), rndMinMax(minAccelY, maxAccelY))
         );
@@ -114,16 +117,15 @@ void MainWindow::on_btn_air_generate_clicked()
             }
             else
             {
-
-                double px_ = airManager.getData(t - 1, object.getID()).getX();
-                double py_ = airManager.getData(t - 1, object.getID()).getY();
-                double px = px_ + object.getVelocity().getX() + object.getAcceleraton().getX() / 2.0;
-                double py = py_ + object.getVelocity().getY() + object.getAcceleraton().getY() / 2.0;
-                newPosition = Coordinates(px, py);
+                Vector accel = object.getAcceleraton();
+                accel *= t;
+                Vector veloc = object.getVelocity();
+                veloc += accel;
+                newPosition = airManager.getData(t - 1, object.getID());
+                newPosition += veloc;
             }
             airManager.setData(t, object.getID(), newPosition);
         }
-        int k = t;
     }
     this->repaint();
 }

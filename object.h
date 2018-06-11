@@ -27,6 +27,7 @@ protected:
     Vector velocity;
     double initialTime = 0.0;
     Vector acceleration;
+    Vector direction;
     ObjectType type;
 public:
     Object();
@@ -42,6 +43,7 @@ public:
     Vector getVelocity() const;
     ObjectType getType() const;
     Vector getAcceleraton() const;
+    Vector getDirection() const;
     unsigned int getID() const;
     void setID(unsigned int id);
 };

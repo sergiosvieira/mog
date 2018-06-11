@@ -105,7 +105,23 @@
                 </widget>
                </item>
                <item>
-                <widget class="QComboBox" name="comboBox"/>
+                <widget class="QComboBox" name="airMovingPattern">
+                 <item>
+                  <property name="text">
+                   <string>Constant Velocity</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Constant Acceleration</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Constant Deceleration</string>
+                  </property>
+                 </item>
+                </widget>
                </item>
               </layout>
              </item>
@@ -159,7 +175,7 @@
                <item>
                 <widget class="QLabel" name="label_10">
                  <property name="text">
-                  <string>Max. Acceleration</string>
+                  <string>Max. Acceleration (m/s)</string>
                  </property>
                 </widget>
                </item>
@@ -177,7 +193,7 @@
                <item>
                 <widget class="QLabel" name="label_11">
                  <property name="text">
-                  <string>Min. Acceleration</string>
+                  <string>Min. Acceleration (m/2)</string>
                  </property>
                 </widget>
                </item>
@@ -227,7 +243,7 @@
                <item>
                 <widget class="QLabel" name="label_5">
                  <property name="text">
-                  <string>Initial Time</string>
+                  <string>Initial Time (s)</string>
                  </property>
                 </widget>
                </item>
@@ -277,7 +293,7 @@
                <item>
                 <widget class="QLabel" name="label_8">
                  <property name="text">
-                  <string>Pattern Switch Time</string>
+                  <string>Pattern Switch Time (s)</string>
                  </property>
                 </widget>
                </item>
@@ -350,7 +366,23 @@
                 </widget>
                </item>
                <item>
-                <widget class="QComboBox" name="comboBox_2"/>
+                <widget class="QComboBox" name="landMovingPattern">
+                 <item>
+                  <property name="text">
+                   <string>Constant Velocity</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Constant Acceleration</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Constant Deceleration</string>
+                  </property>
+                 </item>
+                </widget>
                </item>
               </layout>
              </item>
@@ -359,7 +391,7 @@
                <item>
                 <widget class="QLabel" name="label_18">
                  <property name="text">
-                  <string>Max. Velocity</string>
+                  <string>Max. Velocity (km/h)</string>
                  </property>
                 </widget>
                </item>
@@ -373,7 +405,7 @@
                <item>
                 <widget class="QLabel" name="label_17">
                  <property name="text">
-                  <string>Min. Velocity</string>
+                  <string>Min. Velocity (km/h)</string>
                  </property>
                 </widget>
                </item>
@@ -387,7 +419,7 @@
                <item>
                 <widget class="QLabel" name="label_16">
                  <property name="text">
-                  <string>Max. Acceleration</string>
+                  <string>Max. Acceleration (m/s)</string>
                  </property>
                 </widget>
                </item>
@@ -401,7 +433,7 @@
                <item>
                 <widget class="QLabel" name="label_15">
                  <property name="text">
-                  <string>Min. Acceleration</string>
+                  <string>Min. Acceleration (m/s)</string>
                  </property>
                 </widget>
                </item>
@@ -415,7 +447,7 @@
                <item>
                 <widget class="QLabel" name="label_14">
                  <property name="text">
-                  <string>Initial Time</string>
+                  <string>Initial Time (s)</string>
                  </property>
                 </widget>
                </item>
@@ -429,7 +461,7 @@
                <item>
                 <widget class="QLabel" name="label_13">
                  <property name="text">
-                  <string>Pattern Switch Time</string>
+                  <string>Pattern Switch Time (s)</string>
                  </property>
                 </widget>
                </item>
@@ -502,10 +534,25 @@
                 </widget>
                </item>
                <item>
-                <widget class="QComboBox" name="comboBox_3">
+                <widget class="QComboBox" name="waterMovingPattern">
                  <property name="currentText">
-                  <string/>
+                  <string>Constant Velocity</string>
                  </property>
+                 <item>
+                  <property name="text">
+                   <string>Constant Velocity</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Constant Acceleration</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Constant Deceleration</string>
+                  </property>
+                 </item>
                 </widget>
                </item>
               </layout>
@@ -515,7 +562,7 @@
                <item>
                 <widget class="QLabel" name="label_23">
                  <property name="text">
-                  <string>Max. Velocity</string>
+                  <string>Max. Velocity (km/h)</string>
                  </property>
                 </widget>
                </item>
@@ -529,7 +576,7 @@
                <item>
                 <widget class="QLabel" name="label_24">
                  <property name="text">
-                  <string>Min. Velocity</string>
+                  <string>Min. Velocity (km/h)</string>
                  </property>
                 </widget>
                </item>
@@ -543,7 +590,7 @@
                <item>
                 <widget class="QLabel" name="label_25">
                  <property name="text">
-                  <string>Max. Acceleration</string>
+                  <string>Max. Acceleration (m/s)</string>
                  </property>
                 </widget>
                </item>
@@ -557,7 +604,7 @@
                <item>
                 <widget class="QLabel" name="label_28">
                  <property name="text">
-                  <string>Min. Acceleration</string>
+                  <string>Min. Acceleration (m/s)</string>
                  </property>
                 </widget>
                </item>
@@ -571,7 +618,7 @@
                <item>
                 <widget class="QLabel" name="label_29">
                  <property name="text">
-                  <string>Initial Time</string>
+                  <string>Initial Time (s)</string>
                  </property>
                 </widget>
                </item>
@@ -585,7 +632,7 @@
                <item>
                 <widget class="QLabel" name="label_30">
                  <property name="text">
-                  <string>Pattern Switch Time</string>
+                  <string>Pattern Switch Time (s)</string>
                  </property>
                 </widget>
                </item>
@@ -599,7 +646,7 @@
                <item>
                 <widget class="QLabel" name="label_32">
                  <property name="text">
-                  <string>Max. Depth</string>
+                  <string>Max. Depth (m)</string>
                  </property>
                 </widget>
                </item>
@@ -613,7 +660,7 @@
                <item>
                 <widget class="QLabel" name="label_33">
                  <property name="text">
-                  <string>Min. Depth</string>
+                  <string>Min. Depth (m)</string>
                  </property>
                 </widget>
                </item>

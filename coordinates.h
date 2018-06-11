@@ -21,6 +21,12 @@ public:
         this->setY(this->getY() + v.getY());
         return *this;
     }
+    friend Coordinates& operator+=(Coordinates& p, const Vector& v)
+    {
+        p.x += v.getX();
+        p.y += v.getY();
+        return p;
+    }
 };
 
 #endif // COORDINATES_H

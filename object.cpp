@@ -40,6 +40,11 @@ Vector Object::getAcceleraton() const
     return this->acceleration;
 }
 
+Vector Object::getDirection() const
+{
+    return this->direction;
+}
+
 unsigned int Object::getID() const
 {
     return this->id;
