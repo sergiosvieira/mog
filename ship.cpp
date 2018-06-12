@@ -16,3 +16,23 @@ Ship::Ship
 {
 
 }
+
+void Ship::setMaxDepth(double value)
+{
+    this->maxDepth = value;
+}
+
+double Ship::getMaxDepth() const
+{
+    return this->maxDepth;
+}
+
+void Ship::setMinDepth(double value)
+{
+    this->minDepth = value;
+}
+
+double Ship::getMinDepth() const
+{
+    return this->minDepth;
+}

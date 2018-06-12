@@ -1,10 +1,11 @@
 #ifndef AIRPLANE_H
 #define AIRPLANE_H
 
-#include "object.h"
+#include "airobject.h"
 
-class AirPlane : public Object
+class AirPlane : public AirObject
 {
+
 public:
     AirPlane();
     AirPlane

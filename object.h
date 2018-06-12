@@ -35,6 +35,7 @@ protected:
     ObjectType type;
     MapOfPatternToInstant patterns;
     MovingPattern lastPattern;
+    bool isActivated_ = false;
 public:
     Object();
     Object
@@ -57,6 +58,8 @@ public:
     void setID(unsigned int id);
     void addPattern(const MovingPattern& pattern, int instant);
     MovingPattern getPattern(int instant);
+    void setActivated(bool flag);
+    bool isActivated() const;
 };
 
 #endif // OBJECT_H

@@ -51,10 +51,14 @@ void Canvas::drawShip(const Object& object, const Coordinates& position)
     }
 }
 
-Canvas::Canvas()
+Canvas::Canvas(): QWidget()
 {
-    image = new QImage(this->size(), QImage::Format_ARGB32_Premultiplied);
-    this->clear();
+
+}
+
+Canvas::Canvas(QWidget *parent): QWidget(parent)
+{
+
 }
 
 QImage *Canvas::getCanvas()
@@ -65,11 +69,13 @@ QImage *Canvas::getCanvas()
 void Canvas::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
-    if (this->image)
+    if (!this->image)
     {
-        QPainter painter(this);
-        painter.drawImage(0, 0, *this->image);
+        this->image = new QImage(this->size(), QImage::Format_ARGB32_Premultiplied);
+        this->clear();
     }
+    QPainter painter(this);
+    painter.drawImage(0, 0, *this->image);
 }
 
 void Canvas::clear()

@@ -7,6 +7,7 @@
 #include <vector>
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
+#include "object.h"
 
 static const QRect World{0, 0, 192000, 192000};
 
@@ -39,7 +40,16 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void paintEvent(QPaintEvent* event);
-    void adjustAll();
+    double getMaxVelocity(const ObjectType &type);
+    double getMinVelocity(const ObjectType &type);
+    double getMaxAcceleration(const ObjectType &type);
+    double getMinAcceleration(const ObjectType &type);
+    double getMaxAltitude(const ObjectType &type);
+    double getMinAltitude(const ObjectType &type);
+    double getMaxDepth(const ObjectType &type);
+    double getMinDepth(const ObjectType &type);
+    unsigned int getInitialTime();
+    unsigned int getLifeTime();
 private slots:
     void on_btn_air_generate_clicked();
 

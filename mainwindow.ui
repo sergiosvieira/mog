@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Object Generation App</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
@@ -45,629 +45,1039 @@
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="air_hlayout" stretch="0">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetMaximumSize</enum>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
       </property>
-      <item>
-       <widget class="QScrollArea" name="scrollArea">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>318</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="widgetResizable">
-         <bool>true</bool>
-        </property>
-        <widget class="QWidget" name="scrollAreaWidgetContents_3">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>301</width>
-           <height>1016</height>
-          </rect>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="documentMode">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Objects</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="air_hlayout" stretch="0">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetMaximumSize</enum>
+          </property>
           <item>
-           <widget class="QGroupBox" name="groupBox_3">
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QWidget" name="widget" native="true">
+              <property name="maximumSize">
+               <size>
+                <width>318</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_2">
+               <item>
+                <widget class="QToolBox" name="toolBox">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="currentIndex">
+                  <number>0</number>
+                 </property>
+                 <widget class="QWidget" name="page_3">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>279</width>
+                    <height>276</height>
+                   </rect>
+                  </property>
+                  <attribute name="label">
+                   <string>Airplanes</string>
+                  </attribute>
+                  <layout class="QVBoxLayout" name="verticalLayout_6">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout">
+                     <item>
+                      <widget class="QLabel" name="label_36">
+                       <property name="text">
+                        <string>&lt;b&gt;Airplanes&lt;/b&gt;</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="airplanesSB">
+                       <property name="maximum">
+                        <number>6000</number>
+                       </property>
+                       <property name="value">
+                        <number>500</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_5">
+                     <item>
+                      <widget class="QLabel" name="label_3">
+                       <property name="text">
+                        <string>Max. Velocity (km/h)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="maxVelAir">
+                       <property name="minimum">
+                        <double>900.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>8000.000000000000000</double>
+                       </property>
+                       <property name="value">
+                        <double>8000.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_6">
+                     <item>
+                      <widget class="QLabel" name="label_9">
+                       <property name="text">
+                        <string>Min. Velocity (km/h)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="minVelAir">
+                       <property name="minimum">
+                        <double>900.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>8000.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_7">
+                     <item>
+                      <widget class="QLabel" name="label_10">
+                       <property name="text">
+                        <string>Max. Acceleration (m/s)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="maxAccelAir">
+                       <property name="value">
+                        <double>1.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_8">
+                     <item>
+                      <widget class="QLabel" name="label_11">
+                       <property name="text">
+                        <string>Min. Acceleration (m/s)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="minAccelAir"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_12">
+                     <item>
+                      <widget class="QLabel" name="label_6">
+                       <property name="text">
+                        <string>Max. Altitude (km)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="maxAltAir">
+                       <property name="maximum">
+                        <double>112.000000000000000</double>
+                       </property>
+                       <property name="value">
+                        <double>112.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_13">
+                     <item>
+                      <widget class="QLabel" name="label_7">
+                       <property name="text">
+                        <string>Min. Altitude (km)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="minAltAir">
+                       <property name="minimum">
+                        <double>10.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
+                 <widget class="QWidget" name="page_4">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>279</width>
+                    <height>348</height>
+                   </rect>
+                  </property>
+                  <attribute name="label">
+                   <string>Helicopters</string>
+                  </attribute>
+                  <layout class="QVBoxLayout" name="verticalLayout_7">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_39">
+                     <item>
+                      <widget class="QLabel" name="label_37">
+                       <property name="text">
+                        <string>&lt;b&gt;Helicopters&lt;/b&gt;</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="helicoptersSB">
+                       <property name="maximum">
+                        <number>6000</number>
+                       </property>
+                       <property name="value">
+                        <number>500</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_15">
+                     <item>
+                      <widget class="QLabel" name="maxVelHeliLabel">
+                       <property name="text">
+                        <string>Max. Velocity (km/h)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="maxVelHeli">
+                       <property name="minimum">
+                        <double>0.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>400.000000000000000</double>
+                       </property>
+                       <property name="value">
+                        <double>400.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_16">
+                     <item>
+                      <widget class="QLabel" name="label_13">
+                       <property name="text">
+                        <string>Min. Velocity (km/h)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="minVelHeli">
+                       <property name="minimum">
+                        <double>100.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>400.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_17">
+                     <item>
+                      <widget class="QLabel" name="label_14">
+                       <property name="text">
+                        <string>Max. Acceleration (m/s)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="maxAccelHeli">
+                       <property name="value">
+                        <double>1.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_18">
+                     <item>
+                      <widget class="QLabel" name="label_15">
+                       <property name="text">
+                        <string>Min. Acceleration (m/s)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="minAccelHeli"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_19">
+                     <item>
+                      <widget class="QLabel" name="label_16">
+                       <property name="text">
+                        <string>Max. Altitude (km)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="maxAltHeli">
+                       <property name="maximum">
+                        <double>12.000000000000000</double>
+                       </property>
+                       <property name="value">
+                        <double>12.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_20">
+                     <item>
+                      <widget class="QLabel" name="label_17">
+                       <property name="text">
+                        <string>Min. Altitude (km)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="minAltHeli">
+                       <property name="minimum">
+                        <double>2.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>12.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_9">
+                     <item>
+                      <widget class="QLabel" name="label_12">
+                       <property name="text">
+                        <string>Rotation Angle (RA)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="RA">
+                       <property name="maximum">
+                        <double>360.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_10">
+                     <item>
+                      <widget class="QLabel" name="label_4">
+                       <property name="text">
+                        <string>RA Starting Time</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="RAST">
+                       <property name="maximum">
+                        <double>86400.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_2">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
+                 <widget class="QWidget" name="page_5">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>279</width>
+                    <height>204</height>
+                   </rect>
+                  </property>
+                  <attribute name="label">
+                   <string>Cars</string>
+                  </attribute>
+                  <layout class="QVBoxLayout" name="verticalLayout_10">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_37">
+                     <item>
+                      <widget class="QLabel" name="label_38">
+                       <property name="text">
+                        <string>&lt;b&gt;Cars&lt;/b&gt;</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="carsSB">
+                       <property name="maximum">
+                        <number>6000</number>
+                       </property>
+                       <property name="value">
+                        <number>500</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_21">
+                     <item>
+                      <widget class="QLabel" name="label_18">
+                       <property name="text">
+                        <string>Max. Velocity (km/h)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="maxVelCar">
+                       <property name="minimum">
+                        <double>40.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>500.000000000000000</double>
+                       </property>
+                       <property name="value">
+                        <double>500.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_22">
+                     <item>
+                      <widget class="QLabel" name="label_19">
+                       <property name="text">
+                        <string>Min. Velocity (km/h)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="minVelCar">
+                       <property name="minimum">
+                        <double>40.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>500.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_23">
+                     <item>
+                      <widget class="QLabel" name="label_20">
+                       <property name="text">
+                        <string>Max. Acceleration (m/s)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="maxAccelCar">
+                       <property name="value">
+                        <double>1.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_24">
+                     <item>
+                      <widget class="QLabel" name="label_21">
+                       <property name="text">
+                        <string>Min. Acceleration (m/s)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="minAccelCar"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_3">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
+                 <widget class="QWidget" name="page_6">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>279</width>
+                    <height>276</height>
+                   </rect>
+                  </property>
+                  <attribute name="label">
+                   <string>Ships</string>
+                  </attribute>
+                  <layout class="QVBoxLayout" name="verticalLayout_11">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_38">
+                     <item>
+                      <widget class="QLabel" name="label_39">
+                       <property name="text">
+                        <string>&lt;b&gt;Ships&lt;/b&gt;</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="shipsSB">
+                       <property name="maximum">
+                        <number>6000</number>
+                       </property>
+                       <property name="value">
+                        <number>500</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_25">
+                     <item>
+                      <widget class="QLabel" name="label_22">
+                       <property name="text">
+                        <string>Max. Velocity (km/h)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="maxVelShip">
+                       <property name="minimum">
+                        <double>100.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>800.000000000000000</double>
+                       </property>
+                       <property name="value">
+                        <double>800.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_26">
+                     <item>
+                      <widget class="QLabel" name="label_23">
+                       <property name="text">
+                        <string>Min. Velocity (km/h)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="minVelShip">
+                       <property name="minimum">
+                        <double>100.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>800.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_27">
+                     <item>
+                      <widget class="QLabel" name="label_24">
+                       <property name="text">
+                        <string>Max. Acceleration (m/s)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="maxAccelShip">
+                       <property name="value">
+                        <double>1.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_28">
+                     <item>
+                      <widget class="QLabel" name="label_25">
+                       <property name="text">
+                        <string>Min. Acceleration (m/s)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="minAccelShip"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_32">
+                     <item>
+                      <widget class="QLabel" name="label_41">
+                       <property name="text">
+                        <string>Max. Depth (m)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="maxDepthShip">
+                       <property name="maximum">
+                        <number>6000</number>
+                       </property>
+                       <property name="value">
+                        <number>6000</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_41">
+                     <item>
+                      <widget class="QLabel" name="label_42">
+                       <property name="text">
+                        <string>Min. Depth (m)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="minDepthShip">
+                       <property name="maximum">
+                        <number>6000</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_4">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                 <item>
+                  <widget class="QLabel" name="label">
+                   <property name="text">
+                    <string>Number</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="number">
+                   <property name="minimum">
+                    <number>2000</number>
+                   </property>
+                   <property name="maximum">
+                    <number>6000</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_11">
+                 <item>
+                  <widget class="QLabel" name="label_5">
+                   <property name="text">
+                    <string>Initial Instant (h)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="initTime">
+                   <property name="maximum">
+                    <number>24</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_40">
+                 <item>
+                  <widget class="QLabel" name="label_40">
+                   <property name="text">
+                    <string>Life Time (h)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="lifeTime">
+                   <property name="maximum">
+                    <number>24</number>
+                   </property>
+                   <property name="value">
+                    <number>24</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <item>
+                  <widget class="QLabel" name="label_2">
+                   <property name="text">
+                    <string>Moving Pattern</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="airMovingPattern">
+                   <item>
+                    <property name="text">
+                     <string>Constant Velocity</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Constant Acceleration</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Constant Deceleration</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_4">
+                 <item>
+                  <widget class="QLabel" name="label_8">
+                   <property name="text">
+                    <string>Pattern Switch Time (s)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="spinBoxAirPST">
+                   <property name="maximum">
+                    <number>24</number>
+                   </property>
+                   <property name="value">
+                    <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QPushButton" name="AddPattern">
+                 <property name="text">
+                  <string>Add Pattern</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTableView" name="patternTable">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>120</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_29">
+                 <item>
+                  <widget class="QPushButton" name="btn_air_generate">
+                   <property name="text">
+                    <string>Generate Objects</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton">
+                   <property name="text">
+                    <string>Export to CSV</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Graph</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <layout class="QHBoxLayout" name="trajectoryHLayout">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetMinimumSize</enum>
+          </property>
+          <item>
+           <widget class="QGroupBox" name="groupBox_4">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
-              <width>277</width>
-              <height>16777215</height>
+              <width>300</width>
+              <height>197</height>
              </size>
             </property>
             <property name="title">
-             <string>Targets</string>
+             <string>Trajectory</string>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_4">
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_9">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item>
-              <widget class="QPushButton" name="btn_air_generate">
-               <property name="text">
-                <string>Generate Objects</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <layout class="QHBoxLayout" name="horizontalLayout_35">
                <item>
-                <widget class="QLabel" name="label">
+                <widget class="QLabel" name="label_34">
                  <property name="text">
-                  <string>Number</string>
+                  <string>Object ID</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="number">
-                 <property name="minimum">
-                  <number>2000</number>
-                 </property>
-                 <property name="maximum">
-                  <number>6000</number>
-                 </property>
-                </widget>
+                <widget class="QComboBox" name="objectsID"/>
                </item>
               </layout>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout">
+              <layout class="QVBoxLayout" name="verticalLayout_8">
                <item>
-                <widget class="QLabel" name="label_36">
-                 <property name="text">
-                  <string>&lt;b&gt;Airplanes&lt;/b&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QSpinBox" name="airplanesSB">
-                 <property name="maximum">
-                  <number>6000</number>
-                 </property>
-                 <property name="value">
-                  <number>500</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_5">
-               <item>
-                <widget class="QLabel" name="label_3">
-                 <property name="text">
-                  <string>Max. Velocity (km/h)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="MaxVel">
-                 <property name="minimum">
-                  <double>900.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>8000.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>8000.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_6">
-               <item>
-                <widget class="QLabel" name="label_9">
-                 <property name="text">
-                  <string>Min. Velocity (km/h)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="MinVel">
-                 <property name="minimum">
-                  <double>900.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>8000.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_7">
-               <item>
-                <widget class="QLabel" name="label_10">
-                 <property name="text">
-                  <string>Max. Acceleration (m/s)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="MaxAccel">
-                 <property name="value">
-                  <double>1.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_8">
-               <item>
-                <widget class="QLabel" name="label_11">
-                 <property name="text">
-                  <string>Min. Acceleration (m/s)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="MinAccel"/>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_12">
-               <item>
-                <widget class="QLabel" name="label_6">
-                 <property name="text">
-                  <string>Max. Altitude (km)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="MaxAlt">
-                 <property name="maximum">
-                  <double>112.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_13">
-               <item>
-                <widget class="QLabel" name="label_7">
-                 <property name="text">
-                  <string>Min. Altitude (km)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="MinAlt"/>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_39">
-               <item>
-                <widget class="QLabel" name="label_37">
-                 <property name="text">
-                  <string>&lt;b&gt;Helicopters&lt;/b&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QSpinBox" name="helicoptersSB">
-                 <property name="maximum">
-                  <number>6000</number>
-                 </property>
-                 <property name="value">
-                  <number>500</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_9">
-               <item>
-                <widget class="QLabel" name="label_12">
-                 <property name="text">
-                  <string>Rotation Angle (RA)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="RA">
-                 <property name="maximum">
-                  <double>360.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_10">
-               <item>
-                <widget class="QLabel" name="label_4">
-                 <property name="text">
-                  <string>RA Starting Time</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="RAST">
-                 <property name="maximum">
-                  <double>86400.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_37">
-               <item>
-                <widget class="QLabel" name="label_38">
-                 <property name="text">
-                  <string>&lt;b&gt;Cars&lt;/b&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QSpinBox" name="carsSB">
-                 <property name="maximum">
-                  <number>6000</number>
-                 </property>
-                 <property name="value">
-                  <number>500</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_38">
-               <item>
-                <widget class="QLabel" name="label_39">
-                 <property name="text">
-                  <string>&lt;b&gt;Ships&lt;/b&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QSpinBox" name="shipsSB">
-                 <property name="maximum">
-                  <number>6000</number>
-                 </property>
-                 <property name="value">
-                  <number>500</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_32">
-               <item>
-                <widget class="QLabel" name="label_41">
-                 <property name="text">
-                  <string>Max. Depth (m)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QSpinBox" name="spinBox">
-                 <property name="maximum">
-                  <number>600</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_41">
-               <item>
-                <widget class="QLabel" name="label_42">
-                 <property name="text">
-                  <string>Min. Depth (m)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QSpinBox" name="spinBox_4">
-                 <property name="maximum">
-                  <number>600</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_11">
-               <item>
-                <widget class="QLabel" name="label_5">
-                 <property name="text">
-                  <string>Initial Instant (h)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QSpinBox" name="initTime">
-                 <property name="maximum">
-                  <number>24</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_40">
-               <item>
-                <widget class="QLabel" name="label_40">
-                 <property name="text">
-                  <string>Life Time (h)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QSpinBox" name="lifeTime">
-                 <property name="maximum">
-                  <number>24</number>
-                 </property>
-                 <property name="value">
-                  <number>24</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_3">
-               <item>
-                <widget class="QLabel" name="label_2">
-                 <property name="text">
-                  <string>Moving Pattern</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QComboBox" name="airMovingPattern">
+                <layout class="QHBoxLayout" name="horizontalLayout_36">
                  <item>
-                  <property name="text">
-                   <string>Constant Velocity</string>
-                  </property>
+                  <widget class="QLabel" name="label_35">
+                   <property name="text">
+                    <string>Object Type</string>
+                   </property>
+                  </widget>
                  </item>
                  <item>
-                  <property name="text">
-                   <string>Constant Acceleration</string>
-                  </property>
+                  <widget class="QPlainTextEdit" name="objectType">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>27</height>
+                    </size>
+                   </property>
+                   <property name="documentTitle">
+                    <string/>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                   <property name="plainText">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_34">
+                 <item>
+                  <widget class="QLabel" name="label_31">
+                   <property name="text">
+                    <string>Start Time</string>
+                   </property>
+                  </widget>
                  </item>
                  <item>
-                  <property name="text">
-                   <string>Constant Deceleration</string>
-                  </property>
+                  <widget class="QPlainTextEdit" name="objectST">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>27</height>
+                    </size>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
                  </item>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_4">
-               <item>
-                <widget class="QLabel" name="label_8">
-                 <property name="text">
-                  <string>Pattern Switch Time (s)</string>
-                 </property>
-                </widget>
+                </layout>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBoxAirPST">
-                 <property name="maximum">
-                  <number>24</number>
-                 </property>
-                 <property name="value">
-                  <number>1</number>
-                 </property>
-                </widget>
+                <layout class="QHBoxLayout" name="horizontalLayout_33">
+                 <item>
+                  <widget class="QLabel" name="label_27">
+                   <property name="text">
+                    <string>End Time</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPlainTextEdit" name="objectET">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>27</height>
+                    </size>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
               </layout>
-             </item>
-             <item>
-              <widget class="QPushButton" name="AddPattern">
-               <property name="text">
-                <string>Add Pattern</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QTableView" name="patternTable">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>200</height>
-                </size>
-               </property>
-              </widget>
              </item>
             </layout>
            </widget>
           </item>
          </layout>
-        </widget>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="trajectoryHLayout">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetMinimumSize</enum>
-      </property>
-      <item>
-       <widget class="QGroupBox" name="groupBox_4">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>300</width>
-          <height>197</height>
-         </size>
-        </property>
-        <property name="title">
-         <string>Trajectory</string>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
-        </property>
-        <property name="checkable">
-         <bool>false</bool>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_9">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_35">
-           <item>
-            <widget class="QLabel" name="label_34">
-             <property name="text">
-              <string>Object ID</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="objectsID"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout_8">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_36">
-             <item>
-              <widget class="QLabel" name="label_35">
-               <property name="text">
-                <string>Object Type</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPlainTextEdit" name="objectType">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>27</height>
-                </size>
-               </property>
-               <property name="documentTitle">
-                <string/>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-               <property name="plainText">
-                <string/>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_34">
-             <item>
-              <widget class="QLabel" name="label_31">
-               <property name="text">
-                <string>Start Time</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPlainTextEdit" name="objectST">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>27</height>
-                </size>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_33">
-             <item>
-              <widget class="QLabel" name="label_27">
-               <property name="text">
-                <string>End Time</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPlainTextEdit" name="objectET">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>27</height>
-                </size>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>

@@ -31,7 +31,6 @@ SOURCES += \
     circularlist.cpp \
     node.cpp \
     movingpattern.cpp \
-    objectfeature.cpp \
     datamanager.cpp \
     airplane.cpp \
     helicopter.cpp \
@@ -39,7 +38,8 @@ SOURCES += \
     ship.cpp \
     canvas.cpp \
     coordinates.cpp \
-    objectgenerator.cpp
+    objectgenerator.cpp \
+    airobject.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -48,7 +48,6 @@ HEADERS += \
     circularlist.h \
     node.h \
     movingpattern.h \
-    objectfeature.h \
     datamanager.h \
     airplane.h \
     helicopter.h \
@@ -56,7 +55,8 @@ HEADERS += \
     ship.h \
     canvas.h \
     coordinates.h \
-    objectgenerator.h
+    objectgenerator.h \
+    airobject.h
 
 FORMS += \
         mainwindow.ui

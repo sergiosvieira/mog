@@ -5,6 +5,9 @@
 
 class Ship: public Object
 {
+protected:
+    double maxDepth = 0.0;
+    double minDepth = 0.0;
 public:
     Ship();
     Ship
@@ -15,6 +18,10 @@ public:
         unsigned int lifeTime,
         const Vector &acceleration
     );
+    void setMaxDepth(double value);
+    double getMaxDepth() const;
+    void setMinDepth(double value);
+    double getMinDepth() const;
 };
 
 #endif // SHIP_H

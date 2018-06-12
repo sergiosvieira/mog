@@ -48,9 +48,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    airCanvas = new Canvas();
+
+
+    airCanvas = new Canvas(this);
     airCanvas->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     ui->air_hlayout->addWidget(airCanvas);
+
     this->chart = new QChart();
     QValueAxis* axisX = new QValueAxis();
     axisX->setRange(0, 23);
@@ -95,12 +98,6 @@ void MainWindow::paintEvent(QPaintEvent *event)
     }
 }
 
-void MainWindow::adjustAll()
-{
-
-}
-
-
 void MainWindow::on_btn_air_generate_clicked()
 {
     for (Object* object: this->objects)
@@ -108,12 +105,9 @@ void MainWindow::on_btn_air_generate_clicked()
         if (object != nullptr) delete object;
     }
     this->objects.clear();
-    double maxVel = this->ui->MaxVel->value();
-    double minVel = this->ui->MinVel->value();
-    double maxAccel = this->ui->MaxAccel->value();
-    double minAccel = this->ui->MinAccel->value();
     unsigned int initialTime = this->ui->initTime->value();
     unsigned int lifeTime = this->ui->lifeTime->value();
+
     unsigned int total = this->ui->number->value();
     unsigned int airplanes = this->ui->airplanesSB->value();
     unsigned int helicopters= this->ui->helicoptersSB->value();
@@ -135,22 +129,60 @@ void MainWindow::on_btn_air_generate_clicked()
     }
     for (int i = 0; i < this->ui->airplanesSB->value(); ++i)
     {
-        Object* object = ObjectGenerator::generate(World, ObjectType::AirPlane, maxVel, minVel, maxAccel, minAccel, initialTime, lifeTime);
+        ObjectType type = ObjectType::AirPlane;
+        Object* object = ObjectGenerator::generate(World,
+                                                   type,
+                                                   getMaxVelocity(type),
+                                                   getMinVelocity(type),
+                                                   getMaxAcceleration(type),
+                                                   getMinAcceleration(type),
+                                                   initialTime, lifeTime);
+        ((AirPlane*)object)->setMaxAltitude(getMaxAltitude(type));
+        ((AirPlane*)object)->setMinAltitude(getMinAltitude(type));
         this->objects.push_back(object);
     }
     for (int i = 0; i < this->ui->helicoptersSB->value(); ++i)
     {
-        Object* object = ObjectGenerator::generate(World, ObjectType::Helicopter, maxVel, minVel, maxAccel, minAccel, initialTime, lifeTime);
+        ObjectType type = ObjectType::Helicopter;
+        Object* object = ObjectGenerator::generate(World,
+                                                   type,
+                                                   getMaxVelocity(type),
+                                                   getMinVelocity(type),
+                                                   getMaxAcceleration(type),
+                                                   getMinAcceleration(type),
+                                                   initialTime, lifeTime);
+
+        ((Helicopter*)object)->setMaxAltitude(getMaxAltitude(type));
+        ((Helicopter*)object)->setMinAltitude(getMinAltitude(type));
+        ((Helicopter*)object)->setRotationAngle(ui->RA->value());
+        ((Helicopter*)object)->setRotationStart(ui->RAST->value());
         this->objects.push_back(object);
     }
     for (int i = 0; i < this->ui->carsSB->value(); ++i)
     {
-        Object* object = ObjectGenerator::generate(World, ObjectType::Car, maxVel, minVel, maxAccel, minAccel, initialTime, lifeTime);
+        ObjectType type = ObjectType::Car;
+        Object* object = ObjectGenerator::generate(World,
+                                                   type,
+                                                   getMaxVelocity(type),
+                                                   getMinVelocity(type),
+                                                   getMaxAcceleration(type),
+                                                   getMinAcceleration(type),
+                                                   initialTime, lifeTime);
+
         this->objects.push_back(object);
     }
     for (int i = 0; i < this->ui->shipsSB->value(); ++i)
     {
-        Object* object = ObjectGenerator::generate(World, ObjectType::Ship, maxVel, minVel, maxAccel, minAccel, initialTime, lifeTime);
+        ObjectType type = ObjectType::Ship;
+        Object* object = ObjectGenerator::generate(World,
+                                                   type,
+                                                   getMaxVelocity(type),
+                                                   getMinVelocity(type),
+                                                   getMaxAcceleration(type),
+                                                   getMinAcceleration(type),
+                                                   initialTime, lifeTime);
+        ((Ship*)object)->setMaxDepth(getMaxDepth(type));
+        ((Ship*)object)->setMinDepth(getMinDepth(type));
         this->objects.push_back(object);
     }
     QStandardItemModel* model = (QStandardItemModel*)this->ui->patternTable->model();
@@ -197,7 +229,15 @@ void MainWindow::on_btn_air_generate_clicked()
                 newPosition = p.first;
                 newPosition += veloc;
             }
-            dataManager.setData(t, object->getID(), std::make_pair(newPosition, veloc));
+            if (t >= object->getInitialTime()
+                    && t <= object->getLifeTime())
+            {
+                dataManager.setData(t, object->getID(), std::make_pair(newPosition, veloc));
+            }
+            else
+            {
+                dataManager.setData(t, object->getID(), std::make_pair(object->getPosition(), Vector(0.0, 0.0)));
+            }
         }
     }
     this->on_objectsID_activated(0);
@@ -272,3 +312,174 @@ void MainWindow::on_objectsID_activated(int index)
         this->chartView->repaint();
     }
 }
+
+double MainWindow::getMaxVelocity(const ObjectType &type)
+{
+    switch (type)
+    {
+    case ObjectType::AirPlane:
+        return this->ui->maxVelAir->value();
+        break;
+    case ObjectType::Helicopter:
+        return this->ui->maxVelHeli->value();
+        break;
+    case ObjectType::Car:
+        return this->ui->maxVelHeli->value();
+        break;
+    case ObjectType::Ship:
+        return this->ui->maxVelHeli->value();
+        break;
+    }
+    return 0.0;
+}
+
+double MainWindow::getMinVelocity(const ObjectType &type)
+{
+    switch (type)
+    {
+    case ObjectType::AirPlane:
+        return this->ui->minVelAir->value();
+        break;
+    case ObjectType::Helicopter:
+        return this->ui->minVelHeli->value();
+        break;
+    case ObjectType::Car:
+        return this->ui->minVelCar->value();
+        break;
+    case ObjectType::Ship:
+        return this->ui->minVelShip->value();
+        break;
+    }
+    return 0.0;
+}
+
+double MainWindow::getMaxAcceleration(const ObjectType &type)
+{
+    switch (type)
+    {
+    case ObjectType::AirPlane:
+        return this->ui->maxAccelAir->value();
+        break;
+    case ObjectType::Helicopter:
+        return this->ui->maxAccelHeli->value();
+        break;
+    case ObjectType::Car:
+        return this->ui->maxAccelCar->value();
+        break;
+    case ObjectType::Ship:
+        return this->ui->maxAccelShip->value();
+        break;
+    }
+    return 0.0;
+}
+
+double MainWindow::getMinAcceleration(const ObjectType &type)
+{
+    switch (type)
+    {
+    case ObjectType::AirPlane:
+        return this->ui->minAccelAir->value();
+        break;
+    case ObjectType::Helicopter:
+        return this->ui->minAccelHeli->value();
+        break;
+    case ObjectType::Car:
+        return this->ui->minAccelCar->value();
+        break;
+    case ObjectType::Ship:
+        return this->ui->minAccelShip->value();
+        break;
+    }
+    return 0.0;
+}
+
+double MainWindow::getMaxAltitude(const ObjectType &type)
+{
+    switch (type)
+    {
+    case ObjectType::AirPlane:
+        return this->ui->maxAltAir->value();
+        break;
+    case ObjectType::Helicopter:
+        return this->ui->maxAltHeli->value();
+        break;
+    case ObjectType::Car:
+        return 0.0;
+        break;
+    case ObjectType::Ship:
+        return 0.0;
+        break;
+    }
+    return 0.0;
+}
+
+double MainWindow::getMinAltitude(const ObjectType &type)
+{
+    switch (type)
+    {
+    case ObjectType::AirPlane:
+        return this->ui->minAltAir->value();
+        break;
+    case ObjectType::Helicopter:
+        return this->ui->minAltHeli->value();
+        break;
+    case ObjectType::Car:
+        return 0.0;
+        break;
+    case ObjectType::Ship:
+        return 0.0;
+        break;
+    }
+    return 0.0;
+}
+
+double MainWindow::getMaxDepth(const ObjectType &type)
+{
+    switch (type)
+    {
+    case ObjectType::AirPlane:
+        return 0.0;
+        break;
+    case ObjectType::Helicopter:
+        return 0.0;
+        break;
+    case ObjectType::Car:
+        return 0.0;
+        break;
+    case ObjectType::Ship:
+        return this->ui->maxDepthShip->value();
+        break;
+    }
+    return 0.0;
+}
+
+double MainWindow::getMinDepth(const ObjectType &type)
+{
+    switch (type)
+    {
+    case ObjectType::AirPlane:
+        return 0.0;
+        break;
+    case ObjectType::Helicopter:
+        return 0.0;
+        break;
+    case ObjectType::Car:
+        return 0.0;
+        break;
+    case ObjectType::Ship:
+        return this->ui->minDepthShip->value();
+        break;
+    }
+    return 0.0;
+}
+
+unsigned int MainWindow::getInitialTime()
+{
+    return this->ui->initTime->value();
+}
+
+unsigned int MainWindow::getLifeTime()
+{
+    return this->ui->lifeTime->value();
+}
+

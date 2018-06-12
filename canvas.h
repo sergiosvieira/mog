@@ -18,6 +18,7 @@ protected:
     void drawShip(const Object& object, const Coordinates& position);
 public:
     Canvas();
+    Canvas(QWidget* parent);
     QImage* getCanvas();
     void paintEvent(QPaintEvent* event);
     void clear();

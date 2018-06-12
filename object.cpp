@@ -80,3 +80,13 @@ MovingPattern Object::getPattern(int instant)
     }
     return this->lastPattern;
 }
+
+void Object::setActivated(bool flag)
+{
+    this->isActivated_ = flag;
+}
+
+bool Object::isActivated() const
+{
+    return this->isActivated_;
+}

@@ -10,7 +10,7 @@
 
 unsigned int ObjectGenerator::id = 0;
 
-double rndMinMax(uint16_t min, uint16_t max)
+double rndMinMax(double min, double max)
 {
     std::uniform_real_distribution<double> urd(min, max);
     return urd(eng);
@@ -34,7 +34,7 @@ Object *ObjectGenerator::generate(const QRect& world, ObjectType type, double ma
     double rndX = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
     double rndY = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
     Object * object = nullptr;
-    Coordinates randomPosition(rndMinMax(0, world.width()), rndMinMax(0, world.height()));
+    Coordinates randomPosition(rndMinMax(0., 1.) * world.width(), rndMinMax(0., 1.) * world.height());
     Vector randomVelocity(rndMinMax(minVelX, maxVelX) * rndX, rndMinMax(minVelY, maxVelY) * rndY);
     Vector randomAcceleration(rndMinMax(minAccelX, maxAccelX), rndMinMax(minAccelY, maxAccelY));
     switch (type)
