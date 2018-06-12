@@ -6,7 +6,9 @@
 #include <QtCharts/QChart>
 #include <QtCharts/QChartView>
 #include <QtCharts/QValueAxis>
+#include <QtWidgets>
 #include <QMessageBox>
+#include <QFile>
 #include <random>
 #include "canvas.h"
 #include "airplane.h"
@@ -483,3 +485,44 @@ unsigned int MainWindow::getLifeTime()
     return this->ui->lifeTime->value();
 }
 
+
+void MainWindow::on_pushButton_clicked()
+{
+    QString output = QFileDialog::getSaveFileName(this, tr("Save positions"),"",
+                                                  tr("Positions (*.csv);;All Files (*)"));
+    if (!output.isEmpty())
+    {
+        QFile file(output);
+        if (!file.open(QIODevice::WriteOnly)) {
+            QMessageBox::information(this, tr("Unable to open file"),
+                file.errorString());
+            return;
+        }
+        QTextStream out(&file);
+        out << "id;type;";
+        for (int i = 0; i < 24; ++i)
+        {
+            out << "t" << i << "px;"
+                << "t" << i << "py";
+            if (i < 22) out << ";";
+        }
+        out << "\r\n";
+        for (auto object: this->objects)
+        {
+            out << object->getID()
+                << ";"
+                << int(object->getType())
+                << ";";
+            for (int i = 0; i < 24; ++i)
+            {
+                out << this->dataManager.getData(i, object->getID()).first.getX()
+                    << ";"
+                    << this->dataManager.getData(i, object->getID()).first.getY();
+                if (i < 22) out << ";";
+            }
+            out << "\r\n";
+        }
+        file.close();
+        QMessageBox::information(this, tr("Export to CSV"), tr("csv file saved!"));
+    }
+}

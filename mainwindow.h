@@ -61,6 +61,8 @@ private slots:
 
     void on_objectsID_activated(int index);
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
