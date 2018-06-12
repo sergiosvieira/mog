@@ -9,11 +9,13 @@ Object::Object
 (const Coordinates &position,
     const Vector &velocity,
     unsigned int initialTime,
+    unsigned int lifeTime,
     const Vector &acceleration,
     ObjectType type
 ): position(position),
     velocity(velocity),
     initialTime(initialTime),
+    lifeTime(lifeTime),
     acceleration(acceleration),
     type(type)
 {
@@ -50,7 +52,31 @@ unsigned int Object::getID() const
     return this->id;
 }
 
+unsigned int Object::getInitialTime() const
+{
+    return this->initialTime;
+}
+
+unsigned int Object::getLifeTime() const
+{
+    return this->lifeTime;
+}
+
 void Object::setID(unsigned int id)
 {
     this->id = id;
+}
+
+void Object::addPattern(const MovingPattern &pattern, int instant)
+{
+    this->patterns[instant] = pattern;
+}
+
+MovingPattern Object::getPattern(int instant)
+{
+    if (this->patterns.count(instant) > 0)
+    {
+        this->lastPattern = this->patterns[instant];
+    }
+    return this->lastPattern;
 }

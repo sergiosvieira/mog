@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -38,7 +38,8 @@ SOURCES += \
     car.cpp \
     ship.cpp \
     canvas.cpp \
-    coordinates.cpp
+    coordinates.cpp \
+    objectgenerator.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -54,7 +55,8 @@ HEADERS += \
     car.h \
     ship.h \
     canvas.h \
-    coordinates.h
+    coordinates.h \
+    objectgenerator.h
 
 FORMS += \
         mainwindow.ui

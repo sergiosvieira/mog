@@ -64,6 +64,7 @@ QImage *Canvas::getCanvas()
 
 void Canvas::paintEvent(QPaintEvent *event)
 {
+    QWidget::paintEvent(event);
     if (this->image)
     {
         QPainter painter(this);

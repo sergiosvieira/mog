@@ -7,12 +7,12 @@ DataManager::DataManager()
 
 }
 
-void DataManager::setData(int time, int objectID, const Coordinates& position)
+void DataManager::setData(int time, int objectID, const Pair& pair_)
 {
-    this->data[time][objectID] = position;
+    this->data[time][objectID] = pair_;
 }
 
-Coordinates DataManager::getData(int time, int objectID)
+Pair DataManager::getData(int time, int objectID)
 {
     if (this->data.count(time) > 0)
     {
@@ -21,5 +21,5 @@ Coordinates DataManager::getData(int time, int objectID)
             return this->data[time][objectID];
         }
     }
-    return Coordinates();
+    return Pair();
 }
