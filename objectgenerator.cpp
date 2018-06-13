@@ -31,11 +31,9 @@ Object *ObjectGenerator::generate(const QRect& world, ObjectType type, double ma
     double maxAccelY = rndMinMax(minAccelX, maxAcceleration);
     if (maxAccelX > maxAcceleration) maxAccelX = maxAcceleration;
     if (maxAccelY > maxAcceleration) maxAccelY = maxAcceleration;
-    double rndX = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
-    double rndY = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
     Object * object = nullptr;
     Coordinates randomPosition(rndMinMax(0., 1.) * world.width(), rndMinMax(0., 1.) * world.height());
-    Vector randomVelocity(rndMinMax(minVelX, maxVelX) * rndX, rndMinMax(minVelY, maxVelY) * rndY);
+    Vector randomVelocity(rndMinMax(minVelX, maxVelX), rndMinMax(minVelY, maxVelY));
     Vector randomAcceleration(rndMinMax(minAccelX, maxAccelX), rndMinMax(minAccelY, maxAccelY));
     switch (type)
     {
@@ -53,5 +51,8 @@ Object *ObjectGenerator::generate(const QRect& world, ObjectType type, double ma
         break;
     }
     object->setID(id++);
+    double rndX = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
+    double rndY = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
+    object->setDirection(Vector(rndX, rndY));
     return object;
 }

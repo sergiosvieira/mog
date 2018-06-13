@@ -2,6 +2,7 @@
 #define OBJECT_H
 
 #include <map>
+#include <vector>
 #include "vector.h"
 #include "coordinates.h"
 
@@ -51,13 +52,15 @@ public:
     Vector getVelocity() const;
     ObjectType getType() const;
     Vector getAcceleraton() const;
+    void setDirection(const Vector& u);
     Vector getDirection() const;
     unsigned int getID() const;
     unsigned int getInitialTime() const;
     unsigned int getLifeTime() const;
     void setID(unsigned int id);
-    void addPattern(const MovingPattern& pattern, int instant);
-    MovingPattern getPattern(int instant);
+    void addPattern(const MovingPattern& pattern, int time);
+    MovingPattern getPattern(int time);
+    std::vector<int> getAllPatternTime();
     void setActivated(bool flag);
     bool isActivated() const;
 };

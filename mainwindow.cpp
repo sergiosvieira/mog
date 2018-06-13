@@ -223,13 +223,21 @@ void MainWindow::on_btn_air_generate_clicked()
             {
                 MovingPattern pattern = object->getPattern(t);
                 Vector accel = object->getAcceleraton();
-                if (pattern == MovingPattern::Const_Velocity) accel *= 0.0;
-                else if (pattern == MovingPattern::Const_Deceleration) accel *= -1.0;
-                accel *= t;                
-                veloc += accel;
+                accel *= 3.6;
+                if (pattern == MovingPattern::Const_Velocity)
+                {
+                    accel *= 0.0;
+                }
+                else if (pattern == MovingPattern::Const_Deceleration)
+                {
+                    accel *= -1.0;
+                }
                 Pair p = dataManager.getData(t - 1, object->getID());
                 newPosition = p.first;
-                newPosition += veloc;
+                veloc = p.second;
+                veloc += accel;
+                newPosition.setX(newPosition.getX() + veloc.getX() * object->getDirection().getX());
+                newPosition.setY(newPosition.getY() + veloc.getY() * object->getDirection().getY());
             }
             if (t >= object->getInitialTime()
                     && t <= object->getLifeTime())
@@ -238,7 +246,8 @@ void MainWindow::on_btn_air_generate_clicked()
             }
             else
             {
-                dataManager.setData(t, object->getID(), std::make_pair(object->getPosition(), Vector(0.0, 0.0)));
+                Pair p = dataManager.getData(t, object->getID());
+                dataManager.setData(t, object->getID(), std::make_pair(p.first, Vector(0.0, 0.0)));
             }
         }
     }
@@ -307,7 +316,7 @@ void MainWindow::on_objectsID_activated(int index)
             Vector vel = p.second;
             this->series->append(t, vel.length());
         }
-        this->chart->setTitle(QString("Object %1 - Instant x Velocity").arg(object->getID()));
+        this->chart->setTitle(QString("Object %1 - Velocity x Time").arg(object->getID()));
         this->chart->addSeries(this->series);
         this->chart->createDefaultAxes();;
         this->chart->legend()->setVisible(false);
@@ -485,6 +494,63 @@ unsigned int MainWindow::getLifeTime()
     return this->ui->lifeTime->value();
 }
 
+QString object2str(Object* object)
+{
+    switch (object->getType())
+    {
+        case ObjectType::AirPlane:
+            return QString("Airplane_%0").arg(object->getID());
+        case ObjectType::Helicopter:
+            return QString("Helicopter_%0").arg(object->getID());
+        case ObjectType::Car:
+            return QString("Car_%0").arg(object->getID());
+        case ObjectType::Ship:
+            return QString("Ship_%0").arg(object->getID());
+    }
+    return "";
+}
+
+std::pair<double, double> objectAltitude(Object* object)
+{
+    switch (object->getType())
+    {
+        case ObjectType::AirPlane:
+        case ObjectType::Helicopter:
+        {
+            AirObject *air = ((AirObject*)object);
+            return std::make_pair(air->getMaxAltitude(), air->getMinAltitude());
+        }
+    }
+    return std::make_pair(0.0, 0.0);
+}
+
+std::pair<double, double> objectDepth(Object* object)
+{
+    switch (object->getType())
+    {
+        case ObjectType::Ship:
+        {
+            Ship *ship = ((Ship*)object);
+            return std::make_pair(ship->getMaxDepth(), ship->getMinDepth());
+        }
+    }
+    return std::make_pair(0.0, 0.0);
+}
+
+QString pattern2Str(MovingPattern pattern)
+{
+    switch (pattern)
+    {
+        case MovingPattern::Const_Velocity:
+            return "Constant_Velocity";
+        case MovingPattern::Const_Acceleration:
+            return "Constant_Acceleration";
+        case MovingPattern::Const_Deceleration:
+            return "Constant_Deceleration";
+    }
+    return "";
+}
+
 
 void MainWindow::on_pushButton_clicked()
 {
@@ -499,28 +565,43 @@ void MainWindow::on_pushButton_clicked()
             return;
         }
         QTextStream out(&file);
-        out << "id;type;";
-        for (int i = 0; i < 24; ++i)
-        {
-            out << "t" << i << "px;"
-                << "t" << i << "py";
-            if (i < 22) out << ";";
-        }
-        out << "\r\n";
+        out << "object_name,position_x,position_y,velocity_x,velocity_y,acceleration_x,acceleration_y,max_altitude,min_altitude,max_depth,min_depth,initial_time,end_time,pattern_switch_time,moving_pattern\r\n";
         for (auto object: this->objects)
         {
-            out << object->getID()
-                << ";"
-                << int(object->getType())
-                << ";";
-            for (int i = 0; i < 24; ++i)
+            std::vector<int> times = object->getAllPatternTime();
+            for (auto t: times)
             {
-                out << this->dataManager.getData(i, object->getID()).first.getX()
-                    << ";"
-                    << this->dataManager.getData(i, object->getID()).first.getY();
-                if (i < 22) out << ";";
+                out << object2str(object)
+                    << ","
+                    << object->getPosition().getX()
+                    << ","
+                    << object->getPosition().getY()
+                    << ","
+                    << object->getVelocity().getX()
+                    << ","
+                    << object->getVelocity().getY()
+                    << ","
+                    << object->getAcceleraton().getX()
+                    << ","
+                    << object->getAcceleraton().getY()
+                    << ","
+                    << objectAltitude(object).first // max altitude
+                    << ","
+                    << objectAltitude(object).second // min altitude
+                    << ","
+                    << objectDepth(object).first // max depth
+                    << ","
+                    << objectDepth(object).second // min depth
+                    << ","
+                    << object->getInitialTime()
+                    << ","
+                    << object->getLifeTime()
+                    << ","
+                    << t
+                    << ","
+                    << pattern2Str(object->getPattern(t));
+                 out << "\r\n";
             }
-            out << "\r\n";
         }
         file.close();
         QMessageBox::information(this, tr("Export to CSV"), tr("csv file saved!"));

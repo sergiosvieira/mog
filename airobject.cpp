@@ -35,6 +35,6 @@ void AirObject::setMinAltitude(double value)
 
 double AirObject::getMinAltitude() const
 {
-    return this->getMinAltitude();
+    return this->minAltitude;
 }
 
