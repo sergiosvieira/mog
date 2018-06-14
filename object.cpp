@@ -11,13 +11,13 @@ Object::Object
 (const Coordinates &position,
     const Vector &velocity,
     unsigned int initialTime,
-    unsigned int lifeTime,
+    unsigned int endTime,
     const Vector &acceleration,
     ObjectType type
 ): position(position),
     velocity(velocity),
     initialTime(initialTime),
-    lifeTime(lifeTime),
+    endTime(endTime),
     acceleration(acceleration),
     type(type)
 {
@@ -64,9 +64,9 @@ unsigned int Object::getInitialTime() const
     return this->initialTime;
 }
 
-unsigned int Object::getLifeTime() const
+unsigned int Object::getEndTime() const
 {
-    return this->lifeTime;
+    return this->endTime;
 }
 
 void Object::setID(unsigned int id)
@@ -96,14 +96,4 @@ std::vector<int> Object::getAllPatternTime()
         result.push_back(kv.first);
     }
     return result;
-}
-
-void Object::setActivated(bool flag)
-{
-    this->isActivated_ = flag;
-}
-
-bool Object::isActivated() const
-{
-    return this->isActivated_;
 }

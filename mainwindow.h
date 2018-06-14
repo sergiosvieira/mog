@@ -15,6 +15,7 @@ static const QRect World{0, 0, 192000, 192000};
 #include "datamanager.h"
 
 class Canvas;
+class QTableView;
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -36,6 +37,7 @@ protected:
     QChart *chart;
     QLineSeries *series;
     QChartView *chartView;
+    QTableView *positionTable = nullptr;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -63,6 +65,7 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void keyPressEvent(QKeyEvent *event);
 private:
     Ui::MainWindow *ui;
 };

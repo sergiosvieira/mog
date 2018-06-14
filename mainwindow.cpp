@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QListWidgetItem>
+#include <QTableView>
 #include <QStandardItemModel>
 #include <QtCharts/QChart>
 #include <QtCharts/QChartView>
@@ -65,6 +66,18 @@ MainWindow::MainWindow(QWidget *parent) :
     this->chartView->chart()->setAxisX(axisX);
     ui->trajectoryHLayout->addWidget(this->chartView);
 
+    this->positionTable = new QTableView(this);
+    QStandardItemModel* posModel = new QStandardItemModel(this);
+    posModel->insertColumn(0, QModelIndex());
+    posModel->insertColumn(1, QModelIndex());
+    posModel->insertColumn(2, QModelIndex());
+    posModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Time"));
+    posModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Position X"));
+    posModel->setHeaderData(2, Qt::Horizontal, QObject::tr("Position Y"));
+    this->positionTable->setModel(posModel);
+    ui->tab_2->layout()->addWidget(this->positionTable);
+    connect(this->positionTable, SIGNAL(keyPressEvent()), SLOT(keyPressEvent()));
+
     QAbstractItemModel* model = this->ui->patternTable->model();
     if (model == nullptr)
     {
@@ -73,7 +86,7 @@ MainWindow::MainWindow(QWidget *parent) :
         model->insertColumn(0, QModelIndex());
         model->insertColumn(1, QModelIndex());
         model->setHeaderData(0, Qt::Horizontal, QObject::tr("Pattern"));
-        model->setHeaderData(1, Qt::Horizontal, QObject::tr("Instant"));
+        model->setHeaderData(1, Qt::Horizontal, QObject::tr("Time"));
     }
 
 }
@@ -240,7 +253,7 @@ void MainWindow::on_btn_air_generate_clicked()
                 newPosition.setY(newPosition.getY() + veloc.getY() * object->getDirection().getY());
             }
             if (t >= object->getInitialTime()
-                    && t <= object->getLifeTime())
+                    && t <= object->getEndTime())
             {
                 dataManager.setData(t, object->getID(), std::make_pair(newPosition, veloc));
             }
@@ -273,7 +286,7 @@ void MainWindow::on_AddPattern_clicked()
         model->insertColumn(0, QModelIndex());
         model->insertColumn(1, QModelIndex());
         model->setHeaderData(0, Qt::Horizontal, QObject::tr("Pattern"));
-        model->setHeaderData(1, Qt::Horizontal, QObject::tr("Instant"));
+        model->setHeaderData(1, Qt::Horizontal, QObject::tr("Time"));
     }
     model->insertRow(0);
     model->setData(model->index(0, 0), this->ui->airMovingPattern->currentText());
@@ -306,7 +319,7 @@ void MainWindow::on_objectsID_activated(int index)
         }
         this->ui->objectType->setPlainText(type);
         this->ui->objectST->setPlainText(QString::number(object->getInitialTime()));
-        this->ui->objectET->setPlainText(QString::number(object->getLifeTime()));
+        this->ui->objectET->setPlainText(QString::number(object->getEndTime()));
         this->chart->removeAllSeries();
         this->series = new QLineSeries();
         for (int t = 0; t < 24; ++t)
@@ -321,6 +334,26 @@ void MainWindow::on_objectsID_activated(int index)
         this->chart->createDefaultAxes();;
         this->chart->legend()->setVisible(false);
         this->chartView->repaint();
+
+        QStandardItemModel* model = (QStandardItemModel*)this->positionTable->model();
+        if (model)
+        {
+            model->removeRows(0, 23);
+            for (int t = 0; t < 24; ++t)
+            {
+                Pair p = this->dataManager.getData(t, object->getID());
+                Coordinates pos = p.first;
+                Vector vel = p.second;
+                model->insertRow(t);
+                model->setData(model->index(t, 0), t);
+                model->setData(model->index(t, 1), pos.getX());
+                model->setData(model->index(t, 2), pos.getY());
+            }
+
+        }
+        this->ui->patternTable->resizeColumnsToContents();
+
+
     }
 }
 
@@ -565,21 +598,26 @@ void MainWindow::on_pushButton_clicked()
             return;
         }
         QTextStream out(&file);
-        out << "object_name,position_x,position_y,velocity_x,velocity_y,acceleration_x,acceleration_y,max_altitude,min_altitude,max_depth,min_depth,initial_time,end_time,pattern_switch_time,moving_pattern\r\n";
+        out << "time,object_name,position_x,position_y,velocity_x,velocity_y,acceleration_x,acceleration_y,max_altitude,min_altitude,max_depth,min_depth,initial_time,end_time,pattern_switch_time,moving_pattern\r\n";
         for (auto object: this->objects)
         {
-            std::vector<int> times = object->getAllPatternTime();
-            for (auto t: times)
+            //std::vector<int> times = object->getAllPatternTime();
+            for (int t = 0; t < 24; ++t)
             {
-                out << object2str(object)
+                Pair p = this->dataManager.getData(t, object->getID());
+                Coordinates position = p.first;
+                Vector velocity = p.second;
+                out << t
                     << ","
-                    << object->getPosition().getX()
+                    << object2str(object)
                     << ","
-                    << object->getPosition().getY()
+                    << position.getX()
                     << ","
-                    << object->getVelocity().getX()
+                    << position.getY()
                     << ","
-                    << object->getVelocity().getY()
+                    << velocity.getX()
+                    << ","
+                    << velocity.getY()
                     << ","
                     << object->getAcceleraton().getX()
                     << ","
@@ -595,7 +633,7 @@ void MainWindow::on_pushButton_clicked()
                     << ","
                     << object->getInitialTime()
                     << ","
-                    << object->getLifeTime()
+                    << object->getEndTime()
                     << ","
                     << t
                     << ","
@@ -605,5 +643,30 @@ void MainWindow::on_pushButton_clicked()
         }
         file.close();
         QMessageBox::information(this, tr("Export to CSV"), tr("csv file saved!"));
+    }
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    QModelIndexList selectedRows = this->positionTable->selectionModel()->selectedIndexes();
+    if (!selectedRows.isEmpty())
+    {
+        if (event->matches(QKeySequence::Copy))
+        {
+           QString text;
+
+           for (int i = 0; i < selectedRows.count(); ++i)
+           {
+               QStandardItemModel* model = (QStandardItemModel*)this->positionTable->model();
+               QStringList rowContents;
+               for (int j = 0; j < 3; ++j)
+               {
+                   rowContents << model->index(i,j).data().toString();
+               }
+               text += rowContents.join("\t");
+               text += "\n";
+           }
+           QApplication::clipboard()->setText(text);
+        }
     }
 }

@@ -30,13 +30,12 @@ protected:
     Coordinates position;
     Vector velocity;
     unsigned int initialTime = 0;
-    unsigned int lifeTime = 0;
+    unsigned int endTime = 0;
     Vector acceleration;
     Vector direction;
     ObjectType type;
     MapOfPatternToInstant patterns;
     MovingPattern lastPattern;
-    bool isActivated_ = false;
 public:
     Object();
     Object
@@ -56,13 +55,11 @@ public:
     Vector getDirection() const;
     unsigned int getID() const;
     unsigned int getInitialTime() const;
-    unsigned int getLifeTime() const;
+    unsigned int getEndTime() const;
     void setID(unsigned int id);
     void addPattern(const MovingPattern& pattern, int time);
     MovingPattern getPattern(int time);
     std::vector<int> getAllPatternTime();
-    void setActivated(bool flag);
-    bool isActivated() const;
 };
 
 #endif // OBJECT_H

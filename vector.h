@@ -12,11 +12,11 @@ public:
     double getX() const;
     double getY() const;
     double length() const;
-    double lenghtSqrt() const;
-    Vector normalize() const;
-    Vector perpendicularClockwise();
-    Vector perpendicularCounterClockwise();
-    double angle(const Vector& v);
+//    double lenghtSqrt() const;
+//    Vector normalize() const;
+//    Vector perpendicularClockwise();
+//    Vector perpendicularCounterClockwise();
+//    double angle(const Vector& v);
     Vector operator*(double scalar)
     {
         return Vector(this->getX() * scalar, this->getY() * scalar);
