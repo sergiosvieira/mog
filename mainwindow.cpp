@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent) :
     posModel->setHeaderData(2, Qt::Horizontal, QObject::tr("Position Y"));
     this->positionTable->setModel(posModel);
     ui->tab_2->layout()->addWidget(this->positionTable);
-    connect(this->positionTable, SIGNAL(keyPressEvent()), SLOT(keyPressEvent()));
+    //connect(this->positionTable, SIGNAL(keyPressEvent()), SLOT(keyPressEvent()));
 
     QAbstractItemModel* model = this->ui->patternTable->model();
     if (model == nullptr)
@@ -657,16 +657,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
            for (int i = 0; i < selectedRows.count(); ++i)
            {
-               QStandardItemModel* model = (QStandardItemModel*)this->positionTable->model();
-               QStringList rowContents;
-               for (int j = 0; j < 3; ++j)
-               {
-                   rowContents << model->index(i,j).data().toString();
-               }
-               text += rowContents.join("\t");
-               text += "\n";
+               QModelIndex index = selectedRows[i];
+               text += index.data().toString();
+               if (index.column() < 2) text += '\t';
+               else text += '\n';
            }
            QApplication::clipboard()->setText(text);
         }
-    }
+    } else MainWindow::keyPressEvent(event);
 }
