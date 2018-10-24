@@ -96,6 +96,10 @@ public:
     Coordinates getPosition() const;
     Vector getVelocity() const;
     ObjectType getType() const;
+    void setType(ObjectType type)
+    {
+        this->type = type;
+    }
     Vector getAcceleraton() const;
     void setDirection(const Vector& u);
     Vector getDirection() const;

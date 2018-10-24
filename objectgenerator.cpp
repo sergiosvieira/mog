@@ -147,6 +147,7 @@ Object *ObjectGenerator::generate(const QRect& world,
 //        randomVelocity.setZ(0.0);
 //        randomAcceleration.setZ(0.0);
 //    }
+
     switch (type)
     {
     case ObjectType::AirPlane:
@@ -165,7 +166,8 @@ Object *ObjectGenerator::generate(const QRect& world,
     case ObjectType::OnWater:
     case ObjectType::Underwater:
         object = new Ship(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
-    }
+    }    
+    object->setType(type);
     object->setID(id++);
     object->setDirection(Vector(rndX, rndY, rndZ));
     return object;

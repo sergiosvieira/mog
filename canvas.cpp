@@ -3,6 +3,8 @@
 #include <QPainter>
 #include <cmath>
 
+
+
 void Canvas::drawAirplane(const Object& object, const Coordinates& position)
 {
     if (this->image)
@@ -10,8 +12,36 @@ void Canvas::drawAirplane(const Object& object, const Coordinates& position)
         QPainter painter(this->image);
         double x = position.getX();
         double y = position.getY();
-        painter.setBrush(QBrush("#9494b8", Qt::SolidPattern));
-        painter.drawEllipse(x, y, 4, 4);
+        QBrush brush("#9494b8", Qt::SolidPattern);
+        switch (object.getType())
+        {
+            case ObjectType::Helicopter:
+                brush = QBrush("#a4a4b8", Qt::SolidPattern);
+            break;
+            case ObjectType::Missile:
+                brush = QBrush("#b4b4b8", Qt::SolidPattern);
+            break;
+            case ObjectType::Cargo:
+                brush = QBrush("#c4c4b8", Qt::SolidPattern);
+            break;
+            case ObjectType::Boing:
+                brush = QBrush("#d4d4b8", Qt::SolidPattern);
+            break;
+            case ObjectType::Fighter:
+                brush = QBrush("#e4e4b8", Qt::SolidPattern);
+            break;
+
+        }
+        painter.setBrush(brush);
+        //painter.drawEllipse(x, y, 4, 4);
+        static const QPoint arrow[3] =
+        {
+            QPoint(3, 3),
+            QPoint(-3, 3),
+            QPoint(0, -3)
+        };
+        painter.translate(x, y);
+        painter.drawConvexPolygon(arrow, 3);
     }
 }
 
@@ -88,6 +118,10 @@ void Canvas::draw(const Object& object, const Coordinates& position)
     switch (object.getType())
     {
     case ObjectType::AirPlane:
+    case ObjectType::Missile:
+    case ObjectType::Cargo:
+    case ObjectType::Boing:
+    case ObjectType::Fighter:
         this->drawAirplane(object, position);
         break;
     case ObjectType::Helicopter:
@@ -97,6 +131,7 @@ void Canvas::draw(const Object& object, const Coordinates& position)
         this->drawCar(object, position);
         break;
     case ObjectType::OnWater:
+    case ObjectType::Underwater:
         this->drawShip(object, position);
         break;
     }

@@ -27,7 +27,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="documentMode">
        <bool>true</bool>
@@ -74,9 +74,9 @@
                   <property name="geometry">
                    <rect>
                     <x>0</x>
-                    <y>-346</y>
-                    <width>301</width>
-                    <height>1056</height>
+                    <y>0</y>
+                    <width>281</width>
+                    <height>971</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -89,15 +89,15 @@
                       </size>
                      </property>
                      <property name="currentIndex">
-                      <number>2</number>
+                      <number>0</number>
                      </property>
                      <widget class="QWidget" name="page_3">
                       <property name="geometry">
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>262</width>
-                        <height>401</height>
+                        <width>246</width>
+                        <height>327</height>
                        </rect>
                       </property>
                       <property name="minimumSize">
@@ -134,7 +134,7 @@
                        <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_31">
                          <property name="spacing">
-                          <number>-1</number>
+                          <number>6</number>
                          </property>
                          <property name="leftMargin">
                           <number>0</number>
@@ -173,12 +173,12 @@
                            </item>
                            <item>
                             <property name="text">
-                             <string>Fighter Jet</string>
+                             <string>Boing Airplane</string>
                             </property>
                            </item>
                            <item>
                             <property name="text">
-                             <string>Boeing Airplane</string>
+                             <string>Fighter Jet</string>
                             </property>
                            </item>
                           </widget>
@@ -376,8 +376,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>277</width>
-                        <height>298</height>
+                        <width>263</width>
+                        <height>319</height>
                        </rect>
                       </property>
                       <attribute name="label">
@@ -509,8 +509,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>262</width>
-                        <height>335</height>
+                        <width>263</width>
+                        <height>319</height>
                        </rect>
                       </property>
                       <attribute name="label">

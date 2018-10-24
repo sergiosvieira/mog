@@ -257,9 +257,16 @@ void MainWindow::updateObjectList(const QString& str)
 {
     this->ui->objectsID->clear();
     ObjectType type = Object::typeFromString(str.toStdString());
+    bool flag = true;
     for (auto object: this->objects)
     {
         if (object->getType() != type) continue;
+        if (flag)
+        {
+            flag = false;
+            int index = this->ui->objectCategories->findText(str);
+            this->ui->objectCategories->setCurrentIndex(index);
+        }
         this->ui->objectsID->addItem(QString("%0 %1").arg(str).arg(object->getID()));
         MovingPattern pattern = MovingPattern::Const_Velocity;
         unsigned int instant = 0;
@@ -374,7 +381,13 @@ void MainWindow::on_btn_air_generate_clicked()
             }
         }
     }
-    this->updateObjectList("Airplane");
+    QString strType = "Airplane";
+    if (this->objects.size() > 0)
+    {
+        auto object =this->objects[0];
+        strType = QString::fromStdString(Object::stringFromType(object->getType()));
+    }
+    this->updateObjectList(strType);
 //    this->ui->objectsID->clear();
 //    for (auto object: this->objects)
 //    {
@@ -1460,15 +1473,6 @@ void MainWindow::on_landSB_valueChanged(int arg1)
 
 void MainWindow::on_navalSB_valueChanged(const QString &arg1)
 {
-    double value = this->ui->navalSB->value();
-    double remain = 100. - value;
-    if (remain > 0.)
-    {
-        double div = remain / 2.0;
-        this->ui->landSB->setValue(div);
-        this->ui->airSB->setValue(div);
-    }
-
 }
 
 void MainWindow::on_pushButton_3_clicked()
@@ -1692,6 +1696,16 @@ void MainWindow::on_objectCategories_currentIndexChanged(const QString &arg1)
 }
 
 void MainWindow::on_objectsID_currentIndexChanged(const QString &arg1)
+{
+
+}
+
+void MainWindow::on_airSB_valueChanged(const QString &arg1)
+{
+
+}
+
+void MainWindow::on_landSB_valueChanged(const QString &arg1)
 {
 
 }

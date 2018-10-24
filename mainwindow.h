@@ -106,6 +106,10 @@ private slots:
 
     void on_objectsID_currentIndexChanged(const QString &arg1);
 
+    void on_airSB_valueChanged(const QString &arg1);
+
+    void on_landSB_valueChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 
