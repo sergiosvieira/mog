@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "coordinates.h".h"
+#include "coordinates.h"
 #include "object.h"
 
 class QImage;

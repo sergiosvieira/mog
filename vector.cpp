@@ -7,10 +7,26 @@ Vector::Vector()
 
 }
 
-Vector::Vector(double x, double y)
+Vector::Vector(double x, double y, double z)
 {
     this->x = x;
     this->y = y;
+    this->z = z;
+}
+
+void Vector::setX(const double &x)
+{
+    this->x = x;
+}
+
+void Vector::setY(const double &y)
+{
+    this->y = y;
+}
+
+void Vector::setZ(const double &z)
+{
+    this->z = z;
 }
 
 double Vector::getX() const
@@ -23,9 +39,14 @@ double Vector::getY() const
     return this->y;
 }
 
+double Vector::getZ() const
+{
+    return this->z;
+}
+
 double Vector::length() const
 {
-    return sqrt(this->x * this->x + this->y * this->y);
+    return sqrt(this->x * this->x + this->y * this->y + this->z * this->z);
 }
 
 //double Vector::lenghtSqrt() const

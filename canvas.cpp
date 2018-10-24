@@ -93,10 +93,10 @@ void Canvas::draw(const Object& object, const Coordinates& position)
     case ObjectType::Helicopter:
         this->drawHelicopter(object, position);
         break;
-    case ObjectType::Car:
+    case ObjectType::Land:
         this->drawCar(object, position);
         break;
-    case ObjectType::Ship:
+    case ObjectType::OnWater:
         this->drawShip(object, position);
         break;
     }

@@ -4,12 +4,14 @@
 #
 #-------------------------------------------------
 
-QT       += core gui charts
+QT       += core gui charts datavisualization
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = mog
 TEMPLATE = app
+
+CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -21,7 +23,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-
 
 SOURCES += \
         main.cpp \
@@ -39,7 +40,12 @@ SOURCES += \
     canvas.cpp \
     coordinates.cpp \
     objectgenerator.cpp \
-    airobject.cpp
+    airobject.cpp \
+    histogram.cpp \
+    trajectory3d.cpp \
+    dragwidget.cpp \
+    graphicsview.cpp \
+    stationsetting.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -56,7 +62,22 @@ HEADERS += \
     canvas.h \
     coordinates.h \
     objectgenerator.h \
-    airobject.h
+    airobject.h \
+    histogram.h \
+    trajectory3d.h \
+    dragwidget.h \
+    graphicsview.h \
+    stationsetting.h \
+    header.h \
+    enum.h \
+    objecttype.h \
+    objecttypefactory.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    histogram.ui \
+    trajectory3d.ui \
+    stationsetting.ui
+
+RESOURCES += \
+    mog.qrc

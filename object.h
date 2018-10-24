@@ -3,6 +3,7 @@
 
 #include <map>
 #include <vector>
+#include <qpoint.h>
 #include "vector.h"
 #include "coordinates.h"
 
@@ -17,8 +18,45 @@ enum class ObjectType
 {
     AirPlane,
     Helicopter,
-    Car,
-    Ship
+    Missile,
+    Cargo,
+    Boing,
+    Fighter,
+    Land,
+    OnWater,
+    Underwater
+};
+
+
+enum class DistributionType
+{
+    Uniform,
+    Poisson,
+    Gaussian,
+    LeftSkewed,
+    RightSkewed
+};
+
+enum class DragWidgetType
+{
+    ShipNK,
+    ShipSK,
+    AirportNK,
+    AirportSK,
+    HelicopterCarNK,
+    HelicopterCarSK
+};
+
+enum class GraphicsViewType
+{
+    NK,
+    SK
+};
+
+struct Station
+{
+    DragWidgetType type;
+    QPointF pos;
 };
 
 using MapOfPatternToInstant = std::map<int, MovingPattern>;
@@ -36,6 +74,14 @@ protected:
     ObjectType type;
     MapOfPatternToInstant patterns;
     MovingPattern lastPattern;
+    GraphicsViewType areaType;
+
+public:
+    void setAreaType(GraphicsViewType type);
+    GraphicsViewType getAreaType();
+    static ObjectType typeFromString(const std::string &str);
+    static std::string stringFromType(ObjectType type);
+
 public:
     Object();
     Object

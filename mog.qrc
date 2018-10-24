@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/AirportNK.png</file>
+        <file>images/AirportSK.png</file>
+        <file>images/HelicopterCarNK.png</file>
+        <file>images/HelicopterCarSK.png</file>
+        <file>images/ShipNK.png</file>
+        <file>images/ShipSK.png</file>
+        <file>images/car_nk.png</file>
+        <file>images/car_sk.png</file>
+        <file>images/helicopter_nk.png</file>
+        <file>images/helicopter_sk.png</file>
+        <file>images/ship_nk.png</file>
+        <file>images/ship_sk.png</file>
+        <file>images/airplane_nk.png</file>
+        <file>images/airplane_sk.png</file>
+    </qresource>
+</RCC>

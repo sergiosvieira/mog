@@ -12,7 +12,7 @@ Car::Car
     unsigned int initialTime,
     unsigned int lifeTime,
     const Vector &acceleration
-): Object(position, velocity, initialTime, lifeTime, acceleration, ObjectType::Car)
+): Object(position, velocity, initialTime, lifeTime, acceleration, ObjectType::Land)
 {
 
 }
