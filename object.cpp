@@ -82,11 +82,12 @@ void Object::addPattern(const MovingPattern &pattern, int time)
 
 MovingPattern Object::getPattern(int time)
 {
-    if (this->patterns.count(time) > 0)
+    auto it = this->patterns.lower_bound(time);
+    if (it == this->patterns.end())
     {
-        this->lastPattern = this->patterns[time];
+        it = --this->patterns.end();
     }
-    return this->lastPattern;
+    return it->second;
 }
 
 std::vector<int> Object::getAllPatternTime()
@@ -123,9 +124,9 @@ ObjectType Object::typeFromString(const std::string &str)
     {
         return ObjectType::Cargo;
     }
-    else if (str == "Boing Airplane")
+    else if (str == "Boeing Airplane")
     {
-        return ObjectType::Boing;
+        return ObjectType::Boeing;
     }
     else if (str == "Fighter Jet")
     {
@@ -154,7 +155,7 @@ std::string Object::stringFromType(ObjectType type)
         {ObjectType::Helicopter, "Helicopter"},
         {ObjectType::Missile, "Missile"},
         {ObjectType::Cargo, "Cargo Aircraft"},
-        {ObjectType::Boing, "Boing Airplane"},
+        {ObjectType::Boeing, "Boeing Airplane"},
         {ObjectType::Fighter, "Fighter Jet"},
         {ObjectType::Land, "Land"},
         {ObjectType::OnWater, "On water"},

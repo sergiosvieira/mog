@@ -220,12 +220,12 @@ void MainWindow::onTrajectoryClicked()
     if (this->objects.size() == 0) {
         return;
     }
-    int index = ui->objectsID->currentIndex();
-    Object *obj = this->objects[index];
+    Object *obj = this->objectMap[ui->objectsID->currentText()];
+    if (!obj) return;
     ObjectType objType = obj->getType();
     Trajectory3D *trajectoryWindow = new Trajectory3D(this);
     trajectoryWindow->show();
-    if (objType == ObjectType::Land || objType == ObjectType::OnWater || objType == ObjectType::Underwater)
+    if (objType == ObjectType::Land || objType == ObjectType::OnWater)
     {
         std::vector<QPointF> data;
         for (int t = 0; t < this->lifetimeValue; ++t)
@@ -258,6 +258,7 @@ void MainWindow::updateObjectList(const QString& str)
     this->ui->objectsID->clear();
     ObjectType type = Object::typeFromString(str.toStdString());
     bool flag = true;
+    int index = 0;
     for (auto object: this->objects)
     {
         if (object->getType() != type) continue;
@@ -267,8 +268,8 @@ void MainWindow::updateObjectList(const QString& str)
             int index = this->ui->objectCategories->findText(str);
             this->ui->objectCategories->setCurrentIndex(index);
         }
-        this->ui->objectsID->addItem(QString("%0 %1").arg(str).arg(object->getID()));
-        MovingPattern pattern = MovingPattern::Const_Velocity;
+        this->ui->objectsID->addItem(object->getName());
+        this->objectMap[object->getName()] = object;
         unsigned int instant = 0;
         QStandardItemModel* model = (QStandardItemModel*)this->ui->patternTable->model();
         for (int i = 0; i < model->rowCount(); ++i)
@@ -276,9 +277,7 @@ void MainWindow::updateObjectList(const QString& str)
             QString patternStr = model->data(model->index(i, 0)).toString();
             QString instantStr = model->data(model->index(i, 1)).toString();
             instant = instantStr.toInt();
-            if (patternStr == "Constant Velocity") pattern = MovingPattern::Const_Velocity;
-            else if (patternStr == "Constant Acceleration") pattern = MovingPattern::Const_Acceleration;
-            else if (patternStr == "Constant Deceleration") pattern = MovingPattern::Const_Deceleration;
+            MovingPattern pattern = Pattern::patternFromString(patternStr.toStdString());
             object->addPattern(pattern, instant);
         }
     }
@@ -335,7 +334,7 @@ void MainWindow::on_btn_air_generate_clicked()
     QAbstractItemModel* model = this->ui->tableObjects->model();
     int n = this->totalObjects();
     QSet<QString> airStr = {
-        "Airplane", "Helicopter", "Missile", "Cargo Aircraft", "Boing Airplane", "Fighter Jet"
+        "Airplane", "Helicopter", "Missile", "Cargo Aircraft", "Boeing Airplane", "Fighter Jet"
     };
     QSet<QString> navalStr = {
         "On water", "Underwater"
@@ -349,12 +348,28 @@ void MainWindow::on_btn_air_generate_clicked()
         {
             for (int j = 0; j < total; ++j)
             {
-                AirPlane* ap = static_cast<AirPlane *>(ObjectGenerator::generate(World, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type), initialTime, lifeTime));
+                AirPlane* ap = static_cast<AirPlane *>(ObjectGenerator::generate(World,
+                                                                                 type,
+                                                                                 distributionType,
+                                                                                 getMaxVelocity(type),
+                                                                                 getMinVelocity(type),
+                                                                                 getMaxAcceleration(type),
+                                                                                 getMinAcceleration(type),
+                                                                                 initialTime,
+                                                                                 lifeTime));
                 ap->setMaxAltitude(getMaxAltitude(type));
                 ap->setMinAltitude(getMinAltitude(type));
                 if (strType == "Helicopter")
                 {
-                    Helicopter* hc = static_cast<Helicopter *>(ObjectGenerator::generate(World, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type), initialTime, lifeTime));
+                    Helicopter* hc = static_cast<Helicopter *>(ObjectGenerator::generate(World,
+                                                                                         type,
+                                                                                         distributionType,
+                                                                                         getMaxVelocity(type),
+                                                                                         getMinVelocity(type),
+                                                                                         getMaxAcceleration(type),
+                                                                                         getMinAcceleration(type),
+                                                                                         initialTime,
+                                                                                         lifeTime));
                     hc->setRotationAngle(ui->RA->value());
                     hc->setRotationStart(ui->RAST->value());
                 }
@@ -387,7 +402,7 @@ void MainWindow::on_btn_air_generate_clicked()
         auto object =this->objects[0];
         strType = QString::fromStdString(Object::stringFromType(object->getType()));
     }
-    this->updateObjectList(strType);
+    this->updateObjectList(strType);    
 //    this->ui->objectsID->clear();
 //    for (auto object: this->objects)
 //    {
@@ -424,7 +439,7 @@ void MainWindow::on_btn_air_generate_clicked()
                 accel *= 3.6;
                 if (pattern == MovingPattern::Const_Velocity)
                 {
-                    accel *= 0.0;
+                    accel = Vector{0., 0., 0.};
                 }
                 else if (pattern == MovingPattern::Const_Deceleration)
                 {
@@ -481,50 +496,6 @@ void MainWindow::on_AddPattern_clicked()
     this->ui->spinBoxAirPST->setValue(this->ui->spinBoxAirPST->value() + 1.);
 }
 
-void MainWindow::on_objectsID_activated(int index)
-{
-    if (this->objects.size() == 0) {
-        return;
-    }
-    Object* object = this->objects[index];
-    QString type = QString::fromStdString(Object::stringFromType(object->getType()));
-    this->ui->objectType->setPlainText(type);
-    this->ui->objectST->setPlainText(QString::number(object->getInitialTime()));
-    this->ui->objectET->setPlainText(QString::number(object->getEndTime()));
-    this->chart->removeAllSeries();
-    this->series = new QLineSeries();
-    for (int t = 0; t < lifetimeValue; ++t)
-    {
-        Pair p = this->dataManager.getData(t, object->getID());
-        Coordinates pos = p.first;
-        Vector vel = p.second;
-        this->series->append(t, vel.length());
-    }
-    this->chart->setTitle(QString("Object %1 - Velocity x Time").arg(object->getID()));
-    this->chart->addSeries(this->series);
-    this->chart->createDefaultAxes();;
-    this->chart->legend()->setVisible(false);
-    this->chartView->repaint();
-
-    QStandardItemModel* model = (QStandardItemModel*)this->positionTable->model();
-    if (model)
-    {
-        model->removeRows(0, this->lifetimeValue);
-        for (int t = 0; t < this->lifetimeValue; ++t)
-        {
-            Pair p = this->dataManager.getData(t, object->getID());
-            Coordinates pos = p.first;
-            Vector vel = p.second;
-            model->insertRow(t);
-            model->setData(model->index(t, 0), t);
-            model->setData(model->index(t, 1), pos.getX());
-            model->setData(model->index(t, 2), pos.getY());
-            model->setData(model->index(t, 3), pos.getZ());
-        }
-
-    }
-    this->ui->patternTable->resizeColumnsToContents();
-}
 
 double MainWindow::getMaxVelocity(const ObjectType &type)
 {
@@ -534,7 +505,7 @@ double MainWindow::getMaxVelocity(const ObjectType &type)
     case ObjectType::Helicopter:
     case ObjectType::Missile:
     case ObjectType::Cargo:
-    case ObjectType::Boing:
+    case ObjectType::Boeing:
     case ObjectType::Fighter:
         return this->ui->maxVelAir->value();
         break;
@@ -557,7 +528,7 @@ double MainWindow::getMinVelocity(const ObjectType &type)
     case ObjectType::Helicopter:
     case ObjectType::Missile:
     case ObjectType::Cargo:
-    case ObjectType::Boing:
+    case ObjectType::Boeing:
     case ObjectType::Fighter:
         return this->ui->minVelAir->value();
         break;
@@ -580,7 +551,7 @@ double MainWindow::getMaxAcceleration(const ObjectType &type)
     case ObjectType::Helicopter:
     case ObjectType::Missile:
     case ObjectType::Cargo:
-    case ObjectType::Boing:
+    case ObjectType::Boeing:
     case ObjectType::Fighter:
         return this->ui->maxAccelAir->value();
         break;
@@ -603,7 +574,7 @@ double MainWindow::getMinAcceleration(const ObjectType &type)
     case ObjectType::Helicopter:
     case ObjectType::Missile:
     case ObjectType::Cargo:
-    case ObjectType::Boing:
+    case ObjectType::Boeing:
     case ObjectType::Fighter:
         return this->ui->minAccelAir->value();
         break;
@@ -626,7 +597,7 @@ double MainWindow::getMaxAltitude(const ObjectType &type)
     case ObjectType::Helicopter:
     case ObjectType::Missile:
     case ObjectType::Cargo:
-    case ObjectType::Boing:
+    case ObjectType::Boeing:
     case ObjectType::Fighter:
         return this->ui->maxAltAir->value();
         break;
@@ -649,7 +620,7 @@ double MainWindow::getMinAltitude(const ObjectType &type)
     case ObjectType::Helicopter:
     case ObjectType::Missile:
     case ObjectType::Cargo:
-    case ObjectType::Boing:
+    case ObjectType::Boeing:
     case ObjectType::Fighter:
         return this->ui->minAltAir->value();
         break;
@@ -672,7 +643,7 @@ double MainWindow::getMaxDepth(const ObjectType &type)
     case ObjectType::Helicopter:
     case ObjectType::Missile:
     case ObjectType::Cargo:
-    case ObjectType::Boing:
+    case ObjectType::Boeing:
     case ObjectType::Fighter:
         return 0.0;
         break;
@@ -695,7 +666,7 @@ double MainWindow::getMinDepth(const ObjectType &type)
     case ObjectType::Helicopter:
     case ObjectType::Missile:
     case ObjectType::Cargo:
-    case ObjectType::Boing:
+    case ObjectType::Boeing:
     case ObjectType::Fighter:
         return 0.0;
         break;
@@ -732,8 +703,8 @@ QString object2name(Object* object)
             return QString("Missile_%0").arg(object->getID());
         case ObjectType::Cargo:
             return QString("Cargo_%0").arg(object->getID());
-        case ObjectType::Boing:
-            return QString("Boing_%0").arg(object->getID());
+        case ObjectType::Boeing:
+            return QString("Boeing_%0").arg(object->getID());
         case ObjectType::Fighter:
             return QString("Fighter_%0").arg(object->getID());
         case ObjectType::Land:
@@ -778,19 +749,6 @@ std::pair<double, double> objectDepth(Object* object)
     return std::make_pair(0.0, 0.0);
 }
 
-QString pattern2Str(MovingPattern pattern)
-{
-    switch (pattern) {
-    case MovingPattern::Const_Velocity:
-        return "Constant_Velocity";
-    case MovingPattern::Const_Acceleration:
-        return "Constant_Acceleration";
-    case MovingPattern::Const_Deceleration:
-        return "Constant_Deceleration";
-    }
-    return "Constant_Velocity";
-}
-
 
 void MainWindow::on_pushButton_clicked()
 {
@@ -814,6 +772,7 @@ void MainWindow::on_pushButton_clicked()
                 Pair p = this->dataManager.getData(t, object->getID());
                 Coordinates position = p.first;
                 Vector velocity = p.second;
+                QString patternStr = QString::fromStdString(Pattern::stringFromPattern(object->getPattern(t)));
                 out << t
                     << ","
                     << object2name(object)
@@ -850,7 +809,7 @@ void MainWindow::on_pushButton_clicked()
                     << ","
                     << t
                     << ","
-                    << pattern2Str(object->getPattern(t));
+                    << patternStr;
                  out << "\r\n";
             }
         }
@@ -1102,10 +1061,6 @@ void MainWindow::generateStationObjects(int shipNK, int helicopterNK, int carNK,
     displayStationObjects();
 }
 
-void MainWindow::onAnimateClicked()
-{
-
-}
 
 void MainWindow::displayStationObjects()
 {
@@ -1353,7 +1308,8 @@ void MainWindow::onExportCSVClicked()
             out << status << ",";
             out << lifeTime << ",";
             // moving pattern
-            out << pattern2Str(obj->getPattern(0)) << ",";
+            QString patternStr = QString::fromStdString(Pattern::stringFromPattern(obj->getPattern(0)));
+            out << patternStr << ",";
             // pattern_switch_time
             out << "0" << ",";
             // max_altitude
@@ -1437,10 +1393,6 @@ double MainWindow::calcLifeTime(Object *obj, const Station &src, const Station &
     return 0.0;
 }
 
-void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
-{
-}
-
 void MainWindow::on_airplanesSB_valueChanged(int arg1)
 {
     double value = this->ui->airSB->value();
@@ -1451,11 +1403,6 @@ void MainWindow::on_airplanesSB_valueChanged(int arg1)
         this->ui->landSB->setValue(div);
         this->ui->navalSB->setValue(div);
     }
-}
-
-void MainWindow::on_comboBox_activated(const QString &arg1)
-{
-
 }
 
 void MainWindow::on_landSB_valueChanged(int arg1)
@@ -1471,9 +1418,6 @@ void MainWindow::on_landSB_valueChanged(int arg1)
 
 }
 
-void MainWindow::on_navalSB_valueChanged(const QString &arg1)
-{
-}
 
 void MainWindow::on_pushButton_3_clicked()
 {
@@ -1530,9 +1474,9 @@ void MainWindow::on_airComboBox_currentIndexChanged(const QString &arg1)
     {
         this->air = ObjectInfoFactory::makeFighter();
     }
-    else if (arg1 == "Boing Airplane")
+    else if (arg1 == "Boeing Airplane")
     {
-        this->air = ObjectInfoFactory::makeBoing();
+        this->air = ObjectInfoFactory::makeBoeing();
     }
     if (type == "Air")
     {
@@ -1680,7 +1624,53 @@ void MainWindow::on_pushButton_7_clicked()
     this->initPatternTable();
 }
 
-void MainWindow::on_objectCategories_currentIndexChanged(const QString &arg1)
+void MainWindow::on_objectsID_activated(const QString &arg1)
+{
+    if (this->objects.size() == 0) {
+        return;
+    }
+    Object* object = this->objectMap[arg1];
+    if (!object) return;
+    QString type = QString::fromStdString(Object::stringFromType(object->getType()));
+    this->ui->objectType->setPlainText(type);
+    this->ui->objectST->setPlainText(QString::number(object->getInitialTime()));
+    this->ui->objectET->setPlainText(QString::number(object->getEndTime()));
+    this->chart->removeAllSeries();
+    this->series = new QLineSeries();
+    for (int t = 0; t < lifetimeValue; ++t)
+    {
+        Pair p = this->dataManager.getData(t, object->getID());
+        Coordinates pos = p.first;
+        Vector vel = p.second;
+        this->series->append(t, vel.length());
+    }
+    this->chart->setTitle(QString("%1 %2 - Velocity x Time").arg(type).arg(object->getID()));
+    this->chart->addSeries(this->series);
+    this->chart->createDefaultAxes();
+    this->chart->legend()->setVisible(false);
+    this->chartView->repaint();
+
+    QStandardItemModel* model = (QStandardItemModel*)this->positionTable->model();
+    if (model)
+    {
+        model->removeRows(0, this->lifetimeValue);
+        for (int t = 0; t < this->lifetimeValue; ++t)
+        {
+            Pair p = this->dataManager.getData(t, object->getID());
+            Coordinates pos = p.first;
+            Vector vel = p.second;
+            model->insertRow(t);
+            model->setData(model->index(t, 0), t);
+            model->setData(model->index(t, 1), pos.getX());
+            model->setData(model->index(t, 2), pos.getY());
+            model->setData(model->index(t, 3), pos.getZ());
+        }
+
+    }
+    this->ui->patternTable->resizeColumnsToContents();
+}
+
+void MainWindow::on_objectCategories_activated(const QString &arg1)
 {
     this->updateObjectList(arg1);
     if (this->ui->objectsID->model()->rowCount() == 0)
@@ -1693,19 +1683,8 @@ void MainWindow::on_objectCategories_currentIndexChanged(const QString &arg1)
         this->ui->objectST->setPlainText("");
         this->ui->objectET->setPlainText("");
     }
-}
-
-void MainWindow::on_objectsID_currentIndexChanged(const QString &arg1)
-{
-
-}
-
-void MainWindow::on_airSB_valueChanged(const QString &arg1)
-{
-
-}
-
-void MainWindow::on_landSB_valueChanged(const QString &arg1)
-{
-
+    else
+    {
+        this->on_objectsID_activated(this->objectMap[this->ui->objectsID->currentText()]->getName());
+    }
 }

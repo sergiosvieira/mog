@@ -10,7 +10,7 @@ enum class ObjectCategory
     Missile,
     Fighter,
     Cargo,
-    Boing,
+    Boeing,
     Land,
     Naval,
     Underwater
@@ -86,13 +86,13 @@ struct CargoInfo: public AirInfo
     }
 };
 
-struct BoingInfo: public AirInfo
+struct BoeingInfo: public AirInfo
 {
-    BoingInfo()
+    BoeingInfo()
     {
-        this->type = ObjectCategory::Boing;
+        this->type = ObjectCategory::Boeing;
         this->category = "Air";
-        this->value = "Boing Airplane";
+        this->value = "Boeing Airplane";
         this->maxVelocity = 1400.;
         this->minVelocity = 800.;
         this->maxAltitude = 20.;

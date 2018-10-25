@@ -34,6 +34,9 @@ public:
             double maxAcceleration,
             double minAcceleration
             );
+private:
+    static double random(double min, double max);
+    static Vector randomVector(double min, double max);
 };
 
 #endif // OBJECTGENERATOR_H

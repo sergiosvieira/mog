@@ -69,48 +69,27 @@ public:
 private slots:
     void on_btn_air_generate_clicked();
     void on_timeSlider_valueChanged(int value);
-    void on_AddPattern_clicked();
-    void on_objectsID_activated(int index);
+    void on_AddPattern_clicked();    
     void on_pushButton_clicked();
     void keyPressEvent(QKeyEvent *event);
     void onHistogramClicked();
     void onTrajectoryClicked();
     void onExportCSVClicked();
-    void onAnimateClicked();
     void onStationObjectGenerateClicked();
-    void on_comboBox_currentIndexChanged(const QString &arg1);
-
     void on_airplanesSB_valueChanged(int arg1);
-
-    void on_comboBox_activated(const QString &arg1);
-
-    void on_landSB_valueChanged(int arg1);
-
-    void on_navalSB_valueChanged(const QString &arg1);
-
+    void on_landSB_valueChanged(int arg1);    
     void on_pushButton_3_clicked();
-
     void on_airComboBox_currentIndexChanged(const QString &arg1);
-
     void on_pushButton_4_clicked();
-
     void on_pushButton_5_clicked();
-
     void on_navalComboBox_currentIndexChanged(const QString &arg1);
-
     void on_pushButton_6_clicked();
-
     void on_pushButton_7_clicked();
-
-    void on_objectCategories_currentIndexChanged(const QString &arg1);
-
-    void on_objectsID_currentIndexChanged(const QString &arg1);
-
-    void on_airSB_valueChanged(const QString &arg1);
-
-    void on_landSB_valueChanged(const QString &arg1);
+    void on_objectsID_activated(const QString &arg1);
+    void on_objectCategories_activated(const QString &arg1);
 
 private:
+    std::map<QString, Object*> objectMap;
     Ui::MainWindow *ui;
 
     QGraphicsScene *sceneNK, *sceneSK;

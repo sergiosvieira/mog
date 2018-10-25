@@ -103,6 +103,20 @@ void rndCoordinate(const QRect &rcWorld, const DistributionType type, Coordinate
 }
 
 
+double ObjectGenerator::random(double min, double max)
+{
+    double min_ = rndMinMax(min, max);
+    double max_ = rndMinMax(min_, max);
+    return rndMinMax(min_, max_);
+}
+
+Vector ObjectGenerator::randomVector(double min, double max)
+{
+    return Vector(ObjectGenerator::random(min, max),
+                  ObjectGenerator::random(min, max),
+                  ObjectGenerator::random(min, max));
+}
+
 
 Object *ObjectGenerator::generate(const QRect& world,
                                   ObjectType type,
@@ -114,46 +128,28 @@ Object *ObjectGenerator::generate(const QRect& world,
                                   unsigned int initialTime,
                                   unsigned int lifeTime)
 {
-    double minVelX = rndMinMax(minVelocity, maxVelocity);
-    double maxVelX = rndMinMax(minVelX, maxVelocity);
-    double minVelY = rndMinMax(minVelocity, maxVelocity);
-    double maxVelY = rndMinMax(minVelY, maxVelocity);
-    double minVelZ = rndMinMax(minVelocity, maxVelocity);
-    double maxVelZ = rndMinMax(minVelZ, maxVelocity);
-    if (maxVelX > maxVelocity) maxVelX = maxVelocity;
-    if (maxVelY > maxVelocity) maxVelY = maxVelocity;
-    if (maxVelZ > maxVelocity) maxVelZ = maxVelocity;
-    double minAccelX = rndMinMax(minAcceleration, maxAcceleration);
-    double maxAccelX = rndMinMax(minAccelX, maxAcceleration);
-    double minAccelY = rndMinMax(minAcceleration, maxAcceleration);
-    double maxAccelY = rndMinMax(minAccelY, maxAcceleration);
-    double minAccelZ = rndMinMax(minAcceleration, maxAcceleration);
-    double maxAccelZ = rndMinMax(minAccelZ, maxAcceleration);
-    if (maxAccelX > maxAcceleration) maxAccelX = maxAcceleration;
-    if (maxAccelY > maxAcceleration) maxAccelY = maxAcceleration;
-    if (maxAccelZ > maxAcceleration) maxAccelZ = maxAcceleration;
     Object * object = nullptr;
-//    Coordinates randomPosition(rndMinMax(0., 1.) * world.width(), rndMinMax(0., 1.) * world.height());
     Coordinates randomPosition;
     rndCoordinate(world, distributionType, randomPosition);
-    Vector randomVelocity(rndMinMax(minVelX, maxVelX), rndMinMax(minVelY, maxVelY), rndMinMax(minVelZ, maxVelZ));
-    Vector randomAcceleration(rndMinMax(minAccelX, maxAccelX), rndMinMax(minAccelY, maxAccelY), rndMinMax(minAccelZ, maxAccelZ));
+    Vector randomVelocity = ObjectGenerator::randomVector(minVelocity, maxVelocity);
+    Vector randomAcceleration = ObjectGenerator::randomVector(minAcceleration, maxAcceleration);
     double rndX = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
     double rndY = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
     double rndZ = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
-//    if (type != ObjectType::AirPlane && type!= ObjectType::Helicopter) {
-//        rndZ = 0.0;
-//        randomPosition.setZ(0.0);
-//        randomVelocity.setZ(0.0);
-//        randomAcceleration.setZ(0.0);
-//    }
+    if (type == ObjectType::Land || type == ObjectType::OnWater)
+    {
+        rndZ = 0.0;
+        randomPosition.setZ(0.0);
+        randomVelocity.setZ(0.0);
+        randomAcceleration.setZ(0.0);
+    }
 
     switch (type)
     {
     case ObjectType::AirPlane:
     case ObjectType::Missile:
     case ObjectType::Cargo:
-    case ObjectType::Boing:
+    case ObjectType::Boeing:
     case ObjectType::Fighter:
         object = new AirPlane(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
         break;
@@ -166,10 +162,14 @@ Object *ObjectGenerator::generate(const QRect& world,
     case ObjectType::OnWater:
     case ObjectType::Underwater:
         object = new Ship(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
-    }    
+    }
+    QString typeStr = QString::fromStdString(Object::stringFromType(type));
+    QString name = QString("%1_%2").arg(typeStr).arg(id);
+    object->setName(name);
     object->setType(type);
-    object->setID(id++);
+    object->setID(id);
     object->setDirection(Vector(rndX, rndY, rndZ));
+    id++;
     return object;
 }
 

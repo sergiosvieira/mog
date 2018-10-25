@@ -24,7 +24,7 @@ void Canvas::drawAirplane(const Object& object, const Coordinates& position)
             case ObjectType::Cargo:
                 brush = QBrush("#c4c4b8", Qt::SolidPattern);
             break;
-            case ObjectType::Boing:
+            case ObjectType::Boeing:
                 brush = QBrush("#d4d4b8", Qt::SolidPattern);
             break;
             case ObjectType::Fighter:
@@ -120,7 +120,7 @@ void Canvas::draw(const Object& object, const Coordinates& position)
     case ObjectType::AirPlane:
     case ObjectType::Missile:
     case ObjectType::Cargo:
-    case ObjectType::Boing:
+    case ObjectType::Boeing:
     case ObjectType::Fighter:
         this->drawAirplane(object, position);
         break;

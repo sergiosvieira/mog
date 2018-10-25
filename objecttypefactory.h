@@ -26,9 +26,9 @@ public:
     {
         return new FighterInfo();
     }
-    static BoingInfo *makeBoing()
+    static BoeingInfo *makeBoeing()
     {
-        return new BoingInfo();
+        return new BoeingInfo();
     }
     static OnWaterInfo *makeOnWater()
     {
