@@ -12,7 +12,7 @@
 unsigned int ObjectGenerator::id = 0;
 
 static std::uniform_real_distribution<double> distributionUniform(0.0, 1.0);
-static std::poisson_distribution<int> distributionPoisson(1.);
+static std::poisson_distribution<int> distributionPoisson(100);
 static std::normal_distribution<double> distributionNormal(0.5, sqrt(0.1 / 12.0));
 static std::uniform_real_distribution<double> distributionUniformForSkewed4(-3.0, 1.0);
 static std::lognormal_distribution<double> distributionLogNormal(0.0,1.0);
@@ -57,7 +57,7 @@ static double distributionPoisson01()
 {
     double result = 100.0;
     do {
-        result = distributionPoisson(eng);
+        result = distributionPoisson(eng) / 100.0;
     } while (result >= 1.0 || result <= 0.0);
     return result;
 }
