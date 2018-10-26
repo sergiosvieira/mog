@@ -88,6 +88,8 @@ private slots:
     void on_objectsID_activated(const QString &arg1);
     void on_objectCategories_activated(const QString &arg1);
 
+    void on_tabWidget_currentChanged(int index);
+
 private:
     std::map<QString, Object*> objectMap;
     Ui::MainWindow *ui;
@@ -106,6 +108,7 @@ private:
     void initPatternTable();
     void updateObjectList(const QString &str);
     void initPositionTable();
+    void configurePattern(Object *object);
 };
 
 #endif // MAINWINDOW_H

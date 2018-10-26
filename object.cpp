@@ -85,7 +85,9 @@ MovingPattern Object::getPattern(int time)
     auto it = this->patterns.lower_bound(time);
     if (it == this->patterns.end())
     {
-        it = --this->patterns.end();
+        if (this->patterns.size() > 0)
+            it = --this->patterns.end();
+        else return MovingPattern::Const_Velocity;
     }
     return it->second;
 }

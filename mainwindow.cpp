@@ -81,10 +81,12 @@ MainWindow::MainWindow(QWidget *parent) :
     posModel->insertColumn(1, QModelIndex());
     posModel->insertColumn(2, QModelIndex());
     posModel->insertColumn(3, QModelIndex());
+    posModel->insertColumn(4, QModelIndex());
     posModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Time"));
     posModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Position X"));
     posModel->setHeaderData(2, Qt::Horizontal, QObject::tr("Position Y"));
     posModel->setHeaderData(3, Qt::Horizontal, QObject::tr("Position Z"));
+    posModel->setHeaderData(4, Qt::Horizontal, QObject::tr("Movement Pattern"));
     this->positionTable->setModel(posModel);
 
     ui->tab_2->layout()->addWidget(this->positionTable);
@@ -105,10 +107,12 @@ void MainWindow::initPositionTable()
     posModel->insertColumn(1, QModelIndex());
     posModel->insertColumn(2, QModelIndex());
     posModel->insertColumn(3, QModelIndex());
+    posModel->insertColumn(4, QModelIndex());
     posModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Time"));
     posModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Position X"));
     posModel->setHeaderData(2, Qt::Horizontal, QObject::tr("Position Y"));
     posModel->setHeaderData(3, Qt::Horizontal, QObject::tr("Position Z"));
+    posModel->setHeaderData(4, Qt::Horizontal, QObject::tr("Movement Pattern"));
     this->positionTable->setModel(posModel);
 }
 
@@ -270,16 +274,20 @@ void MainWindow::updateObjectList(const QString& str)
         }
         this->ui->objectsID->addItem(object->getName());
         this->objectMap[object->getName()] = object;
-        unsigned int instant = 0;
-        QStandardItemModel* model = (QStandardItemModel*)this->ui->patternTable->model();
-        for (int i = 0; i < model->rowCount(); ++i)
-        {
-            QString patternStr = model->data(model->index(i, 0)).toString();
-            QString instantStr = model->data(model->index(i, 1)).toString();
-            instant = instantStr.toInt();
-            MovingPattern pattern = Pattern::patternFromString(patternStr.toStdString());
-            object->addPattern(pattern, instant);
-        }
+    }
+}
+
+void MainWindow::configurePattern(Object *object)
+{
+    unsigned int instant = 0;
+    QStandardItemModel* model = (QStandardItemModel*)this->ui->patternTable->model();
+    for (int i = 0; i < model->rowCount(); ++i)
+    {
+        QString patternStr = model->data(model->index(i, 0)).toString();
+        QString instantStr = model->data(model->index(i, 1)).toString();
+        instant = instantStr.toInt();
+        MovingPattern pattern = Pattern::patternFromString(patternStr.toStdString());
+        object->addPattern(pattern, instant);
     }
 }
 
@@ -373,6 +381,7 @@ void MainWindow::on_btn_air_generate_clicked()
                     hc->setRotationAngle(ui->RA->value());
                     hc->setRotationStart(ui->RAST->value());
                 }
+                this->configurePattern(ap);
                 this->objects.push_back(ap);
             }
         }
@@ -381,6 +390,7 @@ void MainWindow::on_btn_air_generate_clicked()
             for (int j = 0; j < total; ++j)
             {
                 Car *land = static_cast<Car *>(ObjectGenerator::generate(World, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type), initialTime, lifeTime));
+                this->configurePattern(land);
                 this->objects.push_back(land);
             }
         }
@@ -392,10 +402,12 @@ void MainWindow::on_btn_air_generate_clicked()
                 Ship* sp = static_cast<Ship *>(ObjectGenerator::generate(World, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type), initialTime, lifeTime));
                 sp->setMaxDepth(getMaxDepth(type));
                 sp->setMinDepth(getMinDepth(type));
+                this->configurePattern(sp);
                 this->objects.push_back(sp);
             }
         }
     }
+
     QString strType = "Airplane";
     if (this->objects.size() > 0)
     {
@@ -1664,6 +1676,7 @@ void MainWindow::on_objectsID_activated(const QString &arg1)
             model->setData(model->index(t, 1), pos.getX());
             model->setData(model->index(t, 2), pos.getY());
             model->setData(model->index(t, 3), pos.getZ());
+            model->setData(model->index(t, 4), QString::fromStdString(Pattern::stringFromPattern(object->getPattern(t))));
         }
 
     }
@@ -1686,5 +1699,19 @@ void MainWindow::on_objectCategories_activated(const QString &arg1)
     else
     {
         this->on_objectsID_activated(this->objectMap[this->ui->objectsID->currentText()]->getName());
+    }
+}
+
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+    if (index == 1)
+    {
+        QString typeStr = "Airplane";
+        for (int i = 0; i < this->objects.size(); ++i)
+        {
+            typeStr = QString::fromStdString(Object::stringFromType(this->objects[i]->getType()));
+            break;
+        }
+        this->on_objectCategories_activated(typeStr);
     }
 }
