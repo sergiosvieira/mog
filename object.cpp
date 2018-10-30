@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 
+
+
 Object::Object()
 {
 
@@ -14,7 +16,7 @@ Object::Object
     unsigned int initialTime,
     unsigned int endTime,
     const Vector &acceleration,
-    ObjectType type
+    ObjectCategory type
 ): position(position),
     velocity(velocity),
     initialTime(initialTime),
@@ -35,7 +37,7 @@ Vector Object::getVelocity() const
     return this->velocity;
 }
 
-ObjectType Object::getType() const
+ObjectCategory Object::getType() const
 {
     return this->type;
 }
@@ -112,56 +114,12 @@ GraphicsViewType Object::getAreaType()
     return areaType;
 }
 
-ObjectType Object::typeFromString(const std::string &str)
+ObjectCategory Object::typeFromString(const std::string &str)
 {
-    if (str == "Helicopter")
-    {
-        return ObjectType::Helicopter;
-    }
-    else if (str == "Missile")
-    {
-        return ObjectType::Missile;
-    }
-    else if (str == "Cargo Aircraft")
-    {
-        return ObjectType::Cargo;
-    }
-    else if (str == "Boeing Airplane")
-    {
-        return ObjectType::Boeing;
-    }
-    else if (str == "Fighter Jet")
-    {
-        return ObjectType::Fighter;
-    }
-    else if (str == "Land")
-    {
-        return ObjectType::Land;
-    }
-    else if (str == "On water")
-    {
-        return ObjectType::OnWater;
-    }
-    else if (str == "Underwater")
-    {
-        return ObjectType::Underwater;
-    }
-    return ObjectType::AirPlane;
+    return mapStrType[str];
 }
 
-std::string Object::stringFromType(ObjectType type)
+std::string Object::stringFromType(ObjectCategory type)
 {
-    std::map<ObjectType, std::string> m =
-    {
-        {ObjectType::AirPlane, "Airplane"},
-        {ObjectType::Helicopter, "Helicopter"},
-        {ObjectType::Missile, "Missile"},
-        {ObjectType::Cargo, "Cargo Aircraft"},
-        {ObjectType::Boeing, "Boeing Airplane"},
-        {ObjectType::Fighter, "Fighter Jet"},
-        {ObjectType::Land, "Land"},
-        {ObjectType::OnWater, "On water"},
-        {ObjectType::Underwater, "Underwater"},
-    };
-    return m[type];
+    return mapTypeStr[type];
 }

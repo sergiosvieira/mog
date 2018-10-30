@@ -1,12 +1,12 @@
 #include "helicopter.h"
 
-Helicopter::Helicopter(): AirObject()
+Helicopter::Helicopter(): Air()
 {
 
 }
 
 Helicopter::Helicopter(const Coordinates &position, const Vector &velocity, unsigned int initialTime, unsigned int lifeTime, const Vector &acceleration):
-    AirObject(position, velocity, initialTime, lifeTime, acceleration, ObjectType::Helicopter)
+    Air(position, velocity, initialTime, lifeTime, acceleration, ObjectCategory::Helicopter)
 {
 
 }

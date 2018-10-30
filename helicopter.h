@@ -3,7 +3,7 @@
 
 #include "airobject.h"
 
-class Helicopter : public AirObject
+class Helicopter : public Air
 {
 protected:
     double rotationAngle = 0.0;

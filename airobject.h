@@ -2,22 +2,20 @@
 #define AIROBJECT_H
 
 #include "object.h"
+#include "objecttype.h"
 
-class AirObject: public Object
+class Air: public Object
 {
     double maxAltitude = 0.0;
     double minAltitude = 0.0;
 public:
-    AirObject();
-    AirObject
-    (
-        const Coordinates& position,
+    Air ();
+    Air (const Coordinates& position,
         const Vector& velocity,
         unsigned int initialTime,
         unsigned int lifeTime,
         const Vector& acceleration,
-        ObjectType type
-    );
+        ObjectCategory type);
     void setMaxAltitude(double value);
     double getMaxAltitude() const;
     void setMinAltitude(double value);

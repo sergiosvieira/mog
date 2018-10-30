@@ -14,7 +14,7 @@ class ObjectGenerator
 public:
     static Object* generate(
             const QRect& world,
-            ObjectType type,
+            ObjectCategory type,
             const DistributionType distributionType,
             double maxVelocity,
             double minVelocity,
@@ -27,7 +27,7 @@ public:
             GraphicsViewType areaType,
             const QRect& world,
             const QRectF &rcWhiteArea,
-            ObjectType type,
+            ObjectCategory type,
             const DistributionType distributionType,
             double maxVelocity,
             double minVelocity,

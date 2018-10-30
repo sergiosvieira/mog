@@ -47,21 +47,21 @@ protected:
     QLineSeries *series;
     QChartView *chartView;
     QTableView *positionTable = nullptr;
-    AirInfo *air = new AirplaneInfo();
-    LandInfo *land = new LandInfo();
-    NavalInfo *naval = new NavalInfo();
+    AirObject *air = new AirObject();
+    LandObject *land = new LandObject();
+    WaterObject *water = new WaterObject();
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void paintEvent(QPaintEvent* event);
-    double getMaxVelocity(const ObjectType &type);
-    double getMinVelocity(const ObjectType &type);
-    double getMaxAcceleration(const ObjectType &type);
-    double getMinAcceleration(const ObjectType &type);
-    double getMaxAltitude(const ObjectType &type);
-    double getMinAltitude(const ObjectType &type);
-    double getMaxDepth(const ObjectType &type);
-    double getMinDepth(const ObjectType &type);
+    double getMaxVelocity(const ObjectCategory &type);
+    double getMinVelocity(const ObjectCategory &type);
+    double getMaxAcceleration(const ObjectCategory &type);
+    double getMinAcceleration(const ObjectCategory &type);
+    double getMaxAltitude(const ObjectCategory &type);
+    double getMinAltitude(const ObjectCategory &type);
+    double getMaxDepth(const ObjectCategory &type);
+    double getMinDepth(const ObjectCategory &type);
     unsigned int getInitialTime();
     unsigned int getLifeTime();
     int getObjectCount();
@@ -90,6 +90,12 @@ private slots:
 
     void on_tabWidget_currentChanged(int index);
 
+    void on_airComboBox_activated(const QString &arg1);
+
+    void on_landSubcategory_activated(const QString &arg1);
+
+    void on_navalComboBox_activated(const QString &arg1);
+
 private:
     std::map<QString, Object*> objectMap;
     Ui::MainWindow *ui;
@@ -104,11 +110,17 @@ private:
     double calcLifeTime(Object *obj, const Station &src, const Station &dst, QString &status);
     void displayStationObjects();
     void initObjectsTable();
-    int totalObjects();
+    int tableObjectRowCount();
     void initPatternTable();
     void updateObjectList(const QString &str);
     void initPositionTable();
     void configurePattern(Object *object);
+    DistributionType distributionFromIndex(int index);
+    void clearObjects();
+    bool checkObjects(int n);
+    bool checkPatterns();
+    void depthEnable(bool flag);
+    void rotorEnabled(bool flag);
 };
 
 #endif // MAINWINDOW_H

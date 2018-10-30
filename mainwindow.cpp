@@ -24,6 +24,7 @@
 #include "histogram.h"
 #include "trajectory3d.h"
 #include <QGraphicsPixmapItem>
+#include <set>
 #include "stationsetting.h"
 #include "objecttypefactory.h"
 
@@ -226,10 +227,19 @@ void MainWindow::onTrajectoryClicked()
     }
     Object *obj = this->objectMap[ui->objectsID->currentText()];
     if (!obj) return;
-    ObjectType objType = obj->getType();
+    ObjectCategory objType = obj->getType();
     Trajectory3D *trajectoryWindow = new Trajectory3D(this);
     trajectoryWindow->show();
-    if (objType == ObjectType::Land || objType == ObjectType::OnWater)
+
+    std::set<ObjectCategory> noZ = {
+        ObjectCategory::Battletank,
+        ObjectCategory::Vehicle,
+        ObjectCategory::Infantry,
+        ObjectCategory::FishingShip,
+        ObjectCategory::NavalShip
+    };
+
+    if (noZ.count(objType) > 0)
     {
         std::vector<QPointF> data;
         for (int t = 0; t < this->lifetimeValue; ++t)
@@ -251,7 +261,7 @@ void MainWindow::onTrajectoryClicked()
     }
 }
 
-int MainWindow::totalObjects()
+int MainWindow::tableObjectRowCount()
 {
     int result = this->ui->tableObjects->model()->rowCount();
     return result;
@@ -260,7 +270,7 @@ int MainWindow::totalObjects()
 void MainWindow::updateObjectList(const QString& str)
 {
     this->ui->objectsID->clear();
-    ObjectType type = Object::typeFromString(str.toStdString());
+    ObjectCategory type = Object::typeFromString(str.toStdString());
     bool flag = true;
     int index = 0;
     for (auto object: this->objects)
@@ -291,32 +301,9 @@ void MainWindow::configurePattern(Object *object)
     }
 }
 
-void MainWindow::on_btn_air_generate_clicked()
+DistributionType MainWindow::distributionFromIndex(int index)
 {
-    this->lifetimeValue = this->ui->lifeTime->value();
-    for (Object* object: this->objects)
-    {
-        if (object != nullptr) delete object;
-    }
-    this->objects.clear();
-    unsigned int initialTime = this->ui->initTime->value();
-    unsigned int lifeTime = this->ui->lifeTime->value();
-    if (this->totalObjects() == 0)
-    {
-        QMessageBox messageBox;
-        messageBox.critical(0,"Error","You must adds objects first");
-        messageBox.setFixedSize(500,200);
-        return;
-    }
-    if (ui->patternTable->model()->rowCount() == 0)
-    {
-        QMessageBox messageBox;
-        messageBox.critical(0,"Error","You must adds at least one moving pattern");
-        messageBox.setFixedSize(500,200);
-        return;
-    }
     DistributionType distributionType = DistributionType::Uniform;
-    int index = this->ui->cmbTypeDistribution->currentIndex();
     switch(index)
     {
     case 0:
@@ -337,68 +324,95 @@ void MainWindow::on_btn_air_generate_clicked()
         QMessageBox messageBox;
         messageBox.critical(0,"Error","Invalid Distribution Type!");
         messageBox.setFixedSize(500,200);
-        return;
     }
+    return distributionType;
+}
+
+void MainWindow::clearObjects()
+{
+    for (Object* object: this->objects)
+    {
+        if (object != nullptr) delete object;
+    }
+    this->objects.clear();
+}
+
+bool MainWindow::checkObjects(int n)
+{
+    if (n == 0)
+    {
+        QMessageBox messageBox;
+        messageBox.critical(0,"Error","You must adds objects first");
+        messageBox.setFixedSize(500,200);
+        return false;
+    }
+    return true;
+}
+
+bool MainWindow::checkPatterns()
+{
+    if (ui->patternTable->model()->rowCount() == 0)
+    {
+        QMessageBox messageBox;
+        messageBox.critical(0,"Error","You must adds at least one moving pattern");
+        messageBox.setFixedSize(500,200);
+        return false;
+    }
+    return true;
+}
+
+void MainWindow::on_btn_air_generate_clicked()
+{
+    this->lifetimeValue = this->ui->lifeTime->value();
+    unsigned int initialTime = this->ui->initTime->value();
+    unsigned int lifeTime = this->ui->lifeTime->value();
+    this->clearObjects();
+    int rows = this->tableObjectRowCount();
+    if (!this->checkObjects(rows) || !this->checkPatterns()) return;
+    DistributionType distributionType = this->distributionFromIndex(this->ui->cmbTypeDistribution->currentIndex());
     QAbstractItemModel* model = this->ui->tableObjects->model();
-    int n = this->totalObjects();
-    QSet<QString> airStr = {
-        "Airplane", "Helicopter", "Missile", "Cargo Aircraft", "Boeing Airplane", "Fighter Jet"
-    };
-    QSet<QString> navalStr = {
-        "On water", "Underwater"
-    };
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < rows; ++i)
     {
         QString strType = model->data(model->index(i, 0)).toString();
-        int total = model->data(model->index(i, 1)).toInt();
-        ObjectType type = Object::typeFromString(strType.toStdString());
-        if (airStr.contains(strType))
+        ObjectCategory type = Object::typeFromString(strType.toStdString());
+        int total = model->data(model->index(i, 1)).toInt();        
+        for (int j = 0; j < total; ++j)
         {
-            for (int j = 0; j < total; ++j)
+            if (airObjectsType.count(type) > 0)
             {
-                AirPlane* ap = static_cast<AirPlane *>(ObjectGenerator::generate(World,
-                                                                                 type,
-                                                                                 distributionType,
-                                                                                 getMaxVelocity(type),
-                                                                                 getMinVelocity(type),
-                                                                                 getMaxAcceleration(type),
-                                                                                 getMinAcceleration(type),
-                                                                                 initialTime,
-                                                                                 lifeTime));
-                ap->setMaxAltitude(getMaxAltitude(type));
-                ap->setMinAltitude(getMinAltitude(type));
-                if (strType == "Helicopter")
+                if (type != ObjectCategory::Helicopter)
                 {
-                    Helicopter* hc = static_cast<Helicopter *>(ObjectGenerator::generate(World,
-                                                                                         type,
-                                                                                         distributionType,
-                                                                                         getMaxVelocity(type),
-                                                                                         getMinVelocity(type),
-                                                                                         getMaxAcceleration(type),
-                                                                                         getMinAcceleration(type),
-                                                                                         initialTime,
-                                                                                         lifeTime));
+                    Air* air = static_cast<Air*>(ObjectGenerator::generate(World, type, distributionType,
+                        getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type),
+                        getMinAcceleration(type), initialTime, lifeTime));
+                    air->setMaxAltitude(getMaxAltitude(type));
+                    air->setMinAltitude(getMinAltitude(type));
+                    this->configurePattern(air);
+                    this->objects.push_back(air);
+                }
+                else
+                {
+                    Helicopter* hc = static_cast<Helicopter *>(ObjectGenerator::generate(World, type,
+                        distributionType, getMaxVelocity(type), getMinVelocity(type),
+                        getMaxAcceleration(type), getMinAcceleration(type), initialTime, lifeTime));
+                    hc->setMaxAltitude(getMaxAltitude(type));
+                    hc->setMinAltitude(getMinAltitude(type));
                     hc->setRotationAngle(ui->RA->value());
                     hc->setRotationStart(ui->RAST->value());
+                    this->configurePattern(hc);
+                    this->objects.push_back(hc);
                 }
-                this->configurePattern(ap);
-                this->objects.push_back(ap);
+
             }
-        }
-        else if (strType == "Land")
-        {
-            for (int j = 0; j < total; ++j)
+            else if (landObjectsType.count(type) > 0)
             {
                 Car *land = static_cast<Car *>(ObjectGenerator::generate(World, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type), initialTime, lifeTime));
                 this->configurePattern(land);
                 this->objects.push_back(land);
             }
-        }
-        else if (navalStr.contains(strType))
-        {
-            for (int j = 0; j < total; ++j)
+            else if (waterObjectsType.count(type) > 0
+                     || underwaterObjectsType.count(type) > 0)
             {
-
                 Ship* sp = static_cast<Ship *>(ObjectGenerator::generate(World, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type), initialTime, lifeTime));
                 sp->setMaxDepth(getMaxDepth(type));
                 sp->setMinDepth(getMinDepth(type));
@@ -415,25 +429,6 @@ void MainWindow::on_btn_air_generate_clicked()
         strType = QString::fromStdString(Object::stringFromType(object->getType()));
     }
     this->updateObjectList(strType);    
-//    this->ui->objectsID->clear();
-//    for (auto object: this->objects)
-//    {
-//        this->ui->objectsID->addItem(QString("Object %0").arg(object->getID()));
-//        MovingPattern pattern = MovingPattern::Const_Velocity;
-//        unsigned int instant = 0;
-//        QStandardItemModel* model = (QStandardItemModel*)this->ui->patternTable->model();
-//        for (int i = 0; i < model->rowCount(); ++i)
-//        {
-//            QString patternStr = model->data(model->index(i, 0)).toString();
-//            QString instantStr = model->data(model->index(i, 1)).toString();
-//            instant = instantStr.toInt();
-//            if (patternStr == "Constant Velocity") pattern = MovingPattern::Const_Velocity;
-//            else if (patternStr == "Constant Acceleration") pattern = MovingPattern::Const_Acceleration;
-//            else if (patternStr == "Constant Deceleration") pattern = MovingPattern::Const_Deceleration;
-//            object->addPattern(pattern, instant);
-//        }
-//    }
-
     for (unsigned int t = 0; t < this->lifetimeValue; ++t)
     {
         for (auto object: this->objects)
@@ -509,186 +504,106 @@ void MainWindow::on_AddPattern_clicked()
 }
 
 
-double MainWindow::getMaxVelocity(const ObjectType &type)
+double MainWindow::getMaxVelocity(const ObjectCategory &type)
 {
-    switch (type)
+    if (airObjectsType.count(type) > 0)
     {
-    case ObjectType::AirPlane:
-    case ObjectType::Helicopter:
-    case ObjectType::Missile:
-    case ObjectType::Cargo:
-    case ObjectType::Boeing:
-    case ObjectType::Fighter:
         return this->ui->maxVelAir->value();
-        break;
-    case ObjectType::Land:
+    }
+    else if (landObjectsType.count(type) > 0)
+    {
         return this->ui->maxVelCar->value();
-        break;
-    case ObjectType::OnWater:
-    case ObjectType::Underwater:
+    }
+    else if (waterObjectsType.count(type) > 0 || underwaterObjectsType.count(type) > 0)
+    {
         return this->ui->maxVelShip->value();
-        break;
     }
     return 0.0;
 }
 
-double MainWindow::getMinVelocity(const ObjectType &type)
+double MainWindow::getMinVelocity(const ObjectCategory &type)
 {
-    switch (type)
+    if (airObjectsType.count(type) > 0)
     {
-    case ObjectType::AirPlane:
-    case ObjectType::Helicopter:
-    case ObjectType::Missile:
-    case ObjectType::Cargo:
-    case ObjectType::Boeing:
-    case ObjectType::Fighter:
         return this->ui->minVelAir->value();
-        break;
-    case ObjectType::Land:
+    }
+    else if (landObjectsType.count(type) > 0)
+    {
         return this->ui->minVelCar->value();
-        break;
-    case ObjectType::OnWater:
-    case ObjectType::Underwater:
+    }
+    else if (waterObjectsType.count(type) > 0 || underwaterObjectsType.count(type) > 0)
+    {
         return this->ui->minVelShip->value();
-        break;
     }
     return 0.0;
 }
 
-double MainWindow::getMaxAcceleration(const ObjectType &type)
+double MainWindow::getMaxAcceleration(const ObjectCategory &type)
 {
-    switch (type)
+    if (airObjectsType.count(type) > 0)
     {
-    case ObjectType::AirPlane:
-    case ObjectType::Helicopter:
-    case ObjectType::Missile:
-    case ObjectType::Cargo:
-    case ObjectType::Boeing:
-    case ObjectType::Fighter:
         return this->ui->maxAccelAir->value();
-        break;
-    case ObjectType::Land:
+    }
+    else if (landObjectsType.count(type) > 0)
+    {
         return this->ui->maxAccelCar->value();
-        break;
-    case ObjectType::OnWater:
-    case ObjectType::Underwater:
+    }
+    else if (waterObjectsType.count(type) > 0 || underwaterObjectsType.count(type) > 0)
+    {
         return this->ui->maxAccelShip->value();
-        break;
     }
     return 0.0;
 }
 
-double MainWindow::getMinAcceleration(const ObjectType &type)
+double MainWindow::getMinAcceleration(const ObjectCategory &type)
 {
-    switch (type)
+    if (airObjectsType.count(type) > 0)
     {
-    case ObjectType::AirPlane:
-    case ObjectType::Helicopter:
-    case ObjectType::Missile:
-    case ObjectType::Cargo:
-    case ObjectType::Boeing:
-    case ObjectType::Fighter:
         return this->ui->minAccelAir->value();
-        break;
-    case ObjectType::Land:
+    }
+    else if (landObjectsType.count(type) > 0)
+    {
         return this->ui->minAccelCar->value();
-        break;
-    case ObjectType::OnWater:
-    case ObjectType::Underwater:
+    }
+    else if (waterObjectsType.count(type) > 0 || underwaterObjectsType.count(type) > 0)
+    {
         return this->ui->minAccelShip->value();
-        break;
     }
     return 0.0;
 }
 
-double MainWindow::getMaxAltitude(const ObjectType &type)
+double MainWindow::getMaxAltitude(const ObjectCategory &type)
 {
-    switch (type)
+    if (airObjectsType.count(type) > 0)
     {
-    case ObjectType::AirPlane:
-    case ObjectType::Helicopter:
-    case ObjectType::Missile:
-    case ObjectType::Cargo:
-    case ObjectType::Boeing:
-    case ObjectType::Fighter:
         return this->ui->maxAltAir->value();
-        break;
-    case ObjectType::Land:
-        return 0.0;
-        break;
-    case ObjectType::OnWater:
-    case ObjectType::Underwater:
-        return 0.0;
-        break;
     }
     return 0.0;
 }
 
-double MainWindow::getMinAltitude(const ObjectType &type)
+double MainWindow::getMinAltitude(const ObjectCategory &type)
 {
-    switch (type)
+    if (airObjectsType.count(type) > 0)
     {
-    case ObjectType::AirPlane:
-    case ObjectType::Helicopter:
-    case ObjectType::Missile:
-    case ObjectType::Cargo:
-    case ObjectType::Boeing:
-    case ObjectType::Fighter:
         return this->ui->minAltAir->value();
-        break;
-    case ObjectType::Land:
-        return 0.0;
-        break;
-    case ObjectType::OnWater:
-    case ObjectType::Underwater:
-        return 0.0;
-        break;
     }
     return 0.0;
 }
 
-double MainWindow::getMaxDepth(const ObjectType &type)
+double MainWindow::getMaxDepth(const ObjectCategory &type)
 {
-    switch (type)
+    if (underwaterObjectsType.count(type) > 0)
     {
-    case ObjectType::AirPlane:
-    case ObjectType::Helicopter:
-    case ObjectType::Missile:
-    case ObjectType::Cargo:
-    case ObjectType::Boeing:
-    case ObjectType::Fighter:
-        return 0.0;
-        break;
-    case ObjectType::Land:
-        return 0.0;
-        break;
-    case ObjectType::OnWater:
-    case ObjectType::Underwater:
         return this->ui->maxDepthShip->value();
-        break;
     }
     return 0.0;
 }
 
-double MainWindow::getMinDepth(const ObjectType &type)
+double MainWindow::getMinDepth(const ObjectCategory &type)
 {
-    switch (type)
+    if (underwaterObjectsType.count(type) > 0)
     {
-    case ObjectType::AirPlane:
-    case ObjectType::Helicopter:
-    case ObjectType::Missile:
-    case ObjectType::Cargo:
-    case ObjectType::Boeing:
-    case ObjectType::Fighter:
-        return 0.0;
-        break;
-    case ObjectType::Land:
-        return 0.0;
-        break;
-    case ObjectType::OnWater:
-    case ObjectType::Underwater:
         return this->ui->minDepthShip->value();
-        break;
     }
     return 0.0;
 }
@@ -704,29 +619,8 @@ unsigned int MainWindow::getLifeTime()
 }
 
 QString object2name(Object* object)
-{
-    switch (object->getType())
-    {
-        case ObjectType::AirPlane:
-            return QString("Airplane_%0").arg(object->getID());
-        case ObjectType::Helicopter:
-            return QString("Helicopter_%0").arg(object->getID());
-        case ObjectType::Missile:
-            return QString("Missile_%0").arg(object->getID());
-        case ObjectType::Cargo:
-            return QString("Cargo_%0").arg(object->getID());
-        case ObjectType::Boeing:
-            return QString("Boeing_%0").arg(object->getID());
-        case ObjectType::Fighter:
-            return QString("Fighter_%0").arg(object->getID());
-        case ObjectType::Land:
-            return QString("Land_%0").arg(object->getID());
-        case ObjectType::OnWater:
-            return QString("OnWater_%0").arg(object->getID());
-        case ObjectType::Underwater:
-            return QString("Underwater_%0").arg(object->getID());
-    }
-    return "";
+{    
+    return QString("%1_%2").arg(object->getName()).arg(object->getID());
 }
 
 QString object2type(Object* object)
@@ -736,27 +630,20 @@ QString object2type(Object* object)
 
 std::pair<double, double> objectAltitude(Object* object)
 {
-    switch (object->getType())
+    if (airObjectsType.count(object->getType()))
     {
-        case ObjectType::AirPlane:
-        case ObjectType::Helicopter:
-        {
-            AirObject *air = ((AirObject*)object);
-            return std::make_pair(air->getMaxAltitude(), air->getMinAltitude());
-        }
+        Air *air = ((Air*)object);
+        return std::make_pair(air->getMaxAltitude(), air->getMinAltitude());
     }
     return std::make_pair(0.0, 0.0);
 }
 
 std::pair<double, double> objectDepth(Object* object)
 {
-    switch (object->getType())
+    if (underwaterObjectsType.count(object->getType()))
     {
-        case ObjectType::Underwater:
-        {
-            Ship *ship = ((Ship*)object);
-            return std::make_pair(ship->getMaxDepth(), ship->getMinDepth());
-        }
+        Ship *ship = ((Ship*)object);
+        return std::make_pair(ship->getMaxDepth(), ship->getMinDepth());
     }
     return std::make_pair(0.0, 0.0);
 }
@@ -969,16 +856,16 @@ void MainWindow::generateStationObjects(int shipNK, int helicopterNK, int carNK,
 
     for (int i = 0; i < airplaneNK; ++i)
     {
-        ObjectType type = ObjectType::AirPlane;
-        AirPlane* ap = static_cast<AirPlane *>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
-        ap->setMaxAltitude(getMaxAltitude(type));
-        ap->setMinAltitude(getMinAltitude(type));
-        this->stationObjects.push_back(ap);
+        ObjectCategory type = ObjectCategory::PassengerAirPlane;
+        Air* air = static_cast<Air*>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
+        air->setMaxAltitude(getMaxAltitude(type));
+        air->setMinAltitude(getMinAltitude(type));
+        this->stationObjects.push_back(air);
     }
     for (int i = 0; i < airplaneSK; ++i)
     {
-        ObjectType type = ObjectType::AirPlane;
-        AirPlane* ap = static_cast<AirPlane *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
+        ObjectCategory type = ObjectCategory::PassengerAirPlane;
+        Air* ap = static_cast<Air *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         ap->setMaxAltitude(getMaxAltitude(type));
         ap->setMinAltitude(getMinAltitude(type));
         this->stationObjects.push_back(ap);
@@ -986,7 +873,7 @@ void MainWindow::generateStationObjects(int shipNK, int helicopterNK, int carNK,
 
     for (int i = 0; i < helicopterNK; ++i)
     {
-        ObjectType type = ObjectType::Helicopter;
+        ObjectCategory type = ObjectCategory::Helicopter;
         Helicopter* hc = static_cast<Helicopter *>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         hc->setMaxAltitude(getMaxAltitude(type));
         hc->setMinAltitude(getMinAltitude(type));
@@ -996,7 +883,7 @@ void MainWindow::generateStationObjects(int shipNK, int helicopterNK, int carNK,
     }
     for (int i = 0; i < helicopterSK; ++i)
     {
-        ObjectType type = ObjectType::Helicopter;
+        ObjectCategory type = ObjectCategory::Helicopter;
         Helicopter* hc = static_cast<Helicopter *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         hc->setMaxAltitude(getMaxAltitude(type));
         hc->setMinAltitude(getMinAltitude(type));
@@ -1007,20 +894,20 @@ void MainWindow::generateStationObjects(int shipNK, int helicopterNK, int carNK,
 
     for (int i = 0; i < carNK; ++i)
     {
-        ObjectType type = ObjectType::Land;
+        ObjectCategory type = ObjectCategory::Vehicle;
         Car* car = static_cast<Car *>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         this->stationObjects.push_back(car);
     }
     for (int i = 0; i < carSK; ++i)
     {
-        ObjectType type = ObjectType::Land;
+        ObjectCategory type = ObjectCategory::Vehicle;
         Car* car = static_cast<Car *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         this->stationObjects.push_back(car);
     }
 
     for (int i = 0; i < shipNK; ++i)
     {
-        ObjectType type = ObjectType::OnWater;
+        ObjectCategory type = ObjectCategory::NavalShip;
         Ship* sp = static_cast<Ship *>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         sp->setMaxDepth(getMaxDepth(type));
         sp->setMinDepth(getMinDepth(type));
@@ -1028,7 +915,7 @@ void MainWindow::generateStationObjects(int shipNK, int helicopterNK, int carNK,
     }
     for (int i = 0; i < shipSK; ++i)
     {
-        ObjectType type = ObjectType::OnWater;
+        ObjectCategory type = ObjectCategory::NavalShip;
         Ship* sp = static_cast<Ship *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         sp->setMaxDepth(getMaxDepth(type));
         sp->setMinDepth(getMinDepth(type));
@@ -1097,18 +984,18 @@ void MainWindow::displayStationObjects()
 
     for (const auto obj : this->stationObjects) {
         QString fileName;
-        ObjectType type = obj->getType();
+        ObjectCategory type = obj->getType();
         switch (type) {
-        case ObjectType::AirPlane:
+        case ObjectCategory::PassengerAirPlane:
             fileName = ":/images/airplane_";
             break;
-        case ObjectType::Helicopter:
+        case ObjectCategory::Helicopter:
             fileName = ":/images/helicopter_";
             break;
-        case ObjectType::Land:
+        case ObjectCategory::Vehicle:
             fileName = ":/images/car_";
             break;
-        case ObjectType::OnWater:
+        case ObjectCategory::NavalShip:
             fileName = ":/images/ship_";
             break;
         }
@@ -1237,15 +1124,15 @@ void MainWindow::onExportCSVClicked()
             out << obj->getPosition().getZ() << ",";
 
             GraphicsViewType areaType = obj->getAreaType();
-            ObjectType objType = obj->getType();
+            ObjectCategory objType = obj->getType();
             double lifeTime = 0;
             QString source, destination, area, status;
             int indexSrc, indexDst;
             if (areaType == GraphicsViewType::NK) {
                 area = "NK-area";
                 switch (objType) {
-                case ObjectType::Helicopter:
-                case ObjectType::Land:
+                case ObjectCategory::Helicopter:
+                case ObjectCategory::Vehicle:
                     indexSrc = urdHelicopterCarNK(gen);
                     indexDst = indexSrc;
                     while(indexSrc == indexDst) {
@@ -1255,7 +1142,7 @@ void MainWindow::onExportCSVClicked()
                     destination = QString("%0th Helicopter & Car station").arg(indexDst);
                     lifeTime = calcLifeTime(obj, listHelicopterCarNK[indexSrc], listHelicopterCarNK[indexDst], status);
                     break;
-                case ObjectType::AirPlane:
+                case ObjectCategory::PassengerAirPlane:
                     indexSrc = urdAirportNK(gen);
                     indexDst = indexSrc;
                     while(indexSrc == indexDst) {
@@ -1265,7 +1152,7 @@ void MainWindow::onExportCSVClicked()
                     destination = QString("%0th Airport base").arg(indexDst);
                     lifeTime = calcLifeTime(obj, listAirportNK[indexSrc], listAirportNK[indexDst], status);
                     break;
-                case ObjectType::OnWater:
+                case ObjectCategory::NavalShip:
                     indexSrc = urdShipNK(gen);
                     indexDst = indexSrc;
                     while(indexSrc == indexDst) {
@@ -1279,8 +1166,8 @@ void MainWindow::onExportCSVClicked()
             } else {
                 area = "SK-area";
                 switch (objType) {
-                case ObjectType::Helicopter:
-                case ObjectType::Land:
+                case ObjectCategory::Helicopter:
+                case ObjectCategory::Vehicle:
                     indexSrc = urdHelicopterCarSK(gen);
                     indexDst = indexSrc;
                     while(indexSrc == indexDst) {
@@ -1290,7 +1177,7 @@ void MainWindow::onExportCSVClicked()
                     destination = QString("%0th Helicopter & Car station").arg(indexDst);
                     lifeTime = calcLifeTime(obj, listHelicopterCarSK[indexSrc], listHelicopterCarSK[indexDst], status);
                     break;
-                case ObjectType::AirPlane:
+                case ObjectCategory::PassengerAirPlane:
                     indexSrc = urdAirportSK(gen);
                     indexDst = indexSrc;
                     while(indexSrc == indexDst) {
@@ -1300,7 +1187,7 @@ void MainWindow::onExportCSVClicked()
                     destination = QString("%0th Airport base").arg(indexDst);
                     lifeTime = calcLifeTime(obj, listAirportSK[indexSrc], listAirportSK[indexDst], status);
                     break;
-                case ObjectType::OnWater:
+                case ObjectCategory::NavalShip:
                     indexSrc = urdShipSK(gen);
                     indexDst = indexSrc;
                     while(indexSrc == indexDst) {
@@ -1456,75 +1343,6 @@ void MainWindow::on_pushButton_3_clicked()
 
 void MainWindow::on_airComboBox_currentIndexChanged(const QString &arg1)
 {
-    QString type = "Air";
-    this->ui->RA->setEnabled(false);
-    this->ui->RALabel->setEnabled(false);
-    this->ui->RAST->setEnabled(false);
-    this->ui->RASTLabel->setEnabled(false);
-    delete this->air;
-    if (arg1 == "Airplane")
-    {
-        this->air = ObjectInfoFactory::makeAirplane();
-    }
-    else if (arg1 == "Helicopter")
-    {
-        this->air = ObjectInfoFactory::makeHelicopter();
-        this->ui->RA->setEnabled(true);
-        this->ui->RALabel->setEnabled(true);
-        this->ui->RAST->setEnabled(true);
-        this->ui->RASTLabel->setEnabled(true);
-    }
-    else if (arg1 == "Missile")
-    {
-        this->air = ObjectInfoFactory::makeMissile();
-    }
-    else if (arg1 == "Cargo Aircraft")
-    {
-        this->air = ObjectInfoFactory::makeCargo();
-    }
-    else if (arg1 == "Fighter Jet")
-    {
-        this->air = ObjectInfoFactory::makeFighter();
-    }
-    else if (arg1 == "Boeing Airplane")
-    {
-        this->air = ObjectInfoFactory::makeBoeing();
-    }
-    if (type == "Air")
-    {
-        QVector<QDoubleSpinBox*> maxObj = {
-            this->ui->maxVelAir,
-            this->ui->maxAccelAir,
-            this->ui->maxAltAir
-        };
-        QVector<double> maxVal = {
-            air->maxVelocity,
-            air->maxAcceleration,
-            air->maxAltitude
-        };
-        QVector<QDoubleSpinBox*> minObj = {
-            this->ui->minVelAir,
-            this->ui->minAccelAir,
-            this->ui->minAltAir
-        };
-        QVector<double> minVal = {
-            air->minVelocity,
-            air->minAcceleration,
-            air->minAltitude
-        };
-        for (int i = 0; i < maxObj.size(); ++i)
-        {
-            QDoubleSpinBox *obj = maxObj[i];
-            if (!obj) continue;
-            obj->setMaximum(maxVal[i]);
-            obj->setValue(maxVal[i]);
-            obj = minObj[i];
-            if (!obj) continue;
-            obj->setMinimum(minVal[i]);
-            obj->setValue(minVal[i]);
-        }
-    }
-    qDebug() << arg1;
 }
 
 void MainWindow::on_pushButton_4_clicked()
@@ -1533,7 +1351,8 @@ void MainWindow::on_pushButton_4_clicked()
     if (model)
     {
         model->insertRow(0);
-        QString type = "Land";
+        ObjectCategory category = Object::typeFromString(this->ui->landSubcategory->currentText().toStdString());
+        QString type = QString::fromStdString(Object::stringFromType(category));
         model->setData(model->index(0, 0), type);
         model->setData(model->index(0, 1), this->ui->landSB->value());
         model->setData(model->index(0, 2), this->ui->maxVelCar->value());
@@ -1564,62 +1383,16 @@ void MainWindow::on_pushButton_5_clicked()
     }
 }
 
+void MainWindow::depthEnable(bool flag)
+{
+    this->ui->maxDepthShip->setEnabled(flag);
+    this->ui->maxDepthLabel->setEnabled(flag);
+    this->ui->minDepthShip->setEnabled(flag);
+    this->ui->minDepthLabel->setEnabled(flag);
+}
+
 void MainWindow::on_navalComboBox_currentIndexChanged(const QString &arg1)
 {
-    this->ui->maxDepthShip->setEnabled(false);
-    this->ui->maxDepthLabel->setEnabled(false);
-    this->ui->minDepthShip->setEnabled(false);
-    this->ui->minDepthLabel->setEnabled(false);
-    delete this->naval;
-    if (arg1 == "On water")
-    {
-        this->naval = ObjectInfoFactory::makeOnWater();
-    }
-    else if (arg1 == "Underwater")
-    {
-        this->naval = ObjectInfoFactory::makeUnderwater();
-        this->ui->maxDepthShip->setEnabled(true);
-        this->ui->maxDepthLabel->setEnabled(true);
-        this->ui->minDepthShip->setEnabled(true);
-        this->ui->minDepthLabel->setEnabled(true);
-    }
-    QVector<QDoubleSpinBox*> maxObj = {
-        this->ui->maxVelShip,
-        this->ui->maxAccelShip
-    };
-    QVector<double> maxVal = {
-        naval->maxVelocity,
-        naval->maxAcceleration
-    };
-    if (arg1 == "Underwater")
-    {
-        UnderwaterInfo *under = (UnderwaterInfo*)(this->naval);
-        this->ui->maxDepthShip->setMaximum(int(under->maxDepth));
-        this->ui->maxDepthShip->setValue(int(under->maxDepth));
-        this->ui->minDepthShip->setMaximum(int(under->minDepth));
-        this->ui->minDepthShip->setValue(int(under->minDepth));
-    }
-    QVector<QDoubleSpinBox*> minObj = {
-        this->ui->minVelShip,
-        this->ui->minAccelShip
-    };
-    QVector<double> minVal = {
-        naval->minVelocity,
-        naval->minAcceleration,
-    };
-    for (int i = 0; i < maxObj.size(); ++i)
-    {
-        QDoubleSpinBox *obj = maxObj[i];
-        if (!obj) continue;
-        obj->setMaximum(maxVal[i]);
-        obj->setValue(maxVal[i]);
-        obj = minObj[i];
-        if (!obj) continue;
-        obj->setMinimum(minVal[i]);
-        obj->setValue(minVal[i]);
-    }
-    qDebug() << arg1;
-
 }
 
 void MainWindow::on_pushButton_6_clicked()
@@ -1713,5 +1486,132 @@ void MainWindow::on_tabWidget_currentChanged(int index)
             break;
         }
         this->on_objectCategories_activated(typeStr);
+    }
+}
+
+void MainWindow::rotorEnabled(bool flag)
+{
+    this->ui->RA->setEnabled(flag);
+    this->ui->RALabel->setEnabled(flag);
+    this->ui->RAST->setEnabled(flag);
+    this->ui->RASTLabel->setEnabled(flag);
+}
+
+void MainWindow::on_airComboBox_activated(const QString &arg1)
+{
+    rotorEnabled(false);
+    ObjectCategory category = Object::typeFromString(arg1.toStdString());
+    delete this->air;
+    this->air = (AirObject*)(ObjectFactory::make(category));
+    if (category == ObjectCategory::Helicopter) rotorEnabled(true);
+    QVector<QDoubleSpinBox*> maxObj = {
+        this->ui->maxVelAir,
+        this->ui->maxAccelAir,
+        this->ui->maxAltAir
+    };
+    QVector<double> maxVal = {
+        air->maxVelocity,
+        air->maxAcceleration,
+        air->maxAltitude
+    };
+    QVector<QDoubleSpinBox*> minObj = {
+        this->ui->minVelAir,
+        this->ui->minAccelAir,
+        this->ui->minAltAir
+    };
+    QVector<double> minVal = {
+        air->minVelocity,
+        air->minAcceleration,
+        air->minAltitude
+    };
+    for (int i = 0; i < maxObj.size(); ++i)
+    {
+        QDoubleSpinBox *obj = maxObj[i];
+        if (!obj) continue;
+        obj->setMaximum(maxVal[i]);
+        obj->setValue(maxVal[i]);
+        obj = minObj[i];
+        if (!obj) continue;
+        obj->setMinimum(minVal[i]);
+        obj->setValue(minVal[i]);
+    }
+}
+
+void MainWindow::on_landSubcategory_activated(const QString &arg1)
+{
+    ObjectCategory category = Object::typeFromString(arg1.toStdString());
+    delete this->land;
+    this->land = (LandObject*)(ObjectFactory::make(category));
+    QVector<QDoubleSpinBox*> maxObj = {
+        this->ui->maxVelCar,
+        this->ui->maxAccelCar
+    };
+    QVector<double> maxVal = {
+        land->maxVelocity,
+        land->maxAcceleration
+    };
+    QVector<QDoubleSpinBox*> minObj = {
+        this->ui->minVelCar,
+        this->ui->minAccelCar
+    };
+    QVector<double> minVal = {
+        land->minVelocity,
+        land->minAcceleration
+    };
+    for (int i = 0; i < maxObj.size(); ++i)
+    {
+        QDoubleSpinBox *obj = maxObj[i];
+        if (!obj) continue;
+        obj->setMaximum(maxVal[i]);
+        obj->setValue(maxVal[i]);
+        obj = minObj[i];
+        if (!obj) continue;
+        obj->setMinimum(minVal[i]);
+        obj->setValue(minVal[i]);
+    }
+}
+
+void MainWindow::on_navalComboBox_activated(const QString &arg1)
+{
+    this->depthEnable(false);
+    delete this->water;
+    ObjectCategory category = Object::typeFromString(arg1.toStdString());
+    this->water = (WaterObject*)ObjectFactory::make(category);
+    QVector<QDoubleSpinBox*> maxObj = {
+        this->ui->maxVelShip,
+        this->ui->maxAccelShip
+    };
+    QVector<double> maxVal = {
+        this->water->maxVelocity,
+        this->water->maxAcceleration
+    };
+    if (underwaterObjectsType.count(category) > 0)
+    {
+        UnderwaterObject *under = (UnderwaterObject*)this->water;
+        this->depthEnable(true);
+        this->ui->maxDepthShip->setMaximum(int(under->maxDepth));
+        this->ui->maxDepthShip->setValue(int(under->maxDepth));
+        this->ui->minDepthShip->setMaximum(int(under->minDepth));
+        this->ui->minDepthShip->setValue(int(under->minDepth));
+    }
+
+    QVector<QDoubleSpinBox*> minObj = {
+        this->ui->minVelShip,
+        this->ui->minAccelShip
+    };
+    QVector<double> minVal = {
+        this->water->minVelocity,
+        this->water->minAcceleration,
+    };
+    for (int i = 0; i < maxObj.size(); ++i)
+    {
+        QDoubleSpinBox *obj = maxObj[i];
+        if (!obj) continue;
+        obj->setMaximum(maxVal[i]);
+        obj->setValue(maxVal[i]);
+        obj = minObj[i];
+        if (!obj) continue;
+        obj->setMinimum(minVal[i]);
+        obj->setValue(minVal[i]);
     }
 }

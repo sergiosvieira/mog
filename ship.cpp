@@ -12,7 +12,7 @@ Ship::Ship
     unsigned int initialTime,
     unsigned int lifeTime,
     const Vector &acceleration
-): Object(position, velocity, initialTime, lifeTime, acceleration, ObjectType::OnWater)
+): Object(position, velocity, initialTime, lifeTime, acceleration, ObjectCategory::NavalShip)
 {
 
 }

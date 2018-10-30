@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Object Generation App</string>
+   <string>Tatical moving objects</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
@@ -73,10 +73,10 @@
                  <widget class="QWidget" name="scrollAreaWidgetContents">
                   <property name="geometry">
                    <rect>
-                    <x>0</x>
+                    <x>-12</x>
                     <y>0</y>
-                    <width>281</width>
-                    <height>971</height>
+                    <width>301</width>
+                    <height>1056</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -89,15 +89,15 @@
                       </size>
                      </property>
                      <property name="currentIndex">
-                      <number>0</number>
+                      <number>2</number>
                      </property>
                      <widget class="QWidget" name="page_3">
                       <property name="geometry">
                        <rect>
                         <x>0</x>
-                        <y>0</y>
-                        <width>246</width>
-                        <height>327</height>
+                        <y>-103</y>
+                        <width>262</width>
+                        <height>401</height>
                        </rect>
                       </property>
                       <property name="minimumSize">
@@ -121,6 +121,12 @@
                          </item>
                          <item>
                           <widget class="QSpinBox" name="airSB">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="maximum">
                             <number>2000</number>
                            </property>
@@ -151,9 +157,20 @@
                          </item>
                          <item>
                           <widget class="QComboBox" name="airComboBox">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <item>
                             <property name="text">
-                             <string>Airplane</string>
+                             <string>Passenger Airplane</string>
+                            </property>
+                           </item>
+                           <item>
+                            <property name="text">
+                             <string>Exportation Airplane</string>
                             </property>
                            </item>
                            <item>
@@ -169,11 +186,6 @@
                            <item>
                             <property name="text">
                              <string>Cargo Aircraft</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>Boeing Airplane</string>
                             </property>
                            </item>
                            <item>
@@ -209,6 +221,12 @@
                            <property name="enabled">
                             <bool>false</bool>
                            </property>
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="maximum">
                             <double>360.000000000000000</double>
                            </property>
@@ -233,6 +251,12 @@
                            <property name="enabled">
                             <bool>false</bool>
                            </property>
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="maximum">
                             <double>86400.000000000000000</double>
                            </property>
@@ -251,6 +275,12 @@
                          </item>
                          <item>
                           <widget class="QDoubleSpinBox" name="maxVelAir">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="minimum">
                             <double>900.000000000000000</double>
                            </property>
@@ -275,6 +305,12 @@
                          </item>
                          <item>
                           <widget class="QDoubleSpinBox" name="minVelAir">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="minimum">
                             <double>900.000000000000000</double>
                            </property>
@@ -296,6 +332,12 @@
                          </item>
                          <item>
                           <widget class="QDoubleSpinBox" name="maxAccelAir">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="value">
                             <double>1.000000000000000</double>
                            </property>
@@ -313,7 +355,14 @@
                           </widget>
                          </item>
                          <item>
-                          <widget class="QDoubleSpinBox" name="minAccelAir"/>
+                          <widget class="QDoubleSpinBox" name="minAccelAir">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                          </widget>
                          </item>
                         </layout>
                        </item>
@@ -328,6 +377,12 @@
                          </item>
                          <item>
                           <widget class="QDoubleSpinBox" name="maxAltAir">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="maximum">
                             <double>112.000000000000000</double>
                            </property>
@@ -349,6 +404,12 @@
                          </item>
                          <item>
                           <widget class="QDoubleSpinBox" name="minAltAir">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="minimum">
                             <double>10.000000000000000</double>
                            </property>
@@ -376,8 +437,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>263</width>
-                        <height>319</height>
+                        <width>277</width>
+                        <height>298</height>
                        </rect>
                       </property>
                       <attribute name="label">
@@ -395,12 +456,60 @@
                          </item>
                          <item>
                           <widget class="QSpinBox" name="landSB">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="maximum">
                             <number>2000</number>
                            </property>
                            <property name="value">
                             <number>500</number>
                            </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                       <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_16">
+                         <property name="topMargin">
+                          <number>10</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>10</number>
+                         </property>
+                         <item>
+                          <widget class="QLabel" name="landSubcategoryLabel">
+                           <property name="text">
+                            <string>Subcategory</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QComboBox" name="landSubcategory">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <item>
+                            <property name="text">
+                             <string>Battle Tank</string>
+                            </property>
+                           </item>
+                           <item>
+                            <property name="text">
+                             <string>Reconnaissance Vehicle</string>
+                            </property>
+                           </item>
+                           <item>
+                            <property name="text">
+                             <string>Infantry Fighting</string>
+                            </property>
+                           </item>
                           </widget>
                          </item>
                         </layout>
@@ -423,6 +532,12 @@
                          </item>
                          <item>
                           <widget class="QDoubleSpinBox" name="maxVelCar">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="minimum">
                             <double>40.000000000000000</double>
                            </property>
@@ -447,6 +562,12 @@
                          </item>
                          <item>
                           <widget class="QDoubleSpinBox" name="minVelCar">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="minimum">
                             <double>40.000000000000000</double>
                            </property>
@@ -468,6 +589,12 @@
                          </item>
                          <item>
                           <widget class="QDoubleSpinBox" name="maxAccelCar">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="value">
                             <double>1.000000000000000</double>
                            </property>
@@ -485,7 +612,14 @@
                           </widget>
                          </item>
                          <item>
-                          <widget class="QDoubleSpinBox" name="minAccelCar"/>
+                          <widget class="QDoubleSpinBox" name="minAccelCar">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                          </widget>
                          </item>
                         </layout>
                        </item>
@@ -508,13 +642,13 @@
                       <property name="geometry">
                        <rect>
                         <x>0</x>
-                        <y>0</y>
-                        <width>263</width>
-                        <height>319</height>
+                        <y>-32</y>
+                        <width>262</width>
+                        <height>335</height>
                        </rect>
                       </property>
                       <attribute name="label">
-                       <string>Naval</string>
+                       <string>Water</string>
                       </attribute>
                       <layout class="QVBoxLayout" name="verticalLayout_11">
                        <item>
@@ -522,12 +656,18 @@
                          <item>
                           <widget class="QLabel" name="label_39">
                            <property name="text">
-                            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Naval Objects&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Water Objects&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                            </property>
                           </widget>
                          </item>
                          <item>
                           <widget class="QSpinBox" name="navalSB">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="maximum">
                             <number>2000</number>
                            </property>
@@ -552,19 +692,42 @@
                          </item>
                          <item>
                           <widget class="QComboBox" name="navalComboBox">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <item>
                             <property name="text">
-                             <string>On water</string>
+                             <string>Naval Ship</string>
                             </property>
                            </item>
                            <item>
                             <property name="text">
-                             <string>Underwater</string>
+                             <string>Fishing Ship</string>
+                            </property>
+                           </item>
+                           <item>
+                            <property name="text">
+                             <string>Submarine</string>
+                            </property>
+                           </item>
+                           <item>
+                            <property name="text">
+                             <string>Underwater Robot</string>
                             </property>
                            </item>
                           </widget>
                          </item>
                         </layout>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="pushButton_5">
+                         <property name="text">
+                          <string>Add objects</string>
+                         </property>
+                        </widget>
                        </item>
                        <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_32">
@@ -582,6 +745,12 @@
                           <widget class="QSpinBox" name="maxDepthShip">
                            <property name="enabled">
                             <bool>false</bool>
+                           </property>
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
                            </property>
                            <property name="maximum">
                             <number>6000</number>
@@ -610,19 +779,18 @@
                            <property name="enabled">
                             <bool>false</bool>
                            </property>
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="maximum">
                             <number>6000</number>
                            </property>
                           </widget>
                          </item>
                         </layout>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="pushButton_5">
-                         <property name="text">
-                          <string>Add objects</string>
-                         </property>
-                        </widget>
                        </item>
                        <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -635,6 +803,12 @@
                          </item>
                          <item>
                           <widget class="QDoubleSpinBox" name="maxVelShip">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="minimum">
                             <double>100.000000000000000</double>
                            </property>
@@ -659,6 +833,12 @@
                          </item>
                          <item>
                           <widget class="QDoubleSpinBox" name="minVelShip">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="minimum">
                             <double>100.000000000000000</double>
                            </property>
@@ -680,6 +860,12 @@
                          </item>
                          <item>
                           <widget class="QDoubleSpinBox" name="maxAccelShip">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="value">
                             <double>1.000000000000000</double>
                            </property>
@@ -697,7 +883,14 @@
                           </widget>
                          </item>
                          <item>
-                          <widget class="QDoubleSpinBox" name="minAccelShip"/>
+                          <widget class="QDoubleSpinBox" name="minAccelShip">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                          </widget>
                          </item>
                         </layout>
                        </item>
@@ -759,6 +952,12 @@
                      </item>
                      <item>
                       <widget class="QSpinBox" name="initTime">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>1</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="maximum">
                         <number>24</number>
                        </property>
@@ -777,6 +976,12 @@
                      </item>
                      <item>
                       <widget class="QSpinBox" name="lifeTime">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>1</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="maximum">
                         <number>72</number>
                        </property>
@@ -828,6 +1033,12 @@
                      </item>
                      <item>
                       <widget class="QComboBox" name="cmbTypeDistribution">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>1</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="currentText">
                         <string notr="true">Uniform</string>
                        </property>
@@ -874,6 +1085,12 @@
                      </item>
                      <item>
                       <widget class="QSpinBox" name="spinBoxAirPST">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                         <horstretch>1</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="maximum">
                         <number>24</number>
                        </property>
@@ -1043,7 +1260,12 @@
                    </property>
                    <item>
                     <property name="text">
-                     <string>Airplane</string>
+                     <string>Passenger Airplane</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Exportation Airplane</string>
                     </property>
                    </item>
                    <item>
@@ -1063,27 +1285,42 @@
                    </item>
                    <item>
                     <property name="text">
-                     <string>Boeing Airplane</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
                      <string>Fighter Jet</string>
                     </property>
                    </item>
                    <item>
                     <property name="text">
-                     <string>Land</string>
+                     <string>Battle Tank</string>
                     </property>
                    </item>
                    <item>
                     <property name="text">
-                     <string>On water</string>
+                     <string>Reconnaissance Vehicle</string>
                     </property>
                    </item>
                    <item>
                     <property name="text">
-                     <string>Underwater</string>
+                     <string>Infantry Fighting</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Fishing Ship</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Naval Ship</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Submarine</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Underwater Robot</string>
                     </property>
                    </item>
                   </widget>
@@ -1117,6 +1354,12 @@
                   <layout class="QHBoxLayout" name="horizontalLayout_36">
                    <item>
                     <widget class="QLabel" name="label_35">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
                       <string>Type</string>
                      </property>
@@ -1125,14 +1368,14 @@
                    <item>
                     <widget class="QPlainTextEdit" name="objectType">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                        <horstretch>1</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>100</width>
+                       <width>16000</width>
                        <height>27</height>
                       </size>
                      </property>
@@ -1156,6 +1399,12 @@
                   <layout class="QHBoxLayout" name="horizontalLayout_34">
                    <item>
                     <widget class="QLabel" name="label_31">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
                       <string>Start Time</string>
                      </property>
@@ -1171,7 +1420,7 @@
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>100</width>
+                       <width>16000</width>
                        <height>27</height>
                       </size>
                      </property>
@@ -1189,6 +1438,12 @@
                   <layout class="QHBoxLayout" name="horizontalLayout_33">
                    <item>
                     <widget class="QLabel" name="label_27">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
                       <string>End Time</string>
                      </property>
@@ -1197,14 +1452,14 @@
                    <item>
                     <widget class="QPlainTextEdit" name="objectET">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>1</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>100</width>
+                       <width>16000</width>
                        <height>27</height>
                       </size>
                      </property>

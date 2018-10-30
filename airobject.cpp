@@ -1,39 +1,36 @@
 #include "airobject.h"
 
-AirObject::AirObject(): Object()
+Air::Air(): Object()
 {
 
 }
 
-AirObject::AirObject
-(
-    const Coordinates& position,
-    const Vector& velocity,
-    unsigned int initialTime,
-    unsigned int lifeTime,
-    const Vector& acceleration,
-    ObjectType type
-): Object(position, velocity, initialTime, lifeTime, acceleration, type)
+Air::Air(const Coordinates& position,
+         const Vector& velocity,
+         unsigned int initialTime,
+         unsigned int lifeTime,
+         const Vector& acceleration,
+         ObjectCategory type): Object(position, velocity, initialTime, lifeTime, acceleration, type)
 {
 
 }
 
-void AirObject::setMaxAltitude(double value)
+void Air::setMaxAltitude(double value)
 {
     this->maxAltitude = value;
 }
 
-double AirObject::getMaxAltitude() const
+double Air::getMaxAltitude() const
 {
     return this->maxAltitude;
 }
 
-void AirObject::setMinAltitude(double value)
+void Air::setMinAltitude(double value)
 {
     this->minAltitude = value;
 }
 
-double AirObject::getMinAltitude() const
+double Air::getMinAltitude() const
 {
     return this->minAltitude;
 }

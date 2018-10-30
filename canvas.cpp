@@ -4,6 +4,23 @@
 #include <cmath>
 
 
+static std::map<ObjectCategory, QBrush> mapTypeColor =
+{
+    {ObjectCategory::PassengerAirPlane, QBrush("#1494b8", Qt::SolidPattern)},
+    {ObjectCategory::ExportationAirPlane, QBrush("#24a4b8", Qt::SolidPattern)},
+    {ObjectCategory::Helicopter, QBrush("#34b4b8", Qt::SolidPattern)},
+    {ObjectCategory::Missile, QBrush("#44c4b8", Qt::SolidPattern)},
+    {ObjectCategory::Fighter, QBrush("#54d4b8", Qt::SolidPattern)},
+    {ObjectCategory::Cargo, QBrush("#64e4b8", Qt::SolidPattern)},
+    {ObjectCategory::Battletank, QBrush("#74f4b8", Qt::SolidPattern)},
+    {ObjectCategory::Vehicle, QBrush("#8494b9", Qt::SolidPattern)},
+    {ObjectCategory::Infantry, QBrush("#9494ba", Qt::SolidPattern)},
+    {ObjectCategory::FishingShip, QBrush("#a494bb", Qt::SolidPattern)},
+    {ObjectCategory::NavalShip, QBrush("#b494bc", Qt::SolidPattern)},
+    {ObjectCategory::Submarine, QBrush("#c494bd", Qt::SolidPattern)},
+    {ObjectCategory::UnderwaterRobot, QBrush("#d494be", Qt::SolidPattern)}
+};
+
 
 void Canvas::drawAirplane(const Object& object, const Coordinates& position)
 {
@@ -12,28 +29,8 @@ void Canvas::drawAirplane(const Object& object, const Coordinates& position)
         QPainter painter(this->image);
         double x = position.getX();
         double y = position.getY();
-        QBrush brush("#9494b8", Qt::SolidPattern);
-        switch (object.getType())
-        {
-            case ObjectType::Helicopter:
-                brush = QBrush("#a4a4b8", Qt::SolidPattern);
-            break;
-            case ObjectType::Missile:
-                brush = QBrush("#b4b4b8", Qt::SolidPattern);
-            break;
-            case ObjectType::Cargo:
-                brush = QBrush("#c4c4b8", Qt::SolidPattern);
-            break;
-            case ObjectType::Boeing:
-                brush = QBrush("#d4d4b8", Qt::SolidPattern);
-            break;
-            case ObjectType::Fighter:
-                brush = QBrush("#e4e4b8", Qt::SolidPattern);
-            break;
-
-        }
+        QBrush brush = mapTypeColor[object.getType()];
         painter.setBrush(brush);
-        //painter.drawEllipse(x, y, 4, 4);
         static const QPoint arrow[3] =
         {
             QPoint(3, 3),
@@ -52,8 +49,16 @@ void Canvas::drawHelicopter(const Object& object, const Coordinates& position)
         QPainter painter(this->image);
         double x = position.getX();
         double y = position.getY();
-        painter.setBrush(QBrush("#66ccff", Qt::SolidPattern));
-        painter.drawEllipse(x, y, 4, 4);
+        QBrush brush = mapTypeColor[object.getType()];
+        painter.setBrush(brush);
+        static const QPoint arrow[3] =
+        {
+            QPoint(3, 3),
+            QPoint(-3, 3),
+            QPoint(0, 6)
+        };
+        painter.translate(x, y);
+        painter.drawConvexPolygon(arrow, 3);
     }
 }
 
@@ -64,8 +69,10 @@ void Canvas::drawCar(const Object& object, const Coordinates& position)
         QPainter painter(this->image);
         double x = position.getX();
         double y = position.getY();
-        painter.setBrush(QBrush("#ff330", Qt::SolidPattern));
-        painter.drawEllipse(x, y, 4, 4);
+        QBrush brush = mapTypeColor[object.getType()];
+        painter.setBrush(brush);
+        QRect r(x, y, 4, 4);
+        painter.drawRect(r);
     }
 }
 
@@ -76,7 +83,8 @@ void Canvas::drawShip(const Object& object, const Coordinates& position)
         QPainter painter(this->image);
         double x = position.getX();
         double y = position.getY();
-        painter.setBrush(QBrush("#009999", Qt::SolidPattern));
+        QBrush brush = mapTypeColor[object.getType()];
+        painter.setBrush(brush);
         painter.drawEllipse(x, y, 4, 4);
     }
 }
@@ -115,24 +123,24 @@ void Canvas::clear()
 
 void Canvas::draw(const Object& object, const Coordinates& position)
 {
-    switch (object.getType())
+    if (airObjectsType.count(object.getType()) > 0)
     {
-    case ObjectType::AirPlane:
-    case ObjectType::Missile:
-    case ObjectType::Cargo:
-    case ObjectType::Boeing:
-    case ObjectType::Fighter:
-        this->drawAirplane(object, position);
-        break;
-    case ObjectType::Helicopter:
-        this->drawHelicopter(object, position);
-        break;
-    case ObjectType::Land:
+        if (object.getType() == ObjectCategory::Helicopter)
+        {
+            this->drawHelicopter(object, position);
+        }
+        else
+        {
+            this->drawAirplane(object, position);
+        }
+    }
+    else if (landObjectsType.count(object.getType()) > 0)
+    {
         this->drawCar(object, position);
-        break;
-    case ObjectType::OnWater:
-    case ObjectType::Underwater:
+    }
+    else if (waterObjectsType.count(object.getType()) > 0
+             || underwaterObjectsType.count(object.getType()) > 0)
+    {
         this->drawShip(object, position);
-        break;
     }
 }

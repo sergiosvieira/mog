@@ -119,7 +119,7 @@ Vector ObjectGenerator::randomVector(double min, double max)
 
 
 Object *ObjectGenerator::generate(const QRect& world,
-                                  ObjectType type,
+                                  ObjectCategory type,
                                   const DistributionType distributionType,
                                   double maxVelocity,
                                   double minVelocity,
@@ -136,33 +136,36 @@ Object *ObjectGenerator::generate(const QRect& world,
     double rndX = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
     double rndY = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
     double rndZ = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
-    if (type == ObjectType::Land || type == ObjectType::OnWater)
+
+    if (landObjectsType.count(type) > 0
+            || waterObjectsType.count(type))
     {
         rndZ = 0.0;
         randomPosition.setZ(0.0);
         randomVelocity.setZ(0.0);
         randomAcceleration.setZ(0.0);
     }
-
-    switch (type)
+    if (airObjectsType.count(type) > 0)
     {
-    case ObjectType::AirPlane:
-    case ObjectType::Missile:
-    case ObjectType::Cargo:
-    case ObjectType::Boeing:
-    case ObjectType::Fighter:
-        object = new AirPlane(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
-        break;
-    case ObjectType::Helicopter:
-        object = new Helicopter(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
-        break;
-    case ObjectType::Land:
+        if (type == ObjectCategory::Helicopter)
+        {
+            object = new Helicopter(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
+        }
+        else
+        {
+            object = new AirPlane(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
+        }
+    }
+    else if (landObjectsType.count(type) > 0)
+    {
         object = new Car(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
-        break;
-    case ObjectType::OnWater:
-    case ObjectType::Underwater:
+    }
+    else if (waterObjectsType.count(type) > 0
+             || underwaterObjectsType.count(type) > 0)
+    {
         object = new Ship(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
     }
+
     QString typeStr = QString::fromStdString(Object::stringFromType(type));
     QString name = QString("%1_%2").arg(typeStr).arg(id);
     object->setName(name);
@@ -173,122 +176,67 @@ Object *ObjectGenerator::generate(const QRect& world,
     return object;
 }
 
-void rndStationCoordinate( ObjectType objType, const QRect &rcWorld, const QRectF &rcWhiteArea, const DistributionType type, Coordinates &out)
+void rndStationCoordinate(ObjectCategory objType,
+                          const QRect &rcWorld,
+                          const QRectF &rcWhiteArea,
+                          const DistributionType type,
+                          Coordinates &out)
 {
-    out.setX(0.0);
-    out.setY(0.0);
-
-    double x, y, z;
-    switch (objType) {
-    case ObjectType::Helicopter:
-    case ObjectType::AirPlane: // spread on overall area
-        switch (type) {
+    double x = 0.0, y = 0.0, z = 0.0;
+    switch (type)
+    {
         case DistributionType::Uniform:
-            out.setX(distributionUniform01() * rcWorld.width());
-            out.setY(distributionUniform01() * rcWorld.height());
-            out.setZ(distributionUniform01());
+            x = distributionUniform01() * rcWorld.width();
+            y = distributionUniform01() * rcWorld.height();
             break;
         case DistributionType::Poisson:
-            out.setX(distributionPoisson01() * rcWorld.width());
-            out.setY(distributionPoisson01() * rcWorld.height());
-            out.setZ(distributionPoisson01());
+            x = distributionPoisson01() * rcWorld.width();
+            y = distributionPoisson01() * rcWorld.height();
             break;
         case DistributionType::Gaussian:
-            out.setX(distributionNormal01() * rcWorld.width());
-            out.setY(distributionNormal01() * rcWorld.height());
-            out.setZ(distributionNormal01());
+            x = distributionNormal01() * rcWorld.width();
+            y = distributionNormal01() * rcWorld.height();
             break;
         case DistributionType::LeftSkewed:
-            out.setX(distributionSkew(DistributionType::LeftSkewed) * rcWorld.width());
-            out.setY(distributionSkew(DistributionType::LeftSkewed) * rcWorld.height());
-            out.setZ(distributionSkew(DistributionType::LeftSkewed));
+            x = distributionSkew(DistributionType::LeftSkewed) * rcWorld.width();
+            y = distributionSkew(DistributionType::LeftSkewed) * rcWorld.height();
             break;
         case DistributionType::RightSkewed:
-            out.setX(distributionSkew(DistributionType::RightSkewed) * rcWorld.width());
-            out.setY(distributionSkew(DistributionType::RightSkewed) * rcWorld.height());
-            out.setZ(distributionSkew(DistributionType::RightSkewed));
+            x = distributionSkew(DistributionType::RightSkewed) * rcWorld.width();
+            y = distributionSkew(DistributionType::RightSkewed) * rcWorld.height();
             break;
-        }
-        break;
-    case ObjectType::OnWater: // spread only on blue area
-        do {
-            switch (type) {
+    }
+    out.setX(x);
+    out.setY(y);
+    if (airObjectsType.count(objType) > 0
+            || underwaterObjectsType.count(objType))
+    {
+        switch (type)
+        {
             case DistributionType::Uniform:
-                x = distributionUniform01() * rcWorld.width();
-                y = distributionUniform01() * rcWorld.height();
+                z = distributionUniform01();
                 break;
             case DistributionType::Poisson:
-                x = distributionPoisson01() * rcWorld.width();
-                y = distributionPoisson01() * rcWorld.height();
+                z = distributionPoisson01();
                 break;
             case DistributionType::Gaussian:
-                x = distributionNormal01() * rcWorld.width();
-                y = distributionNormal01() * rcWorld.height();
+                z = distributionNormal01();
                 break;
             case DistributionType::LeftSkewed:
-                x = distributionSkew(DistributionType::LeftSkewed) * rcWorld.width();
-                y = distributionSkew(DistributionType::LeftSkewed) * rcWorld.height();
+                z = distributionSkew(DistributionType::LeftSkewed);
                 break;
             case DistributionType::RightSkewed:
-                x = distributionSkew(DistributionType::RightSkewed) * rcWorld.width();
-                y = distributionSkew(DistributionType::RightSkewed) * rcWorld.height();
+                z = distributionSkew(DistributionType::RightSkewed);
                 break;
-            }
-        } while (rcWhiteArea.contains(x, y));
-        switch (type) {
-        case DistributionType::Uniform:
-            z = distributionUniform01();
-            break;
-        case DistributionType::Poisson:
-            z = distributionPoisson01();
-            break;
-        case DistributionType::Gaussian:
-            z = distributionNormal01();
-            break;
-        case DistributionType::LeftSkewed:
-            z = distributionSkew(DistributionType::LeftSkewed);
-            break;
-        case DistributionType::RightSkewed:
-            z = distributionSkew(DistributionType::RightSkewed);
-            break;
         }
-        out.setX(x);
-        out.setY(y);
-        out.setZ(z);
-        break;
-    case ObjectType::Land: // spread only on white area
-        switch (type) {
-        case DistributionType::Uniform:
-            out.setX(rcWhiteArea.x() + distributionUniform01() * rcWhiteArea.width());
-            out.setY(rcWhiteArea.y() + distributionUniform01() * rcWhiteArea.height());
-            out.setZ(distributionUniform01());
-            break;
-        case DistributionType::Poisson:
-            out.setX(rcWhiteArea.x() + distributionNormal01() * rcWhiteArea.width());
-            out.setY(rcWhiteArea.y() + distributionNormal01() * rcWhiteArea.height());
-            out.setZ(distributionPoisson01());
-            break;
-        case DistributionType::Gaussian:
-            out.setX(rcWhiteArea.x() + distributionNormal01() * rcWhiteArea.width());
-            out.setY(rcWhiteArea.y() + distributionNormal01() * rcWhiteArea.height());
-            out.setZ(distributionNormal01());
-            break;
-        case DistributionType::LeftSkewed:
-            out.setX(rcWhiteArea.x() + distributionSkew(DistributionType::LeftSkewed) * rcWhiteArea.width());
-            out.setY(rcWhiteArea.y() + distributionSkew(DistributionType::LeftSkewed) * rcWhiteArea.height());
-            out.setZ(distributionSkew(DistributionType::LeftSkewed));
-            break;
-        case DistributionType::RightSkewed:
-            out.setX(rcWhiteArea.x() + distributionSkew(DistributionType::RightSkewed) * rcWhiteArea.width());
-            out.setY(rcWhiteArea.y() + distributionSkew(DistributionType::RightSkewed) * rcWhiteArea.height());
-            out.setZ(distributionSkew(DistributionType::RightSkewed));
-            break;
-        }
-        break;
     }
+    out.setZ(z);
 }
 
-Object* ObjectGenerator::generateStationObject(GraphicsViewType areaType, const QRect& world, const QRectF &rcWhiteArea, ObjectType type, const DistributionType distributionType, double maxVelocity, double minVelocity, double maxAcceleration, double minAcceleration)
+Object* ObjectGenerator::generateStationObject(GraphicsViewType areaType,
+                                               const QRect& world,
+                                               const QRectF &rcWhiteArea,
+                                               ObjectCategory type, const DistributionType distributionType, double maxVelocity, double minVelocity, double maxAcceleration, double minAcceleration)
 {
     double minVelX = rndMinMax(minVelocity, maxVelocity);
     double maxVelX = rndMinMax(minVelX, maxVelocity);
@@ -325,24 +273,25 @@ Object* ObjectGenerator::generateStationObject(GraphicsViewType areaType, const 
     double rndX = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
     double rndY = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
     double rndZ = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
-    if (type != ObjectType::AirPlane && type!= ObjectType::Helicopter) {
+    if (landObjectsType.count(type) > 0
+            || waterObjectsType.count(type) > 0)
+    {
         rndZ = 0.0;
         randomPosition.setZ(0.0);
         randomVelocity.setZ(0.0);
         randomAcceleration.setZ(0.0);
     }
-    switch (type)
+    if (airObjectsType.count(type) > 0)
     {
-    case ObjectType::AirPlane:
         object = new AirPlane(randomPosition, randomVelocity, 0.0, 0.0, randomAcceleration);
-        break;
-    case ObjectType::Helicopter:
+    }
+    else if (landObjectsType.count(type) > 0)
+    {
         object = new Helicopter(randomPosition, randomVelocity, 0.0, 0.0, randomAcceleration);
-        break;
-    case ObjectType::Land:
-        object = new Car(randomPosition, randomVelocity, 0.0, 0.0, randomAcceleration);
-        break;
-    case ObjectType::OnWater:
+    }
+    else if (waterObjectsType.count(type) > 0
+             || underwaterObjectsType.count(type) > 0)
+    {
         object = new Ship(randomPosition, randomVelocity, 0.0, 0.0, randomAcceleration);
     }
     object->setID(id++);

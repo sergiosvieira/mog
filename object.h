@@ -6,8 +6,10 @@
 #include <qpoint.h>
 #include <QString>
 #include <vector>
+#include <set>
 #include "vector.h"
 #include "coordinates.h"
+#include "objecttype.h"
 
 enum class MovingPattern
 {
@@ -45,19 +47,31 @@ struct Pattern
         return "Constant Velocity";
     }
 };
-enum class ObjectType
-{
-    AirPlane,
-    Helicopter,
-    Missile,
-    Cargo,
-    Boeing,
-    Fighter,
-    Land,
-    OnWater,
-    Underwater
+
+static const std::set<ObjectCategory> airObjectsType = {
+    ObjectCategory::PassengerAirPlane,
+    ObjectCategory::ExportationAirPlane,
+    ObjectCategory::Helicopter,
+    ObjectCategory::Missile,
+    ObjectCategory::Cargo,
+    ObjectCategory::Fighter
 };
 
+static const std::set<ObjectCategory> landObjectsType = {
+    ObjectCategory::Battletank,
+    ObjectCategory::Vehicle,
+    ObjectCategory::Infantry
+};
+
+static const std::set<ObjectCategory> waterObjectsType = {
+    ObjectCategory::FishingShip,
+    ObjectCategory::NavalShip
+};
+
+static const std::set<ObjectCategory> underwaterObjectsType = {
+    ObjectCategory::Submarine,
+    ObjectCategory::UnderwaterRobot
+};
 
 enum class DistributionType
 {
@@ -110,31 +124,27 @@ protected:
     unsigned int endTime = 0;
     Vector acceleration;
     Vector direction;
-    ObjectType type;
+    ObjectCategory type;
     MapOfPatternToInstant patterns;
     MovingPattern lastPattern;
     GraphicsViewType areaType;
 public:
     void setAreaType(GraphicsViewType type);
     GraphicsViewType getAreaType();
-    static ObjectType typeFromString(const std::string &str);
-    static std::string stringFromType(ObjectType type);
-
+    static ObjectCategory typeFromString(const std::string &str);
+    static std::string stringFromType(ObjectCategory type);
 public:
     Object();
-    Object
-    (
-        const Coordinates& position,
+    Object(const Coordinates& position,
         const Vector& velocity,
         unsigned int initialTime,
         unsigned int lifeTime,
         const Vector& acceleration,
-        ObjectType type
-    );
+        ObjectCategory type);
     Coordinates getPosition() const;
     Vector getVelocity() const;
-    ObjectType getType() const;
-    void setType(ObjectType type)
+    ObjectCategory getType() const;
+    void setType(ObjectCategory type)
     {
         this->type = type;
     }

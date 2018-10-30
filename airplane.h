@@ -3,19 +3,12 @@
 
 #include "airobject.h"
 
-class AirPlane : public AirObject
+class AirPlane : public Air
 {
-
 public:
     AirPlane();
-    AirPlane
-    (
-        const Coordinates& position,
-        const Vector& velocity,
-        unsigned int initialTime,
-        unsigned int lifeTime,
-        const Vector &acceleration
-    );
+    AirPlane(const Coordinates& position, const Vector& velocity, unsigned int initialTime,
+        unsigned int lifeTime, const Vector &acceleration);
 };
 
 #endif // AIRPLANE_H
