@@ -4,25 +4,74 @@
 #include <QWidget>
 
 #include "coordinates.h"
-#include "object.h"
 
+class TaticalMovingObject;
 class QImage;
 
+/*!
+ * \brief The Canvas class
+ */
 class Canvas: public QWidget
 {
 protected:
+    /*!
+     * \brief image
+     */
     QImage* image = nullptr;
-    void drawAirplane(const Object& object, const Coordinates& position);
-    void drawHelicopter(const Object& object, const Coordinates& position);
-    void drawCar(const Object& object, const Coordinates& position);
-    void drawShip(const Object& object, const Coordinates& position);
+    /*!
+     * \brief drawAirplane
+     * \param object
+     * \param position
+     */
+    void drawAirplane(const TaticalMovingObject& object, const Coordinates& position);
+    /*!
+     * \brief drawHelicopter
+     * \param object
+     * \param position
+     */
+    void drawHelicopter(const TaticalMovingObject& object, const Coordinates& position);
+    /*!
+     * \brief drawCar
+     * \param object
+     * \param position
+     */
+    void drawCar(const TaticalMovingObject& object, const Coordinates& position);
+    /*!
+     * \brief drawShip
+     * \param object
+     * \param position
+     */
+    void drawShip(const TaticalMovingObject& object, const Coordinates& position);
 public:
+    /*!
+     * \brief Canvas constructor
+     */
     Canvas();
+    /*!
+     * \brief Canvas constructor
+     * \param parent
+     */
     Canvas(QWidget* parent);
+    /*!
+     * \brief getCanvas
+     * \return
+     */
     QImage* getCanvas();
+    /*!
+     * \brief paintEvent
+     * \param event
+     */
     void paintEvent(QPaintEvent* event);
+    /*!
+     * \brief clear
+     */
     void clear();
-    void draw(const Object& object, const Coordinates& position);
+    /*!
+     * \brief draw
+     * \param object
+     * \param position
+     */
+    void draw(const TaticalMovingObject& object, const Coordinates& position);
 };
 
 #endif // CANVAS_H

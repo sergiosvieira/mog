@@ -1,6 +1,6 @@
 #include "datamanager.h"
 
-#include "object.h"
+#include "taticalmovingobject.h"
 
 DataManager::DataManager()
 {

@@ -2,27 +2,11 @@
 
 #include <QPainter>
 #include <cmath>
+#include "objectcategory.h"
+#include "taticalmovingobject.h"
+#include "mapcolor.h"
 
-
-static std::map<ObjectCategory, QBrush> mapTypeColor =
-{
-    {ObjectCategory::PassengerAirPlane, QBrush("#1494b8", Qt::SolidPattern)},
-    {ObjectCategory::ExportationAirPlane, QBrush("#24a4b8", Qt::SolidPattern)},
-    {ObjectCategory::Helicopter, QBrush("#34b4b8", Qt::SolidPattern)},
-    {ObjectCategory::Missile, QBrush("#44c4b8", Qt::SolidPattern)},
-    {ObjectCategory::Fighter, QBrush("#54d4b8", Qt::SolidPattern)},
-    {ObjectCategory::Cargo, QBrush("#64e4b8", Qt::SolidPattern)},
-    {ObjectCategory::Battletank, QBrush("#74f4b8", Qt::SolidPattern)},
-    {ObjectCategory::Vehicle, QBrush("#8494b9", Qt::SolidPattern)},
-    {ObjectCategory::Infantry, QBrush("#9494ba", Qt::SolidPattern)},
-    {ObjectCategory::FishingShip, QBrush("#a494bb", Qt::SolidPattern)},
-    {ObjectCategory::NavalShip, QBrush("#b494bc", Qt::SolidPattern)},
-    {ObjectCategory::Submarine, QBrush("#c494bd", Qt::SolidPattern)},
-    {ObjectCategory::UnderwaterRobot, QBrush("#d494be", Qt::SolidPattern)}
-};
-
-
-void Canvas::drawAirplane(const Object& object, const Coordinates& position)
+void Canvas::drawAirplane(const TaticalMovingObject& object, const Coordinates& position)
 {
     if (this->image)
     {
@@ -42,7 +26,7 @@ void Canvas::drawAirplane(const Object& object, const Coordinates& position)
     }
 }
 
-void Canvas::drawHelicopter(const Object& object, const Coordinates& position)
+void Canvas::drawHelicopter(const TaticalMovingObject& object, const Coordinates& position)
 {
     if (this->image)
     {
@@ -62,7 +46,7 @@ void Canvas::drawHelicopter(const Object& object, const Coordinates& position)
     }
 }
 
-void Canvas::drawCar(const Object& object, const Coordinates& position)
+void Canvas::drawCar(const TaticalMovingObject& object, const Coordinates& position)
 {
     if (this->image)
     {
@@ -76,7 +60,7 @@ void Canvas::drawCar(const Object& object, const Coordinates& position)
     }
 }
 
-void Canvas::drawShip(const Object& object, const Coordinates& position)
+void Canvas::drawShip(const TaticalMovingObject& object, const Coordinates& position)
 {
     if (this->image)
     {
@@ -121,7 +105,7 @@ void Canvas::clear()
     if (this->image) this->image->fill(Qt::GlobalColor::white);
 }
 
-void Canvas::draw(const Object& object, const Coordinates& position)
+void Canvas::draw(const TaticalMovingObject& object, const Coordinates& position)
 {
     if (airObjectsType.count(object.getType()) > 0)
     {

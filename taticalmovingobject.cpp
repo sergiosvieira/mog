@@ -1,16 +1,16 @@
-#include "object.h"
+#include "taticalmovingobject.h"
 
 #include <vector>
 #include <string>
 
 
 
-Object::Object()
+TaticalMovingObject::TaticalMovingObject()
 {
 
 }
 
-Object::Object
+TaticalMovingObject::TaticalMovingObject
 (const Coordinates &position,
     const Vector &velocity,
     unsigned int initialTime,
@@ -27,62 +27,62 @@ Object::Object
 
 }
 
-Coordinates Object::getPosition() const
+Coordinates TaticalMovingObject::getPosition() const
 {
     return this->position;
 }
 
-Vector Object::getVelocity() const
+Vector TaticalMovingObject::getVelocity() const
 {
     return this->velocity;
 }
 
-ObjectCategory Object::getType() const
+ObjectCategory TaticalMovingObject::getType() const
 {
     return this->type;
 }
 
-Vector Object::getAcceleraton() const
+Vector TaticalMovingObject::getAcceleraton() const
 {
     return this->acceleration;
 }
 
-void Object::setDirection(const Vector& u)
+void TaticalMovingObject::setDirection(const Vector& u)
 {
     this->direction = u;
 }
 
-Vector Object::getDirection() const
+Vector TaticalMovingObject::getDirection() const
 {
     return this->direction;
 }
 
-unsigned int Object::getID() const
+unsigned int TaticalMovingObject::getID() const
 {
     return this->id;
 }
 
-unsigned int Object::getInitialTime() const
+unsigned int TaticalMovingObject::getInitialTime() const
 {
     return this->initialTime;
 }
 
-unsigned int Object::getEndTime() const
+unsigned int TaticalMovingObject::getEndTime() const
 {
     return this->endTime;
 }
 
-void Object::setID(unsigned int id)
+void TaticalMovingObject::setID(unsigned int id)
 {
     this->id = id;
 }
 
-void Object::addPattern(const MovingPattern &pattern, int time)
+void TaticalMovingObject::addPattern(const MovingPattern &pattern, int time)
 {
     this->patterns[time] = pattern;
 }
 
-MovingPattern Object::getPattern(int time)
+MovingPattern TaticalMovingObject::getPattern(int time)
 {
     auto it = this->patterns.lower_bound(time);
     if (it == this->patterns.end())
@@ -94,7 +94,7 @@ MovingPattern Object::getPattern(int time)
     return it->second;
 }
 
-std::vector<int> Object::getAllPatternTime()
+std::vector<int> TaticalMovingObject::getAllPatternTime()
 {
     std::vector<int> result;
     for (auto kv: this->patterns)
@@ -104,22 +104,22 @@ std::vector<int> Object::getAllPatternTime()
     return result;
 }
 
-void Object::setAreaType(GraphicsViewType type)
+void TaticalMovingObject::setAreaType(GraphicsViewType type)
 {
     areaType = type;
 }
 
-GraphicsViewType Object::getAreaType()
+GraphicsViewType TaticalMovingObject::getAreaType()
 {
     return areaType;
 }
 
-ObjectCategory Object::typeFromString(const std::string &str)
+ObjectCategory TaticalMovingObject::typeFromString(const std::string &str)
 {
     return mapStrType[str];
 }
 
-std::string Object::stringFromType(ObjectCategory type)
+std::string TaticalMovingObject::stringFromType(ObjectCategory type)
 {
     return mapTypeStr[type];
 }
