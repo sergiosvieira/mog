@@ -10,7 +10,8 @@
 void AirObjectsManager::add(ObjectCategory category,
                             DistributionType distribution,
                             unsigned int initialInstant,
-                            unsigned int lifeTime)
+                            unsigned int lifeTime,
+                            CollectedEachInterface *collected)
 {
     if (airObjectsType.count(category))
     {
@@ -60,5 +61,59 @@ void AirObjectsManager::show(unsigned int id, QImage *image)
 
 void AirObjectsManager::update(unsigned int id)
 {
+
+}
+
+std::string AirObjectsManager::str()
+{
+    for (auto kv: this->objMap)
+    {
+        auto object = kv.second;
+        for (int t = 0; t < this->getEndInstant(); ++t)
+        {
+            Pair p = this->dataManager.getData(t, object->getID());
+            Coordinates position = p.first;
+            Vector velocity = p.second;
+            QString patternStr = QString::fromStdString(Pattern::stringFromPattern(object->getPattern(t)));
+            out << t
+                << ","
+                << object2name(object)
+                << ","
+                << position.getX()
+                << ","
+                << position.getY()
+                << ","
+                << position.getZ()
+                << ","
+                << velocity.getX()
+                << ","
+                << velocity.getY()
+                << ","
+                << velocity.getZ()
+                << ","
+                << object->getAcceleraton().getX()
+                << ","
+                << object->getAcceleraton().getY()
+                << ","
+                << object->getAcceleraton().getZ()
+                << ","
+                << objectAltitude(object).first // max altitude
+                << ","
+                << objectAltitude(object).second // min altitude
+                << ","
+                << objectDepth(object).first // max depth
+                << ","
+                << objectDepth(object).second // min depth
+                << ","
+                << object->getInitialTime()
+                << ","
+                << object->getEndTime()
+                << ","
+                << t
+                << ","
+                << patternStr;
+             out << "\r\n";
+        }
+    }
 
 }

@@ -1,6 +1,6 @@
-#include "airobject.h"
+#include "air.h"
 
-Air::Air(): Object()
+Air::Air(): TaticalMovingObject()
 {
 
 }
@@ -10,7 +10,7 @@ Air::Air(const Coordinates& position,
          unsigned int initialTime,
          unsigned int lifeTime,
          const Vector& acceleration,
-         ObjectCategory type): Object(position, velocity, initialTime, lifeTime, acceleration, type)
+         ObjectCategory type): TaticalMovingObject(position, velocity, initialTime, lifeTime, acceleration, type)
 {
 
 }

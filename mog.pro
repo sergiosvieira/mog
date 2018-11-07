@@ -11,6 +11,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = mog
 TEMPLATE = app
 
+INCLUDEPATH += . ./lib/eigenlib
+
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -27,51 +29,62 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    object.cpp \
     vector.cpp \
-    circularlist.cpp \
-    node.cpp \
     movingpattern.cpp \
     datamanager.cpp \
     airplane.cpp \
     helicopter.cpp \
-    car.cpp \
-    ship.cpp \
     canvas.cpp \
     coordinates.cpp \
     objectgenerator.cpp \
-    airobject.cpp \
     histogram.cpp \
     trajectory3d.cpp \
     dragwidget.cpp \
     graphicsview.cpp \
-    stationsetting.cpp
+    stationsetting.cpp \
+    taticalmovingobject.cpp \
+    air.cpp \
+    land.cpp \
+    water.cpp \
+    taticalmovingobjectsmanager.cpp \
+    airobjectsmanager.cpp \
+    objectfactory.cpp \
+    landobjectsmanager.cpp \
+    waterobjectsmanager.cpp \
+    kalman.cpp
 
 HEADERS += \
         mainwindow.h \
-    object.h \
     vector.h \
-    circularlist.h \
-    node.h \
     movingpattern.h \
     datamanager.h \
     airplane.h \
     helicopter.h \
-    car.h \
-    ship.h \
     canvas.h \
     coordinates.h \
     objectgenerator.h \
-    airobject.h \
     histogram.h \
     trajectory3d.h \
     dragwidget.h \
     graphicsview.h \
     stationsetting.h \
-    header.h \
     enum.h \
-    objecttype.h \
-    objecttypefactory.h
+    taticalmovingobject.h \
+    air.h \
+    objectcategory.h \
+    land.h \
+    objectfactory.h \
+    water.h \
+    taticalmovingobjectsmanager.h \
+    airobjectsmanager.h \
+    distributiontype.h \
+    dragwidgettype.h \
+    graphicsviewtype.h \
+    mapcolor.h \
+    landobjectsmanager.h \
+    waterobjectsmanager.h \
+    kalman.h \
+    collectedeach.h
 
 FORMS += \
         mainwindow.ui \

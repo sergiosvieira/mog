@@ -2,29 +2,45 @@
 
 #include <vector>
 #include <string>
+#include "collectedeach.h"
 
 
 
 TaticalMovingObject::TaticalMovingObject()
 {
-
+    this->collected = new FiveSeconds();
 }
 
-TaticalMovingObject::TaticalMovingObject
-(const Coordinates &position,
+TaticalMovingObject::TaticalMovingObject(const Coordinates &position,
     const Vector &velocity,
     unsigned int initialTime,
     unsigned int endTime,
     const Vector &acceleration,
-    ObjectCategory type
-): position(position),
+    ObjectCategory type,
+    CollectedEachInterface *collected): position(position),
     velocity(velocity),
     initialTime(initialTime),
     endTime(endTime),
     acceleration(acceleration),
     type(type)
 {
+    this->collected = new FiveSeconds();
+}
 
+TaticalMovingObject::~TaticalMovingObject()
+{
+    if (this->collected) delete this->collected;
+}
+
+void TaticalMovingObject::setCollected(CollectedEachInterface *collected)
+{
+    if (this->collected) delete this->collected;
+    this->collected = collected;
+}
+
+const CollectedEachInterface *TaticalMovingObject::getCollected() const
+{
+    return this->collected;
 }
 
 Coordinates TaticalMovingObject::getPosition() const

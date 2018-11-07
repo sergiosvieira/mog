@@ -1,18 +1,18 @@
-#include "car.h"
+#include "land.h"
 
-Car::Car(): Object()
+Land::Land(): TaticalMovingObject()
 {
 
 }
 
-Car::Car
+Land::Land
 (
     const Coordinates& position,
     const Vector& velocity,
     unsigned int initialTime,
     unsigned int lifeTime,
     const Vector &acceleration
-): Object(position, velocity, initialTime, lifeTime, acceleration, ObjectCategory::Vehicle)
+): TaticalMovingObject(position, velocity, initialTime, lifeTime, acceleration, ObjectCategory::Vehicle)
 {
 
 }

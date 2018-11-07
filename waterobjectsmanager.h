@@ -20,7 +20,8 @@ public:
     void add(ObjectCategory category,
              DistributionType distribution,
              unsigned int initialInstant,
-             unsigned int lifeTime) override;
+             unsigned int lifeTime,
+             CollectedEachInterface *collected = nullptr) override;
     /*!
      * \brief del a specified water object
      * \param id
@@ -36,6 +37,7 @@ public:
      * \param id
      */
     void update(unsigned int id);
+    virtual std::string str() override;
 };
 
 

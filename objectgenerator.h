@@ -1,18 +1,24 @@
 #ifndef OBJECTGENERATOR_H
 #define OBJECTGENERATOR_H
 
-#include "object.h"
+
 #include <random>
 #include <QRect>
+#include "distributiontype.h"
+#include "objectcategory.h"
+#include "vector.h"
+#include "graphicsview.h"
 
 static std::random_device rdev{};
 static std::mt19937 eng{rdev()};
+
+class TaticalMovingObject;
 
 class ObjectGenerator
 {
     static unsigned int id;
 public:
-    static Object* generate(
+    static TaticalMovingObject* generate(
             const QRect& world,
             ObjectCategory type,
             const DistributionType distributionType,
@@ -23,7 +29,7 @@ public:
             unsigned int initialTime,
             unsigned int lifeTime
             );
-    static Object* generateStationObject(
+    static TaticalMovingObject* generateStationObject(
             GraphicsViewType areaType,
             const QRect& world,
             const QRectF &rcWhiteArea,

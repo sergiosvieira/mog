@@ -1,9 +1,12 @@
-#ifndef OBJECTTYPE_H
-#define OBJECTTYPE_H
+#ifndef __OBJECT_CATEGORY_H__
+#define __OBJECT_CATEGORY_H__
 
 #include "enum.h"
 #include <map>
 
+/*!
+ * \brief The ObjectCategory enum
+ */
 enum class ObjectCategory
 {
     PassengerAirPlane,
@@ -21,6 +24,9 @@ enum class ObjectCategory
     UnderwaterRobot
 };
 
+/*!
+  * \brief map of string to object category
+  */
 static std::map<std::string, ObjectCategory> mapStrType =
 {
     {"Passenger Airplane", ObjectCategory::PassengerAirPlane},
@@ -38,6 +44,9 @@ static std::map<std::string, ObjectCategory> mapStrType =
     {"Underwater Robot", ObjectCategory::UnderwaterRobot}
 };
 
+/*!
+ * \brief map of object category to string
+ */
 static std::map<ObjectCategory, std::string> mapTypeStr =
 {
     {ObjectCategory::PassengerAirPlane, "Passenger Airplane"},
@@ -55,7 +64,9 @@ static std::map<ObjectCategory, std::string> mapTypeStr =
     {ObjectCategory::UnderwaterRobot, "Underwater Robot"},
 };
 
-
+/*!
+ * \brief The ObjectInfo struct
+ */
 struct ObjectInfo
 {
     double maxVelocity = 0.0;
@@ -64,6 +75,9 @@ struct ObjectInfo
     double minAcceleration = 1.0;
 };
 
+/*!
+ * \brief The AirObject struct
+ */
 struct AirObject: public Enum<ObjectCategory>, public ObjectInfo
 {
     double maxAltitude = 0.0;
@@ -75,6 +89,9 @@ struct AirObject: public Enum<ObjectCategory>, public ObjectInfo
     }
 };
 
+/*!
+ * \brief The LandObject struct
+ */
 struct LandObject: public Enum<ObjectCategory>, public ObjectInfo
 {
     LandObject()
@@ -86,6 +103,9 @@ struct LandObject: public Enum<ObjectCategory>, public ObjectInfo
     }
 };
 
+/*!
+ * \brief The WaterObject struct
+ */
 struct WaterObject: public Enum<ObjectCategory>, public ObjectInfo
 {
     WaterObject()
@@ -98,6 +118,9 @@ struct WaterObject: public Enum<ObjectCategory>, public ObjectInfo
 };
 
 // Air Objects
+/*!
+ * \brief The AirForceObject struct
+ */
 struct AirForceObject: public AirObject
 {
     AirForceObject()
@@ -107,6 +130,9 @@ struct AirForceObject: public AirObject
     }
 };
 
+/*!
+ * \brief The FighterJetObject struct
+ */
 struct FighterJetObject: public AirForceObject
 {
     FighterJetObject()
@@ -120,6 +146,9 @@ struct FighterJetObject: public AirForceObject
     }
 };
 
+/*!
+ * \brief The CargoObject struct
+ */
 struct CargoObject: public AirForceObject
 {
     CargoObject()
@@ -133,7 +162,9 @@ struct CargoObject: public AirForceObject
     }
 };
 
-
+/*!
+ * \brief The HelicopterObject struct
+ */
 struct HelicopterObject: public AirObject
 {
     HelicopterObject()
@@ -147,6 +178,9 @@ struct HelicopterObject: public AirObject
     }
 };
 
+/*!
+ * \brief The MissileObject struct
+ */
 struct MissileObject: public AirObject
 {
     MissileObject()
@@ -160,6 +194,9 @@ struct MissileObject: public AirObject
     }
 };
 
+/*!
+ * \brief The CommercialAirplaneObject struct
+ */
 struct CommercialAirplaneObject: public AirObject
 {
     CommercialAirplaneObject()
@@ -169,6 +206,9 @@ struct CommercialAirplaneObject: public AirObject
     }
 };
 
+/*!
+ * \brief The PassengerAirplaneObject struct
+ */
 struct PassengerAirplaneObject: public CommercialAirplaneObject
 {
     PassengerAirplaneObject()
@@ -181,6 +221,9 @@ struct PassengerAirplaneObject: public CommercialAirplaneObject
     }
 };
 
+/*!
+ * \brief The ExportationAirplaneObject struct
+ */
 struct ExportationAirplaneObject: public CommercialAirplaneObject
 {
     ExportationAirplaneObject()
@@ -195,6 +238,9 @@ struct ExportationAirplaneObject: public CommercialAirplaneObject
 
 
 // Land Objects
+/*!
+ * \brief The BattleTankObject struct
+ */
 struct BattleTankObject: public LandObject
 {
     BattleTankObject()
@@ -205,6 +251,9 @@ struct BattleTankObject: public LandObject
     }
 };
 
+/*!
+ * \brief The ReconnaissanceVehicleObject struct
+ */
 struct ReconnaissanceVehicleObject: public LandObject
 {
     ReconnaissanceVehicleObject()
@@ -215,6 +264,9 @@ struct ReconnaissanceVehicleObject: public LandObject
     }
 };
 
+/*!
+ * \brief The InfantryFightingObject struct
+ */
 struct InfantryFightingObject: public LandObject
 {
     InfantryFightingObject()
@@ -226,6 +278,9 @@ struct InfantryFightingObject: public LandObject
 };
 
 // Water Objects
+/*!
+ * \brief The SurfaceShipObject struct
+ */
 struct SurfaceShipObject: public WaterObject
 {
     double maxDepth = 0.0;
@@ -238,7 +293,9 @@ struct SurfaceShipObject: public WaterObject
     }
 };
 
-
+/*!
+ * \brief The FishingShipObject struct
+ */
 struct FishingShipObject: public SurfaceShipObject
 {
     FishingShipObject()
@@ -247,6 +304,9 @@ struct FishingShipObject: public SurfaceShipObject
     }
 };
 
+/*!
+ * \brief The NavalShipObject struct
+ */
 struct NavalShipObject: public SurfaceShipObject
 {
     NavalShipObject()
@@ -256,6 +316,9 @@ struct NavalShipObject: public SurfaceShipObject
     }
 };
 
+/*!
+ * \brief The UnderwaterObject struct
+ */
 struct UnderwaterObject: public WaterObject
 {
     double maxDepth = 6000.0;
@@ -268,6 +331,9 @@ struct UnderwaterObject: public WaterObject
     }
 };
 
+/*!
+ * \brief The SubmarineObject struct
+ */
 struct SubmarineObject: public UnderwaterObject
 {
 
@@ -277,6 +343,9 @@ struct SubmarineObject: public UnderwaterObject
     }
 };
 
+/*!
+ * \brief The UnderwaterRobotObject struct
+ */
 struct UnderwaterRobotObject: public WaterObject
 {
 
@@ -287,4 +356,4 @@ struct UnderwaterRobotObject: public WaterObject
     }
 };
 
-#endif // OBJECTTYPE_H
+#endif // __OBJECT_CATEGORY_H__

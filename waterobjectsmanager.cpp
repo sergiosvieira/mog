@@ -6,7 +6,7 @@
 #include "taticalmovingobject.h"
 #include "mapcolor.h"
 
-void WaterObjectsManager::add(ObjectCategory category, DistributionType distribution, unsigned int initialInstant, unsigned int lifeTime)
+void WaterObjectsManager::add(ObjectCategory category, DistributionType distribution, unsigned int initialInstant, unsigned int lifeTime, CollectedEachInterface *collected)
 {
     if (waterObjectsType.count(category))
     {
@@ -15,6 +15,7 @@ void WaterObjectsManager::add(ObjectCategory category, DistributionType distribu
                                                                 water->maxVelocity, water->minVelocity,
                                                                 water->maxAcceleration, water->minAcceleration,
                                                                 initialInstant, lifeTime);
+        object->setCollected(collected);
         this->objMap[object->getID()] = object;
         delete water;
     }

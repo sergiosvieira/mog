@@ -104,6 +104,7 @@ struct PatternRecord
     MovingPattern pattern = MovingPattern::Const_Velocity;
 };
 
+class CollectedEachInterface;
 
 /*!
  * \brief The TaticalMovingObject class
@@ -117,6 +118,7 @@ private:
      * \brief tatical moving object's name
      */
     QString name;
+    CollectedEachInterface *collected = nullptr;
 protected:
     /*!
      * \brief id
@@ -203,7 +205,11 @@ public:
         unsigned int initialTime,
         unsigned int lifeTime,
         const Vector& acceleration,
-        ObjectCategory type);
+        ObjectCategory type,
+        CollectedEachInterface *collected = nullptr);
+    virtual ~TaticalMovingObject();
+    void setCollected(CollectedEachInterface *collected);
+    const CollectedEachInterface *getCollected() const;
     /*!
      * \brief getPosition
      * \return

@@ -6,8 +6,8 @@
 
 #include "airplane.h"
 #include "helicopter.h"
-#include "car.h"
-#include "ship.h"
+#include "land.h"
+#include "water.h"
 
 unsigned int ObjectGenerator::id = 0;
 
@@ -118,7 +118,7 @@ Vector ObjectGenerator::randomVector(double min, double max)
 }
 
 
-Object *ObjectGenerator::generate(const QRect& world,
+TaticalMovingObject *ObjectGenerator::generate(const QRect& world,
                                   ObjectCategory type,
                                   const DistributionType distributionType,
                                   double maxVelocity,
@@ -128,7 +128,7 @@ Object *ObjectGenerator::generate(const QRect& world,
                                   unsigned int initialTime,
                                   unsigned int lifeTime)
 {
-    Object * object = nullptr;
+    TaticalMovingObject * object = nullptr;
     Coordinates randomPosition;
     rndCoordinate(world, distributionType, randomPosition);
     Vector randomVelocity = ObjectGenerator::randomVector(minVelocity, maxVelocity);
@@ -158,15 +158,15 @@ Object *ObjectGenerator::generate(const QRect& world,
     }
     else if (landObjectsType.count(type) > 0)
     {
-        object = new Car(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
+        object = new Land(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
     }
     else if (waterObjectsType.count(type) > 0
              || underwaterObjectsType.count(type) > 0)
     {
-        object = new Ship(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
+        object = new Water(randomPosition, randomVelocity, initialTime, lifeTime, randomAcceleration);
     }
 
-    QString typeStr = QString::fromStdString(Object::stringFromType(type));
+    QString typeStr = QString::fromStdString(TaticalMovingObject::stringFromType(type));
     QString name = QString("%1_%2").arg(typeStr).arg(id);
     object->setName(name);
     object->setType(type);
@@ -233,7 +233,7 @@ void rndStationCoordinate(ObjectCategory objType,
     out.setZ(z);
 }
 
-Object* ObjectGenerator::generateStationObject(GraphicsViewType areaType,
+TaticalMovingObject* ObjectGenerator::generateStationObject(GraphicsViewType areaType,
                                                const QRect& world,
                                                const QRectF &rcWhiteArea,
                                                ObjectCategory type, const DistributionType distributionType, double maxVelocity, double minVelocity, double maxAcceleration, double minAcceleration)
@@ -256,7 +256,7 @@ Object* ObjectGenerator::generateStationObject(GraphicsViewType areaType,
     if (maxAccelX > maxAcceleration) maxAccelX = maxAcceleration;
     if (maxAccelY > maxAcceleration) maxAccelY = maxAcceleration;
     if (maxAccelZ > maxAcceleration) maxAccelZ = maxAcceleration;
-    Object * object = nullptr;
+    TaticalMovingObject * object = nullptr;
 //    Coordinates randomPosition(rndMinMax(0., 1.) * world.width(), rndMinMax(0., 1.) * world.height());
     Coordinates randomPosition;
     QRectF rc(rcWhiteArea);
@@ -292,7 +292,7 @@ Object* ObjectGenerator::generateStationObject(GraphicsViewType areaType,
     else if (waterObjectsType.count(type) > 0
              || underwaterObjectsType.count(type) > 0)
     {
-        object = new Ship(randomPosition, randomVelocity, 0.0, 0.0, randomAcceleration);
+        object = new Water(randomPosition, randomVelocity, 0.0, 0.0, randomAcceleration);
     }
     object->setID(id++);
     object->setDirection(Vector(rndX, rndY, rndZ));

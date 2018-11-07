@@ -8,16 +8,24 @@
 
 class TaticalMovingObject;
 class QImage;
+struct CollectedEachInterface;
 
 /*!
  * \brief The TaticalMovingObjectsManager class
  */
 class TaticalMovingObjectsManager
 {
+public:
+    using Map = std::map<unsigned int, TaticalMovingObject*>;
 protected:
     static const QRect World;
-    std::map<unsigned int, TaticalMovingObject*> objMap;
+    Map objMap;
+    unsigned int endInstant = 0;
 public:
+    const Map &getObjects()
+    {
+        return this->objMap;
+    }
     /*!
      * \brief TaticalMovingObjectsManager
      */
@@ -36,7 +44,8 @@ public:
     virtual void add(ObjectCategory category,
                      DistributionType distribution,
                      unsigned int initialInstant,
-                     unsigned int lifeTime) = 0;
+                     unsigned int lifeTime,
+                     CollectedEachInterface *collected = nullptr) = 0;
     /*!
      * \brief del specified object
      * \param id
@@ -53,6 +62,18 @@ public:
      * \param objects
      */
     virtual void update(unsigned int id) = 0;
+    /*!
+     * \brief String of object's properties (csv file format)
+     */
+    virtual std::string str() = 0;
+    /*!
+     * \brief get maximum instant of all objects created
+     * \return
+     */
+    unsigned int getEndInstant() const
+    {
+        return this->endInstant;
+    }
 };
 
 #endif // __TATICAL_MOVING_OBJECTS_MANAGER_H__

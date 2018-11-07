@@ -13,11 +13,16 @@ class QImage;
  */
 class Canvas: public QWidget
 {
+public:
+    QImage *getImage()
+    {
+        return this->image;
+    }
 protected:
     /*!
      * \brief image
      */
-    QImage* image = nullptr;
+    QImage* image = nullptr;    
     /*!
      * \brief drawAirplane
      * \param object

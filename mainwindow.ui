@@ -89,15 +89,15 @@
                       </size>
                      </property>
                      <property name="currentIndex">
-                      <number>2</number>
+                      <number>1</number>
                      </property>
                      <widget class="QWidget" name="page_3">
                       <property name="geometry">
                        <rect>
                         <x>0</x>
-                        <y>-103</y>
-                        <width>262</width>
-                        <height>401</height>
+                        <y>0</y>
+                        <width>272</width>
+                        <height>443</height>
                        </rect>
                       </property>
                       <property name="minimumSize">
@@ -205,6 +205,35 @@
                         </widget>
                        </item>
                        <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_17">
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <widget class="QLabel" name="label_12">
+                           <property name="text">
+                            <string>Collected each</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QComboBox" name="airCollectedEach">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <item>
+                            <property name="text">
+                             <string>5 seconds</string>
+                            </property>
+                           </item>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                       <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_9">
                          <item>
                           <widget class="QLabel" name="RALabel">
@@ -282,13 +311,13 @@
                             </sizepolicy>
                            </property>
                            <property name="minimum">
-                            <double>900.000000000000000</double>
+                            <double>800.000000000000000</double>
                            </property>
                            <property name="maximum">
-                            <double>8000.000000000000000</double>
+                            <double>1400.000000000000000</double>
                            </property>
                            <property name="value">
-                            <double>8000.000000000000000</double>
+                            <double>1400.000000000000000</double>
                            </property>
                           </widget>
                          </item>
@@ -312,10 +341,13 @@
                             </sizepolicy>
                            </property>
                            <property name="minimum">
-                            <double>900.000000000000000</double>
+                            <double>800.000000000000000</double>
                            </property>
                            <property name="maximum">
-                            <double>8000.000000000000000</double>
+                            <double>1400.000000000000000</double>
+                           </property>
+                           <property name="value">
+                            <double>800.000000000000000</double>
                            </property>
                           </widget>
                          </item>
@@ -339,7 +371,7 @@
                             </sizepolicy>
                            </property>
                            <property name="value">
-                            <double>1.000000000000000</double>
+                            <double>99.000000000000000</double>
                            </property>
                           </widget>
                          </item>
@@ -362,6 +394,12 @@
                              <verstretch>0</verstretch>
                             </sizepolicy>
                            </property>
+                           <property name="minimum">
+                            <double>1.000000000000000</double>
+                           </property>
+                           <property name="value">
+                            <double>1.000000000000000</double>
+                           </property>
                           </widget>
                          </item>
                         </layout>
@@ -383,11 +421,14 @@
                              <verstretch>0</verstretch>
                             </sizepolicy>
                            </property>
+                           <property name="minimum">
+                            <double>10.000000000000000</double>
+                           </property>
                            <property name="maximum">
-                            <double>112.000000000000000</double>
+                            <double>20.000000000000000</double>
                            </property>
                            <property name="value">
-                            <double>112.000000000000000</double>
+                            <double>20.000000000000000</double>
                            </property>
                           </widget>
                          </item>
@@ -413,6 +454,9 @@
                            <property name="minimum">
                             <double>10.000000000000000</double>
                            </property>
+                           <property name="maximum">
+                            <double>20.000000000000000</double>
+                           </property>
                           </widget>
                          </item>
                         </layout>
@@ -436,9 +480,9 @@
                       <property name="geometry">
                        <rect>
                         <x>0</x>
-                        <y>0</y>
-                        <width>277</width>
-                        <height>298</height>
+                        <y>-36</y>
+                        <width>304</width>
+                        <height>319</height>
                        </rect>
                       </property>
                       <attribute name="label">
@@ -522,6 +566,35 @@
                         </widget>
                        </item>
                        <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_18">
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <widget class="QLabel" name="label_14">
+                           <property name="text">
+                            <string>Collected each</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QComboBox" name="landCollectedEach">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <item>
+                            <property name="text">
+                             <string>5 seconds</string>
+                            </property>
+                           </item>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                       <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_21">
                          <item>
                           <widget class="QLabel" name="label_18">
@@ -542,10 +615,10 @@
                             <double>40.000000000000000</double>
                            </property>
                            <property name="maximum">
-                            <double>500.000000000000000</double>
+                            <double>60.000000000000000</double>
                            </property>
                            <property name="value">
-                            <double>500.000000000000000</double>
+                            <double>60.000000000000000</double>
                            </property>
                           </widget>
                          </item>
@@ -569,10 +642,13 @@
                             </sizepolicy>
                            </property>
                            <property name="minimum">
-                            <double>40.000000000000000</double>
+                            <double>1.000000000000000</double>
                            </property>
                            <property name="maximum">
-                            <double>500.000000000000000</double>
+                            <double>60.000000000000000</double>
+                           </property>
+                           <property name="value">
+                            <double>1.000000000000000</double>
                            </property>
                           </widget>
                          </item>
@@ -595,8 +671,11 @@
                              <verstretch>0</verstretch>
                             </sizepolicy>
                            </property>
-                           <property name="value">
+                           <property name="minimum">
                             <double>1.000000000000000</double>
+                           </property>
+                           <property name="value">
+                            <double>99.000000000000000</double>
                            </property>
                           </widget>
                          </item>
@@ -618,6 +697,9 @@
                              <horstretch>1</horstretch>
                              <verstretch>0</verstretch>
                             </sizepolicy>
+                           </property>
+                           <property name="minimum">
+                            <double>1.000000000000000</double>
                            </property>
                           </widget>
                          </item>
@@ -642,9 +724,9 @@
                       <property name="geometry">
                        <rect>
                         <x>0</x>
-                        <y>-32</y>
+                        <y>0</y>
                         <width>262</width>
-                        <height>335</height>
+                        <height>377</height>
                        </rect>
                       </property>
                       <attribute name="label">
@@ -728,6 +810,40 @@
                           <string>Add objects</string>
                          </property>
                         </widget>
+                       </item>
+                       <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_19">
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <widget class="QLabel" name="label_15">
+                           <property name="text">
+                            <string>Collected each</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QComboBox" name="waterCollectedEach">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                             <horstretch>1</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <item>
+                            <property name="text">
+                             <string>5 seconds</string>
+                            </property>
+                           </item>
+                           <item>
+                            <property name="text">
+                             <string>1 second</string>
+                            </property>
+                           </item>
+                          </widget>
+                         </item>
+                        </layout>
                        </item>
                        <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_32">
@@ -866,8 +982,11 @@
                              <verstretch>0</verstretch>
                             </sizepolicy>
                            </property>
-                           <property name="value">
+                           <property name="minimum">
                             <double>1.000000000000000</double>
+                           </property>
+                           <property name="value">
+                            <double>99.000000000000000</double>
                            </property>
                           </widget>
                          </item>
@@ -889,6 +1008,9 @@
                              <horstretch>1</horstretch>
                              <verstretch>0</verstretch>
                             </sizepolicy>
+                           </property>
+                           <property name="value">
+                            <double>1.000000000000000</double>
                            </property>
                           </widget>
                          </item>
@@ -914,7 +1036,7 @@
                    <item>
                     <widget class="QLabel" name="label">
                      <property name="text">
-                      <string>Number of Objects</string>
+                      <string>Table of Objects</string>
                      </property>
                     </widget>
                    </item>
@@ -946,7 +1068,7 @@
                      <item>
                       <widget class="QLabel" name="label_5">
                        <property name="text">
-                        <string>Initial Instant (h)</string>
+                        <string>Initial Instant (s)</string>
                        </property>
                       </widget>
                      </item>
@@ -970,7 +1092,7 @@
                      <item>
                       <widget class="QLabel" name="label_40">
                        <property name="text">
-                        <string>Life Time (h)</string>
+                        <string>Life Time (s)</string>
                        </property>
                       </widget>
                      </item>
@@ -1518,9 +1640,9 @@ color: rgb(0, 0, 0);</string>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label_26">
+     <widget class="QLabel" name="lbTime">
       <property name="text">
-       <string>Time Series - 24 hours</string>
+       <string>Time Series</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignHCenter|Qt::AlignTop</set>
