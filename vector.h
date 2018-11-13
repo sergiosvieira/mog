@@ -32,6 +32,13 @@ public:
         this->z *= scalar;
         return *this;
     }
+    Vector& operator/=(double scalar)
+    {
+        this->x /= scalar;
+        this->y /= scalar;
+        this->z /= scalar;
+        return *this;
+    }
     Vector operator+(const Vector& u)
     {
         return Vector(this->x + u.getX(), this->y + u.getY(), this->z + u.getZ());

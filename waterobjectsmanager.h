@@ -23,21 +23,16 @@ public:
              unsigned int lifeTime,
              CollectedEachInterface *collected = nullptr) override;
     /*!
-     * \brief del a specified water object
-     * \param id
+     * \brief str
+     * \return
      */
-    void del(unsigned int id);
-    /*!
-     * \brief draw a water object on canvas
-     * \param id
-     */
-    void show(unsigned int id, QImage *image);
-    /*!
-     * \brief updates a water object position
-     * \param id
-     */
-    void update(unsigned int id);
     virtual std::string str() override;
+protected:
+    /*!
+     * \brief draw
+     * \param painter
+     */
+    void draw(QPainter &painter) override;
 };
 
 

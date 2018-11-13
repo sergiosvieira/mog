@@ -8,9 +8,6 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 
-static const QRect World{0, 0, 192000, 192000};
-
-
 #include "datamanager.h"
 #include <QGraphicsScene>
 #include "dragwidget.h"
@@ -55,10 +52,6 @@ protected:
      * \brief airCanvas
      */
     Canvas* airCanvas = nullptr;
-    /*!
-     * \brief dataManager
-     */
-    DataManager dataManager;
     /*!
      * \brief objects
      */
@@ -272,6 +265,8 @@ private slots:
      */
     void on_navalComboBox_activated(const QString &arg1);
 
+    void on_lifeTime_valueChanged(int arg1);
+
 private:
     /*!
      * \brief objectMap
@@ -356,10 +351,6 @@ private:
      */
     DistributionType distributionFromIndex(int index);
     /*!
-     * \brief clearObjects
-     */
-    void clearObjects();
-    /*!
      * \brief checkObjects
      * \param n
      * \return
@@ -401,6 +392,25 @@ private:
      * \brief updateWaterObjects
      */
     void updateWaterObjects();
+    /*!
+     * \brief drawAirObjects
+     * \param instant
+     */
+    void drawAirObjects(int instant);
+    /*!
+     * \brief landAirObjects
+     * \param instant
+     */
+    void drawLandObjects(int instant);
+    /*!
+     * \brief waterAirObjects
+     * \param instant
+     */
+    void drawWaterObjects(int instant);
+    /*!
+     * \brief deleteAllObjects
+     */
+    void deleteAllObjects();
 };
 
 #endif // MAINWINDOW_H

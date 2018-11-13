@@ -1,11 +1,25 @@
 #include "airobjectsmanager.h"
 
 #include <QRect>
+#include <sstream>
 #include "objectfactory.h"
 #include "objectgenerator.h"
 #include "taticalmovingobject.h"
 #include "mapcolor.h"
+#include "air.h"
+#include "objectgenerator.h"
+#include "cg.h"
 
+void AirObjectsManager::draw(QPainter &painter)
+{
+    static const QPoint arrow[3] =
+    {
+        QPoint(3, 3),
+        QPoint(-3, 3),
+        QPoint(0, -3)
+    };
+    painter.drawConvexPolygon(arrow, 3);
+}
 
 void AirObjectsManager::add(ObjectCategory category,
                             DistributionType distribution,
@@ -15,69 +29,38 @@ void AirObjectsManager::add(ObjectCategory category,
 {
     if (airObjectsType.count(category))
     {
-        AirObject *air = (AirObject*)(ObjectFactory::make(category));
+        AirObject *airObj = (AirObject*)(ObjectFactory::make(category));
         TaticalMovingObject *object = ObjectGenerator::generate(World, category, distribution,
-                                                                air->maxVelocity, air->minVelocity,
-                                                                air->maxAcceleration, air->minAcceleration,
+                                                                airObj->maxVelocity, airObj->minVelocity,
+                                                                airObj->maxAcceleration, airObj->minAcceleration,
                                                                 initialInstant, lifeTime);
+        Air *air = dynamic_cast<Air*>(object);
+        double minAltitude = ObjectGenerator::random(airObj->minAltitude, airObj->maxAltitude);
+        double maxAltitude = ObjectGenerator::random(minAltitude, airObj->maxAltitude);
+        air->setMaxAltitude(maxAltitude);
+        air->setMinAltitude(minAltitude);
         this->objMap[object->getID()] = object;
-        delete air;
+        delete airObj;
     }
-}
-
-void AirObjectsManager::del(unsigned int id)
-{
-    auto it = this->objMap.find(id);
-    if (it != this->objMap.end())
-    {
-        if (it->second) delete it->second;
-        this->objMap.erase(it);
-    }
-}
-
-void AirObjectsManager::show(unsigned int id, QImage *image)
-{
-    auto it = this->objMap.find(id);
-    if (it == this->objMap.end()) return;
-    if (image)
-    {
-        TaticalMovingObject *object = it->second;
-        if (!object) return;
-        QPainter painter(image);
-        double x = object->getPosition().getX();
-        double y = object->getPosition().getY();
-        QBrush brush = mapTypeColor[object->getType()];
-        painter.setBrush(brush);
-        static const QPoint arrow[3] =
-        {
-            QPoint(3, 3),
-            QPoint(-3, 3),
-            QPoint(0, -3)
-        };
-        painter.translate(x, y);
-        painter.drawConvexPolygon(arrow, 3);
-    }
-}
-
-void AirObjectsManager::update(unsigned int id)
-{
-
 }
 
 std::string AirObjectsManager::str()
 {
+    std::stringstream out;
     for (auto kv: this->objMap)
     {
-        auto object = kv.second;
+        Air *object = dynamic_cast<Air *>(kv.second);
+        ObjectCategory category = object->getType();
         for (int t = 0; t < this->getEndInstant(); ++t)
         {
             Pair p = this->dataManager.getData(t, object->getID());
             Coordinates position = p.first;
             Vector velocity = p.second;
-            QString patternStr = QString::fromStdString(Pattern::stringFromPattern(object->getPattern(t)));
+
+            std::string patternStr = Pattern::stringFromPattern(object->getPattern(t));
             out << t
                 << ","
-                << object2name(object)
+                << mapTypeStr[category]
                 << ","
                 << position.getX()
                 << ","
@@ -97,13 +80,13 @@ std::string AirObjectsManager::str()
                 << ","
                 << object->getAcceleraton().getZ()
                 << ","
-                << objectAltitude(object).first // max altitude
+                << object->getMaxAltitude()
                 << ","
-                << objectAltitude(object).second // min altitude
+                << object->getMinAltitude()
                 << ","
-                << objectDepth(object).first // max depth
+                << 0
                 << ","
-                << objectDepth(object).second // min depth
+                << 0
                 << ","
                 << object->getInitialTime()
                 << ","
@@ -115,5 +98,5 @@ std::string AirObjectsManager::str()
              out << "\r\n";
         }
     }
-
+    return out.str();
 }

@@ -29,6 +29,7 @@
 #include "objectfactory.h"
 #include "collectedeach.h"
 #include "airobjectsmanager.h"
+#include "cg.h"
 
 Coordinates transform
 (
@@ -66,8 +67,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     airCanvas = new Canvas(this);
-    airCanvas->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    airCanvas->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);    
     ui->air_hlayout->addWidget(airCanvas);
+    CG::ViewPort = {0., 0., double(airCanvas->width()), double(airCanvas->height())};
 
     this->chart = new QChart();
     QValueAxis* axisX = new QValueAxis();
@@ -103,19 +105,26 @@ void MainWindow::initKalmanFilter()
 {
     int n = 3; // Number of states
     int m = 1; // Number of measurements
-    double dt = 1.0/30; // Time step
-    Eigen::MatrixXd A(n, n); // System dynamics matrix
+    double dt = 5.; // Time step
+    Eigen::MatrixXd A(n, n); // System dynamics matrix (Transformation Matrix)
     Eigen::MatrixXd C(m, n); // Output matrix
     Eigen::MatrixXd Q(n, n); // Process noise covariance
     Eigen::MatrixXd R(m, m); // Measurement noise covariance
     Eigen::MatrixXd P(n, n); // Estimate error covariance
     // Discrete LTI projectile motion, measuring position only
-    A << 1, dt, 0, 0, 1, dt, 0, 0, 1;
+    A << 1, dt, 0.5 * dt * dt,
+         0,  1,            dt,
+         0,  0,             1;
     C << 1, 0, 0;
     // Reasonable covariance matrices
-    Q << .05, .05, .0, .05, .05, .0, .0, .0, .0;
+    Q << .05, .05, .05,
+         .05, .05, .05,
+          .0,  .0,  .0;
     R << 5;
-    P << .1, .1, .1, .1, 10000, 10, .1, 10, 100;
+    P << .1,    .1,  .1,
+         .1,    .1,  .1,
+         .1,    .1,  .1;
+    this->k = KalmanFilter(dt, A, C, Q, R, P);
 }
 
 void MainWindow::initPositionTable()
@@ -205,25 +214,39 @@ MainWindow::~MainWindow()
     delete helicopterCarSK;
 }
 
+void MainWindow::drawAirObjects(int instant)
+{
+    for (auto kv: this->airManager.getObjects())
+    {
+        unsigned int id = kv.first;
+        this->airManager.show(id, instant, this->airCanvas->getImage());
+    }
+}
+
+void MainWindow::drawLandObjects(int instant)
+{
+    for (auto kv: this->landManager.getObjects())
+    {
+        unsigned int id = kv.first;
+        this->landManager.show(id, instant, this->airCanvas->getImage());
+    }
+}
+
+void MainWindow::drawWaterObjects(int instant)
+{
+    for (auto kv: this->waterManager.getObjects())
+    {
+        unsigned int id = kv.first;
+        this->waterManager.show(id, instant, this->airCanvas->getImage());
+    }
+}
+
 void MainWindow::paintEvent(QPaintEvent *event)
 {
     int time = this->ui->timeSlider->value();
-    std::vector<TaticalMovingObjectsManager::Map&> v = {
-        this->airManager.getObjects(),
-        this->landManager.getObjects(),
-        this->waterManager.getObjects()
-    };
-    for (auto m: v)
-    {
-        for (auto object: v)
-        {
-            unsigned int id = object.second->getID();
-            Pair p = dataManager.getData(time, id);
-            Coordinates position = p.first;
-            Coordinates u = transform(position, World, this->airCanvas->rect());
-            this->airManager.show(id, this->airCanvas->getImage());
-        }
-    }
+    this->drawAirObjects(time);
+    this->drawLandObjects(time);
+    this->drawWaterObjects(time);
 }
 
 void MainWindow::onHistogramClicked()
@@ -255,16 +278,9 @@ void MainWindow::onHistogramClicked()
 
 void MainWindow::onTrajectoryClicked()
 {
-//    if (this->objects.size() == 0) {
-//        return;
-//    }
-    if (this->airManager.getObjects().size() == 0
-            || this->landManager.getObjects().size() == 0
-            || this->waterManager.getObjects().size() == 0)
-    {
-        return;
-    }
-
+    if (!this->airManager.getObjects().size()
+            && !this->landManager.getObjects().size()
+            && !this->waterManager.getObjects().size()) return;
     TaticalMovingObject *obj = this->objectMap[ui->objectsID->currentText()];
     if (!obj) return;
     ObjectCategory objType = obj->getType();
@@ -279,26 +295,33 @@ void MainWindow::onTrajectoryClicked()
         ObjectCategory::NavalShip
     };
 
-    if (noZ.count(objType) > 0)
-    {
-        std::vector<QPointF> data;
-        for (int t = 0; t < this->lifetimeValue; ++t)
-        {
-            Pair p = this->dataManager.getData(t, obj->getID());
-            Coordinates pos = p.first;
-            data.emplace_back(QPointF(pos.getX(), pos.getY()));
-        }
-        trajectoryWindow->drawData2D(data);
-    } else {
-        std::vector<QVector3D> data;
-        for (int t = 0; t < this->lifetimeValue; ++t)
-        {
-            Pair p = this->dataManager.getData(t, obj->getID());
-            Coordinates pos = p.first;
-            data.emplace_back(QVector3D(pos.getX(), pos.getY(), pos.getZ()));
-        }
-        trajectoryWindow->drawData3D(data);
-    }
+//    for (auto kv: this->airManager.getObjects())
+//    {
+//        auto obj = kv.second;
+//        ObjectCategory objType = obj->getType();
+//        if (noZ.count(objType) > 0)
+//        {
+//            std::vector<QPointF> data;
+//            for (int t = 0; t < this->lifetimeValue; ++t)
+//            {
+//                this->airManager.getDataManager()
+//                Pair p = this->airManager.getDataManager().getData(t, obj->getID());
+//                Coordinates pos = p.first;
+//                data.emplace_back(QPointF(pos.getX(), pos.getY()));
+//            }
+//            trajectoryWindow->drawData2D(data);
+//        } else {
+//            std::vector<QVector3D> data;
+//            for (int t = 0; t < this->lifetimeValue; ++t)
+//            {
+//                Pair p = this->dataManager.getData(t, obj->getID());
+//                Coordinates pos = p.first;
+//                data.emplace_back(QVector3D(pos.getX(), pos.getY(), pos.getZ()));
+//            }
+//            trajectoryWindow->drawData3D(data);
+//        }
+
+//    }
 }
 
 int MainWindow::tableObjectRowCount()
@@ -390,17 +413,6 @@ DistributionType MainWindow::distributionFromIndex(int index)
     return distributionType;
 }
 
-void MainWindow::clearObjects()
-{
-    for (auto m: {this->airManager.getObjects(), this->landManager.getObjects(), this->waterManager.getObjects()})
-    for (std::map<unsigned int, TaticalMovingObject*>::iterator it = m.begin();
-         it != m.end(); ++it)
-    {
-        if ((*it).second != nullptr) delete (*it).second;
-        m.erase(it);
-    }
-}
-
 bool MainWindow::checkObjects(int n)
 {
     if (n == 0)
@@ -449,12 +461,20 @@ void MainWindow::updateWaterObjects()
     }
 }
 
+void MainWindow::deleteAllObjects()
+{
+    this->airManager.clearAll();
+    this->landManager.clearAll();
+    this->waterManager.clearAll();
+}
+
 void MainWindow::on_btn_air_generate_clicked()
 {
+    this->deleteAllObjects();
     this->lifetimeValue = this->ui->lifeTime->value();
+    this->ui->timeSlider->setMaximum(lifetimeValue);
     unsigned int initialTime = this->ui->initTime->value();
     unsigned int lifeTime = this->ui->lifeTime->value();
-    this->clearObjects();
     int rows = this->tableObjectRowCount();
     if (!this->checkObjects(rows) || !this->checkPatterns()) return;
     DistributionType distributionType = this->distributionFromIndex(this->ui->cmbTypeDistribution->currentIndex());
@@ -678,57 +698,57 @@ void MainWindow::on_pushButton_clicked()
         }
         QTextStream out(&file);
         out << "time,object_name,position_x,position_y,position_z,velocity_x,velocity_y,velocity_z,acceleration_x,acceleration_y,acceleration_z,max_altitude,min_altitude,max_depth,min_depth,initial_time,end_time,pattern_switch_time,moving_pattern\r\n";
-        for (auto kv: this->objects)
-        {
-            auto object = kv.second;
-            for (int t = 0; t < this->lifetimeValue; ++t)
-            {
-                Pair p = this->dataManager.getData(t, object->getID());
-                Coordinates position = p.first;
-                Vector velocity = p.second;
-                QString patternStr = QString::fromStdString(Pattern::stringFromPattern(object->getPattern(t)));
-                out << t
-                    << ","
-                    << object2name(object)
-                    << ","
-                    << position.getX()
-                    << ","
-                    << position.getY()
-                    << ","
-                    << position.getZ()
-                    << ","
-                    << velocity.getX()
-                    << ","
-                    << velocity.getY()
-                    << ","
-                    << velocity.getZ()
-                    << ","
-                    << object->getAcceleraton().getX()
-                    << ","
-                    << object->getAcceleraton().getY()
-                    << ","
-                    << object->getAcceleraton().getZ()
-                    << ","
-                    << objectAltitude(object).first // max altitude
-                    << ","
-                    << objectAltitude(object).second // min altitude
-                    << ","
-                    << objectDepth(object).first // max depth
-                    << ","
-                    << objectDepth(object).second // min depth
-                    << ","
-                    << object->getInitialTime()
-                    << ","
-                    << object->getEndTime()
-                    << ","
-                    << t
-                    << ","
-                    << patternStr;
-                 out << "\r\n";
-            }
-        }
-        file.close();
-        QMessageBox::information(this, tr("Export to CSV"), tr("csv file saved!"));
+//        for (auto kv: this->objects)
+//        {
+//            auto object = kv.second;
+//            for (int t = 0; t < this->lifetimeValue; ++t)
+//            {
+//                Pair p = this->dataManager.getData(t, object->getID());
+//                Coordinates position = p.first;
+//                Vector velocity = p.second;
+//                QString patternStr = QString::fromStdString(Pattern::stringFromPattern(object->getPattern(t)));
+//                out << t
+//                    << ","
+//                    << object2name(object)
+//                    << ","
+//                    << position.getX()
+//                    << ","
+//                    << position.getY()
+//                    << ","
+//                    << position.getZ()
+//                    << ","
+//                    << velocity.getX()
+//                    << ","
+//                    << velocity.getY()
+//                    << ","
+//                    << velocity.getZ()
+//                    << ","
+//                    << object->getAcceleraton().getX()
+//                    << ","
+//                    << object->getAcceleraton().getY()
+//                    << ","
+//                    << object->getAcceleraton().getZ()
+//                    << ","
+//                    << objectAltitude(object).first // max altitude
+//                    << ","
+//                    << objectAltitude(object).second // min altitude
+//                    << ","
+//                    << objectDepth(object).first // max depth
+//                    << ","
+//                    << objectDepth(object).second // min depth
+//                    << ","
+//                    << object->getInitialTime()
+//                    << ","
+//                    << object->getEndTime()
+//                    << ","
+//                    << t
+//                    << ","
+//                    << patternStr;
+//                 out << "\r\n";
+//            }
+//        }
+//        file.close();
+//        QMessageBox::information(this, tr("Export to CSV"), tr("csv file saved!"));
     }
 }
 
@@ -867,12 +887,12 @@ void MainWindow::generateStationObjects(int shipNK, int helicopterNK, int carNK,
         return;
     }
     QRectF whiteArea;
-    GraphicsView::getWhiteArea(World, whiteArea);
+    GraphicsView::getWhiteArea(CG::World, whiteArea);
 
     for (int i = 0; i < airplaneNK; ++i)
     {
         ObjectCategory type = ObjectCategory::PassengerAirPlane;
-        Air* air = static_cast<Air*>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
+        Air* air = static_cast<Air*>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, CG::World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         air->setMaxAltitude(getMaxAltitude(type));
         air->setMinAltitude(getMinAltitude(type));
         this->stationObjects.push_back(air);
@@ -880,7 +900,7 @@ void MainWindow::generateStationObjects(int shipNK, int helicopterNK, int carNK,
     for (int i = 0; i < airplaneSK; ++i)
     {
         ObjectCategory type = ObjectCategory::PassengerAirPlane;
-        Air* ap = static_cast<Air *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
+        Air* ap = static_cast<Air *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, CG::World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         ap->setMaxAltitude(getMaxAltitude(type));
         ap->setMinAltitude(getMinAltitude(type));
         this->stationObjects.push_back(ap);
@@ -889,7 +909,7 @@ void MainWindow::generateStationObjects(int shipNK, int helicopterNK, int carNK,
     for (int i = 0; i < helicopterNK; ++i)
     {
         ObjectCategory type = ObjectCategory::Helicopter;
-        Helicopter* hc = static_cast<Helicopter *>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
+        Helicopter* hc = static_cast<Helicopter *>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, CG::World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         hc->setMaxAltitude(getMaxAltitude(type));
         hc->setMinAltitude(getMinAltitude(type));
         hc->setRotationAngle(ui->RA->value());
@@ -899,7 +919,7 @@ void MainWindow::generateStationObjects(int shipNK, int helicopterNK, int carNK,
     for (int i = 0; i < helicopterSK; ++i)
     {
         ObjectCategory type = ObjectCategory::Helicopter;
-        Helicopter* hc = static_cast<Helicopter *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
+        Helicopter* hc = static_cast<Helicopter *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, CG::World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         hc->setMaxAltitude(getMaxAltitude(type));
         hc->setMinAltitude(getMinAltitude(type));
         hc->setRotationAngle(ui->RA->value());
@@ -910,20 +930,20 @@ void MainWindow::generateStationObjects(int shipNK, int helicopterNK, int carNK,
     for (int i = 0; i < carNK; ++i)
     {
         ObjectCategory type = ObjectCategory::Vehicle;
-        Land* car = static_cast<Land *>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
+        Land* car = static_cast<Land *>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, CG::World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         this->stationObjects.push_back(car);
     }
     for (int i = 0; i < carSK; ++i)
     {
         ObjectCategory type = ObjectCategory::Vehicle;
-        Land* car = static_cast<Land *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
+        Land* car = static_cast<Land *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, CG::World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         this->stationObjects.push_back(car);
     }
 
     for (int i = 0; i < shipNK; ++i)
     {
         ObjectCategory type = ObjectCategory::NavalShip;
-        Water* sp = static_cast<Water *>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
+        Water* sp = static_cast<Water *>(ObjectGenerator::generateStationObject(GraphicsViewType::NK, CG::World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         sp->setMaxDepth(getMaxDepth(type));
         sp->setMinDepth(getMinDepth(type));
         this->stationObjects.push_back(sp);
@@ -931,7 +951,7 @@ void MainWindow::generateStationObjects(int shipNK, int helicopterNK, int carNK,
     for (int i = 0; i < shipSK; ++i)
     {
         ObjectCategory type = ObjectCategory::NavalShip;
-        Water* sp = static_cast<Water *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
+        Water* sp = static_cast<Water *>(ObjectGenerator::generateStationObject(GraphicsViewType::SK, CG::World, whiteArea, type, distributionType, getMaxVelocity(type), getMinVelocity(type), getMaxAcceleration(type), getMinAcceleration(type)));
         sp->setMaxDepth(getMaxDepth(type));
         sp->setMinDepth(getMinDepth(type));
         this->stationObjects.push_back(sp);
@@ -988,8 +1008,8 @@ void MainWindow::displayStationObjects()
     graphicsViewNK->drawWhiteArea();
     graphicsViewSK->drawWhiteArea();
 
-    double worldWidth = World.width();
-    double worldHeight = World.height() / 2.0;
+    double worldWidth = CG::World.width();
+    double worldHeight = CG::World.height() / 2.0;
 
     double widthNK = graphicsViewNK->width();
     double heightNK = graphicsViewNK->height();
@@ -1038,7 +1058,7 @@ void MainWindow::onExportCSVClicked()
 {
     if (this->stationObjects.size() == 0) {
         QMessageBox messageBox;
-        messageBox.critical(0,"Error","Please generate the objects");
+        messageBox.critical(0, "Error","Please generate the objects");
         messageBox.setFixedSize(500,200);
         return;
     }
@@ -1248,8 +1268,8 @@ void MainWindow::onExportCSVClicked()
 
 double MainWindow::calcLifeTime(TaticalMovingObject *obj, const Station &src, const Station &dst, QString &status)
 {
-    double worldWidth = World.width();
-    double worldHeight = World.height() / 2.0;
+    double worldWidth = CG::World.width();
+    double worldHeight = CG::World.height() / 2.0;
 
     double widthNK = graphicsViewNK->width();
     double heightNK = graphicsViewNK->height();
@@ -1395,49 +1415,49 @@ void MainWindow::on_pushButton_7_clicked()
 
 void MainWindow::on_objectsID_activated(const QString &arg1)
 {
-    if (this->objects.size() == 0) {
-        return;
-    }
-    TaticalMovingObject* object = this->objectMap[arg1];
-    if (!object) return;
-    QString type = QString::fromStdString(TaticalMovingObject::stringFromType(object->getType()));
-    this->ui->objectType->setPlainText(type);
-    this->ui->objectST->setPlainText(QString::number(object->getInitialTime()));
-    this->ui->objectET->setPlainText(QString::number(object->getEndTime()));
-    this->chart->removeAllSeries();
-    this->series = new QLineSeries();
-    for (int t = 0; t < lifetimeValue; ++t)
-    {
-        Pair p = this->dataManager.getData(t, object->getID());
-        Coordinates pos = p.first;
-        Vector vel = p.second;
-        this->series->append(t, vel.length());
-    }
-    this->chart->setTitle(QString("%1 %2 - Velocity x Time").arg(type).arg(object->getID()));
-    this->chart->addSeries(this->series);
-    this->chart->createDefaultAxes();
-    this->chart->legend()->setVisible(false);
-    this->chartView->repaint();
+//    if (this->objects.size() == 0) {
+//        return;
+//    }
+//    TaticalMovingObject* object = this->objectMap[arg1];
+//    if (!object) return;
+//    QString type = QString::fromStdString(TaticalMovingObject::stringFromType(object->getType()));
+//    this->ui->objectType->setPlainText(type);
+//    this->ui->objectST->setPlainText(QString::number(object->getInitialTime()));
+//    this->ui->objectET->setPlainText(QString::number(object->getEndTime()));
+//    this->chart->removeAllSeries();
+//    this->series = new QLineSeries();
+//    for (int t = 0; t < lifetimeValue; ++t)
+//    {
+//        Pair p = this->dataManager.getData(t, object->getID());
+//        Coordinates pos = p.first;
+//        Vector vel = p.second;
+//        this->series->append(t, vel.length());
+//    }
+//    this->chart->setTitle(QString("%1 %2 - Velocity x Time").arg(type).arg(object->getID()));
+//    this->chart->addSeries(this->series);
+//    this->chart->createDefaultAxes();
+//    this->chart->legend()->setVisible(false);
+//    this->chartView->repaint();
 
-    QStandardItemModel* model = (QStandardItemModel*)this->positionTable->model();
-    if (model)
-    {
-        model->removeRows(0, this->lifetimeValue);
-        for (int t = 0; t < this->lifetimeValue; ++t)
-        {
-            Pair p = this->dataManager.getData(t, object->getID());
-            Coordinates pos = p.first;
-            Vector vel = p.second;
-            model->insertRow(t);
-            model->setData(model->index(t, 0), t);
-            model->setData(model->index(t, 1), pos.getX());
-            model->setData(model->index(t, 2), pos.getY());
-            model->setData(model->index(t, 3), pos.getZ());
-            model->setData(model->index(t, 4), QString::fromStdString(Pattern::stringFromPattern(object->getPattern(t))));
-        }
+//    QStandardItemModel* model = (QStandardItemModel*)this->positionTable->model();
+//    if (model)
+//    {
+//        model->removeRows(0, this->lifetimeValue);
+//        for (int t = 0; t < this->lifetimeValue; ++t)
+//        {
+//            Pair p = this->dataManager.getData(t, object->getID());
+//            Coordinates pos = p.first;
+//            Vector vel = p.second;
+//            model->insertRow(t);
+//            model->setData(model->index(t, 0), t);
+//            model->setData(model->index(t, 1), pos.getX());
+//            model->setData(model->index(t, 2), pos.getY());
+//            model->setData(model->index(t, 3), pos.getZ());
+//            model->setData(model->index(t, 4), QString::fromStdString(Pattern::stringFromPattern(object->getPattern(t))));
+//        }
 
-    }
-    this->ui->patternTable->resizeColumnsToContents();
+//    }
+//    this->ui->patternTable->resizeColumnsToContents();
 }
 
 void MainWindow::on_objectCategories_activated(const QString &arg1)
@@ -1461,16 +1481,16 @@ void MainWindow::on_objectCategories_activated(const QString &arg1)
 
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
-    if (index == 1)
-    {
-        QString typeStr = "Airplane";
-        for (int i = 0; i < this->objects.size(); ++i)
-        {
-            typeStr = QString::fromStdString(TaticalMovingObject::stringFromType(this->objects.begin()->second->getType()));
-            break;
-        }
-        this->on_objectCategories_activated(typeStr);
-    }
+//    if (index == 1)
+//    {
+//        QString typeStr = "Airplane";
+//        for (int i = 0; i < this->objects.size(); ++i)
+//        {
+//            typeStr = QString::fromStdString(TaticalMovingObject::stringFromType(this->objects.begin()->second->getType()));
+//            break;
+//        }
+//        this->on_objectCategories_activated(typeStr);
+//    }
 }
 
 void MainWindow::rotorEnabled(bool flag)
@@ -1600,3 +1620,9 @@ void MainWindow::on_navalComboBox_activated(const QString &arg1)
     }
 }
 
+
+void MainWindow::on_lifeTime_valueChanged(int arg1)
+{
+    this->ui->spinBoxAirPST->setMinimum(0);
+    this->ui->spinBoxAirPST->setMaximum(arg1);
+}

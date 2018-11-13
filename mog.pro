@@ -84,7 +84,8 @@ HEADERS += \
     landobjectsmanager.h \
     waterobjectsmanager.h \
     kalman.h \
-    collectedeach.h
+    collectedeach.h \
+    cg.h
 
 FORMS += \
         mainwindow.ui \

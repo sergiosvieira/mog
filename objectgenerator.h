@@ -19,7 +19,7 @@ class ObjectGenerator
     static unsigned int id;
 public:
     static TaticalMovingObject* generate(
-            const QRect& world,
+            const QRectF& world,
             ObjectCategory type,
             const DistributionType distributionType,
             double maxVelocity,
@@ -31,7 +31,7 @@ public:
             );
     static TaticalMovingObject* generateStationObject(
             GraphicsViewType areaType,
-            const QRect& world,
+            const QRectF& world,
             const QRectF &rcWhiteArea,
             ObjectCategory type,
             const DistributionType distributionType,
@@ -40,7 +40,6 @@ public:
             double maxAcceleration,
             double minAcceleration
             );
-private:
     static double random(double min, double max);
     static Vector randomVector(double min, double max);
 };

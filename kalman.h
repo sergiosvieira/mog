@@ -88,7 +88,7 @@ public:
   /*!
   * \brief Initialize the filter with a guess for initial states.
   */
-  void init(double t0, const Eigen::VectorXd& x0);
+  void init(double t0, const Eigen::MatrixXd& x0);
 
   /*!
   * \brief Update the estimated state based on measured values. The time step is assumed to remain constant.
@@ -103,9 +103,9 @@ public:
   /*!
   * \brief Return the current state and time.
   */
-  Eigen::VectorXd state() const
+  Eigen::MatrixXd state() const
   {
-      return x_hat;
+      return x0;
   }
   double time() const
   {
@@ -131,5 +131,5 @@ private:
   Eigen::MatrixXd I;
 
   // Estimated states
-  Eigen::VectorXd x_hat, x_hat_new;
+  Eigen::MatrixXd x0;
 };

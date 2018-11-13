@@ -19,37 +19,14 @@ void WaterObjectsManager::add(ObjectCategory category, DistributionType distribu
         this->objMap[object->getID()] = object;
         delete water;
     }
-
 }
 
-void WaterObjectsManager::del(unsigned int id)
+void WaterObjectsManager::draw(QPainter& painter)
 {
-    auto it = this->objMap.find(id);
-    if (it != this->objMap.end())
-    {
-        if (it->second) delete it->second;
-        this->objMap.erase(it);
-    }
+    painter.drawEllipse(-2, -2, 4, 4);
 }
 
-void WaterObjectsManager::show(unsigned int id, QImage *image)
-{
-    auto it = this->objMap.find(id);
-    if (it == this->objMap.end()) return;
-    if (image)
-    {
-        TaticalMovingObject *object = it->second;
-        if (!object) return;
-        QPainter painter(image);
-        double x = object->getPosition().getX();
-        double y = object->getPosition().getY();
-        QBrush brush = mapTypeColor[object->getType()];
-        painter.setBrush(brush);
-        painter.drawEllipse(x, y, 4, 4);
-    }
-}
-
-void WaterObjectsManager::update(unsigned int id)
+std::string WaterObjectsManager::str()
 {
 
 }

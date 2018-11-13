@@ -3,8 +3,12 @@
 
 #include <map>
 #include <QRect>
+#include <functional>
+#include <QPainter>
 #include "objectcategory.h"
 #include "distributiontype.h"
+#include "datamanager.h"
+
 
 class TaticalMovingObject;
 class QImage;
@@ -21,7 +25,16 @@ protected:
     static const QRect World;
     Map objMap;
     unsigned int endInstant = 0;
+    virtual void draw(QPainter& painter) = 0;
+    /*!
+     * \brief dataManager
+     */
+    DataManager dataManager;
 public:
+    const DataManager &getDataManager()
+    {
+        return this->dataManager;
+    }
     const Map &getObjects()
     {
         return this->objMap;
@@ -50,18 +63,18 @@ public:
      * \brief del specified object
      * \param id
      */
-    virtual void del(unsigned int id) = 0;
+    virtual void del(unsigned int id);
     /*!
      * \brief draw an object on canvas
      * \param id
      * \param image
      */
-    virtual void show(unsigned int id, QImage *image) = 0;
+    virtual void show(unsigned int id, unsigned int instant, QImage *image);
     /*!
      * \brief updates object position
      * \param objects
      */
-    virtual void update(unsigned int id) = 0;
+    virtual void update(unsigned int id);
     /*!
      * \brief String of object's properties (csv file format)
      */
@@ -74,6 +87,10 @@ public:
     {
         return this->endInstant;
     }
+    /*!
+     * \brief clearAll
+     */
+    void clearAll();
 };
 
 #endif // __TATICAL_MOVING_OBJECTS_MANAGER_H__

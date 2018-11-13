@@ -68,7 +68,7 @@ double rndMinMax(double min, double max)
     return urd(eng);
 }
 
-void rndCoordinate(const QRect &rcWorld, const DistributionType type, Coordinates &out)
+void rndCoordinate(const QRectF &rcWorld, const DistributionType type, Coordinates &out)
 {
     out.setX(0.0);
     out.setY(0.0);
@@ -118,7 +118,7 @@ Vector ObjectGenerator::randomVector(double min, double max)
 }
 
 
-TaticalMovingObject *ObjectGenerator::generate(const QRect& world,
+TaticalMovingObject *ObjectGenerator::generate(const QRectF& world,
                                   ObjectCategory type,
                                   const DistributionType distributionType,
                                   double maxVelocity,
@@ -132,6 +132,7 @@ TaticalMovingObject *ObjectGenerator::generate(const QRect& world,
     Coordinates randomPosition;
     rndCoordinate(world, distributionType, randomPosition);
     Vector randomVelocity = ObjectGenerator::randomVector(minVelocity, maxVelocity);
+    randomVelocity /= 3.6; // Converting km/h to m/s
     Vector randomAcceleration = ObjectGenerator::randomVector(minAcceleration, maxAcceleration);
     double rndX = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
     double rndY = (rndMinMax(0, 1) < 0.5) ? -1.0 : 1.0;
@@ -177,7 +178,7 @@ TaticalMovingObject *ObjectGenerator::generate(const QRect& world,
 }
 
 void rndStationCoordinate(ObjectCategory objType,
-                          const QRect &rcWorld,
+                          const QRectF &rcWorld,
                           const QRectF &rcWhiteArea,
                           const DistributionType type,
                           Coordinates &out)
@@ -234,7 +235,7 @@ void rndStationCoordinate(ObjectCategory objType,
 }
 
 TaticalMovingObject* ObjectGenerator::generateStationObject(GraphicsViewType areaType,
-                                               const QRect& world,
+                                               const QRectF& world,
                                                const QRectF &rcWhiteArea,
                                                ObjectCategory type, const DistributionType distributionType, double maxVelocity, double minVelocity, double maxAcceleration, double minAcceleration)
 {

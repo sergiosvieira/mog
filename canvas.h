@@ -28,25 +28,25 @@ protected:
      * \param object
      * \param position
      */
-    void drawAirplane(const TaticalMovingObject& object, const Coordinates& position);
+//    void drawAirplane(const TaticalMovingObject& object, const Coordinates& position);
     /*!
      * \brief drawHelicopter
      * \param object
      * \param position
      */
-    void drawHelicopter(const TaticalMovingObject& object, const Coordinates& position);
+//    void drawHelicopter(const TaticalMovingObject& object, const Coordinates& position);
     /*!
      * \brief drawCar
      * \param object
      * \param position
      */
-    void drawCar(const TaticalMovingObject& object, const Coordinates& position);
+//    void drawCar(const TaticalMovingObject& object, const Coordinates& position);
     /*!
      * \brief drawShip
      * \param object
      * \param position
      */
-    void drawShip(const TaticalMovingObject& object, const Coordinates& position);
+//    void drawShip(const TaticalMovingObject& object, const Coordinates& position);
 public:
     /*!
      * \brief Canvas constructor

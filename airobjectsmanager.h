@@ -8,6 +8,8 @@
  */
 class AirObjectsManager: public TaticalMovingObjectsManager
 {
+protected:
+    void draw(QPainter& painter) override;
 public:
     /*!
      * \brief add an air object
@@ -21,21 +23,6 @@ public:
              unsigned int initialInstant,
              unsigned int lifeTime,
              CollectedEachInterface *collected = nullptr) override;
-    /*!
-     * \brief del a specified air object
-     * \param id
-     */
-    void del(unsigned int id);
-    /*!
-     * \brief show
-     * \param id
-     */
-    void show(unsigned int id, QImage *image);
-    /*!
-     * \brief update
-     * \param id
-     */
-    void update(unsigned int id);
     /*!
      * \brief String of air object's properties (csv file format)
      */

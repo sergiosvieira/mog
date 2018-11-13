@@ -9,6 +9,8 @@
  */
 class LandObjectsManager: public TaticalMovingObjectsManager
 {
+protected:
+    void draw(QPainter& painter) override;
 public:
     /*!
      * \brief adds a land object
@@ -22,21 +24,6 @@ public:
              unsigned int initialInstant,
              unsigned int lifeTime,
              CollectedEachInterface *collected = nullptr) override;
-    /*!
-     * \brief del a specified land object
-     * \param id
-     */
-    void del(unsigned int id);
-    /*!
-     * \brief show
-     * \param id
-     */
-    void show(unsigned int id, QImage *image);
-    /*!
-     * \brief update
-     * \param id
-     */
-    void update(unsigned int id);
     /*!
      * \brief String of land object's properties (csv file format)
      * \return
